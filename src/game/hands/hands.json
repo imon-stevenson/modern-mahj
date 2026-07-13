@@ -1,0 +1,77 @@
+{
+  "year": 2026,
+  "hands": [
+    {
+      "id": "example-three-suits",
+      "section": "Example",
+      "line": 1,
+      "description": "FF 2222 (X) DDDD (Y white) 6666 (Z) — three different suits",
+      "closed": false,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        {
+          "kind": "kong",
+          "tile": { "kind": "number", "rank": 2, "suitVar": "X" },
+          "jokersAllowed": true
+        },
+        {
+          "kind": "kong",
+          "tile": { "kind": "dragon", "color": "white" },
+          "jokersAllowed": true
+        },
+        {
+          "kind": "kong",
+          "tile": { "kind": "number", "rank": 6, "suitVar": "Z" },
+          "jokersAllowed": true
+        }
+      ],
+      "suitConstraints": [
+        { "rule": "allDifferent", "vars": ["X", "Z"] }
+      ]
+    },
+    {
+      "id": "example-consecutive-run",
+      "section": "Example",
+      "line": 2,
+      "description": "FF NNNN (N+1)(N+1)(N+1)(N+1) (N+2)(N+2)(N+2)(N+2) (one suit) — flower pair + three consecutive kongs",
+      "closed": false,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        {
+          "kind": "kong",
+          "tile": { "kind": "number", "numVar": "N", "suitVar": "X" },
+          "jokersAllowed": true
+        },
+        {
+          "kind": "kong",
+          "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" },
+          "jokersAllowed": true
+        },
+        {
+          "kind": "kong",
+          "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" },
+          "jokersAllowed": true
+        }
+      ],
+      "numberConstraints": [
+        { "rule": "range", "var": "N", "min": 1, "max": 7 }
+      ]
+    },
+    {
+      "id": "example-winds-dragons",
+      "section": "Example",
+      "line": 3,
+      "description": "NEWS DDDD DDDD DDDD — winds pair + three dragon pungs, any colors",
+      "closed": false,
+      "groups": [
+        { "kind": "single", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "dragon", "color": "red" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "color": "green" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": true }
+      ]
+    }
+  ]
+}
