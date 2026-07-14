@@ -11,29 +11,43 @@ export function NewGameMenu(): React.ReactElement {
   const isMidGame = phase === 'charleston' || phase === 'play';
 
   return (
-    <div style={{ border: '1px solid #333', padding: 8, margin: 4 }}>
-      <div>
-        <strong>New Game</strong>
-      </div>
-      <label>
-        Difficulty:{' '}
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          font: '600 13px var(--font-ui)',
+          color: 'var(--ink-soft)',
+        }}
+      >
+        Difficulty
         <select
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+          style={{
+            font: '600 13px var(--font-ui)',
+            padding: '7px 10px',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid var(--hairline)',
+            background: 'var(--paper)',
+            color: 'var(--ink)',
+          }}
         >
-          <option value="beginner">Beginner (no call timer)</option>
-          <option value="intermediate">Intermediate (5s call timer)</option>
-          <option value="expert">Expert (5s call timer)</option>
+          <option value="beginner">Beginner · no timer</option>
+          <option value="intermediate">Intermediate · 5s</option>
+          <option value="expert">Expert · 5s</option>
         </select>
       </label>
       <button
         type="button"
+        className="btn btn-gold"
         onClick={() => {
           if (isMidGame && !confirm('Abandon the in-progress game?')) return;
           newGame(difficulty);
         }}
       >
-        Start
+        {isMidGame ? 'New Game' : 'Start Game'}
       </button>
     </div>
   );

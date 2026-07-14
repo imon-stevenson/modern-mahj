@@ -2,13 +2,20 @@ import { useMahjStore } from '../store';
 import { passDirection, passTarget } from '../game/charleston';
 
 const PASS_LABEL: Record<string, string> = {
-  firstRight: 'First Charleston · Pass RIGHT',
-  firstAcross: 'First Charleston · Pass ACROSS',
-  firstLeft: 'First Charleston · Pass LEFT',
-  secondLeft: 'Second Charleston · Pass LEFT',
-  secondAcross: 'Second Charleston · Pass ACROSS',
-  secondRight: 'Second Charleston · Pass RIGHT',
+  firstRight: 'First Charleston · Pass Right',
+  firstAcross: 'First Charleston · Pass Across',
+  firstLeft: 'First Charleston · Pass Left',
+  secondLeft: 'Second Charleston · Pass Left',
+  secondAcross: 'Second Charleston · Pass Across',
+  secondRight: 'Second Charleston · Pass Right',
   courtesy: 'Courtesy Pass · East ↔ West, South ↔ North',
+};
+
+const eyebrowStyle: React.CSSProperties = {
+  font: '600 11px var(--font-ui)',
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+  color: 'var(--gold)',
 };
 
 export function CharlestonUI(): React.ReactElement {
@@ -23,17 +30,25 @@ export function CharlestonUI(): React.ReactElement {
   const courtesyOffers = charleston.courtesyOffers;
 
   if (charleston.pass === null && charleston.secondCharlestonAgreed === null) {
-    // Between first and second — bots said yes, waiting on human.
+    // Between first and second — bots agreed, waiting on the human.
     return (
-      <div style={{ border: '1px solid #333', padding: 8, margin: 4 }}>
-        <div>First Charleston complete. Continue with a second Charleston?</div>
-        <button type="button" onClick={() => agreeSecond(true)}>Yes, second Charleston</button>
-        <button type="button" onClick={() => agreeSecond(false)}>No, skip to courtesy</button>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={eyebrowStyle}>Charleston</div>
+        <div style={{ font: '600 13px var(--font-ui)', color: 'var(--felt-ink)' }}>
+          First Charleston complete. Continue with a second Charleston?
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button type="button" className="btn btn-gold" onClick={() => agreeSecond(true)}>
+            Yes, second Charleston
+          </button>
+          <button type="button" className="btn btn-ghost" onClick={() => agreeSecond(false)}>
+            No, skip to courtesy
+          </button>
+        </div>
       </div>
     );
   }
   if (charleston.pass === null && charleston.secondCharlestonAgreed === false) {
-    // Someone said no; move on. We render nothing — parent will advance.
     return <></>;
   }
 
@@ -57,35 +72,43 @@ export function CharlestonUI(): React.ReactElement {
   };
 
   return (
-    <div style={{ border: '1px solid #333', padding: 8, margin: 4 }}>
-      <div>
-        <strong>{PASS_LABEL[pass]}</strong>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={eyebrowStyle}>{PASS_LABEL[pass]}</div>
+      <div style={{ font: '600 13px var(--font-ui)', color: 'var(--felt-ink)' }}>
+        Pass {direction} to {target.toUpperCase()} ·{' '}
+        <span className="mono" style={{ color: 'var(--gold)' }}>
+          {selections.length}/{requiredCount}
+        </span>{' '}
+        selected
       </div>
-      <div>
-        You pass {direction} (to {target.toUpperCase()}).{' '}
-        Selected {selections.length}/{requiredCount} tiles.
-      </div>
+
       {isCourtesy && (
-        <div>
-          Courtesy tile count:{' '}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ font: '600 12px var(--font-ui)', color: 'var(--felt-ink-soft)' }}>
+            Courtesy tiles:
+          </span>
           {[0, 1, 2, 3].map((n) => (
             <button
               key={n}
               type="button"
+              className={courtesyOffers.east === n ? 'btn btn-gold' : 'btn btn-ghost'}
+              style={{ padding: '6px 12px' }}
               onClick={() => setCourtesyOffer('east', n)}
-              disabled={courtesyOffers.east === n}
             >
               {n}
             </button>
           ))}
         </div>
       )}
-      <button type="button" onClick={() => clearSelection('east')}>
-        Clear
-      </button>
-      <button type="button" onClick={doPass} disabled={!canSubmit}>
-        Pass
-      </button>
+
+      <div style={{ display: 'flex', gap: 10 }}>
+        <button type="button" className="btn btn-ghost" onClick={() => clearSelection('east')}>
+          Clear
+        </button>
+        <button type="button" className="btn btn-gold" onClick={doPass} disabled={!canSubmit}>
+          Pass {isCourtesy ? '' : 'tiles'}
+        </button>
+      </div>
     </div>
   );
 }

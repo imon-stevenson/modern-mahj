@@ -76,6 +76,7 @@ export type MahjState = {
   setCourtesyOffer: (seat: Seat, count: number) => void;
   finishSetup: () => void;
 
+  humanDraw: () => void;
   humanDiscard: (tileId: string) => void;
   runBotTurn: (seat: Seat) => void;
   callWithHuman: (kind: CallKind) => void;
@@ -443,6 +444,31 @@ export const useMahjStore = create<MahjState>()(
 
       finishSetup() {
         set({ phase: 'play', currentSeat: 'east' });
+      },
+
+      humanDraw() {
+        const s = get();
+        if (s.phase !== 'play' || s.currentSeat !== 'east') return;
+        if (s.awaitingCall) return;
+        // Only draw when holding 13 tiles; a call leaves East with 14 already.
+        if (tileTotal(s.players.east) !== 13) return;
+        const { tile, wall } = drawFromWall(s.wall);
+        if (!tile) {
+          set({ phase: 'ended', winner: null, winningHand: null });
+          return;
+        }
+        const players: Record<Seat, PlayerState> = {
+          ...s.players,
+          east: { ...s.players.east, rack: [...s.players.east.rack, tile] },
+        };
+        set({ wall, players, lastAction: { kind: 'draw', seat: 'east', tileId: tile.id } });
+        const s1 = get();
+        const match = matchAgainstAll(
+          s1.players.east.rack,
+          s1.players.east.exposures,
+          safeHands(),
+        );
+        if (match) set({ phase: 'ended', winner: 'east', winningHand: match.hand });
       },
 
       humanDiscard(tileId) {

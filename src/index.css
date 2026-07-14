@@ -4,13 +4,139 @@
   box-sizing: border-box;
 }
 
+/* ============================================================
+   Design tokens — American Mahjong Design System
+   Palette + type scale ported from the style guide.
+   ============================================================ */
+:root {
+  /* Surface & ink */
+  --ivory: oklch(0.97 0.006 75);
+  --paper: oklch(0.99 0.003 90);
+  --ink: oklch(0.22 0.01 260);
+  --ink-soft: oklch(0.4 0.01 260);
+  --ink-faint: oklch(0.55 0.01 260);
+  --hairline: oklch(0.9 0.006 90);
+
+  /* Brand / suits */
+  --tile-navy: oklch(0.32 0.07 255);
+  --gold: oklch(0.75 0.13 80);
+  --gold-ink: oklch(0.22 0.05 255);
+  --suit-green: oklch(0.5 0.14 150);
+  --suit-red: oklch(0.55 0.19 25);
+  --label-blue: oklch(0.55 0.1 255);
+
+  /* Felt table */
+  --felt: oklch(0.22 0.05 255);
+  --felt-panel: oklch(0.27 0.055 255);
+  --felt-panel-2: oklch(0.24 0.05 258);
+  --felt-border: oklch(0.36 0.06 255);
+  --felt-divider: oklch(0.4 0.04 255);
+  --felt-ink: oklch(0.98 0.004 90);
+  --felt-ink-soft: oklch(0.8 0.02 255);
+  --felt-ink-mute: oklch(0.7 0.02 255);
+
+  /* Type */
+  --font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+
+  color-scheme: light;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  color-scheme: light dark;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: var(--ivory);
+  -webkit-font-smoothing: antialiased;
 }
 
 button {
   font: inherit;
   cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+/* ---- Reusable atoms ---- */
+
+.eyebrow {
+  font: 700 12px var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--label-blue);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Buttons used across the game UI */
+.btn {
+  font: 700 13px var(--font-ui);
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  transition: filter 120ms ease, background 120ms ease, transform 80ms ease;
+  white-space: nowrap;
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.45;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--felt-ink);
+  border-color: oklch(0.5 0.03 255);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: oklch(0.3 0.05 255);
+}
+
+.btn-outline {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--hairline);
+}
+.btn-outline:hover:not(:disabled) {
+  filter: brightness(0.97);
+}
+
+.btn-green {
+  background: var(--suit-green);
+  color: oklch(0.98 0.01 150);
+}
+.btn-green:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--gold-ink);
+  font-weight: 800;
+}
+.btn-gold:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.card-surface {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
 }
