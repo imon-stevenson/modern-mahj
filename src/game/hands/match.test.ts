@@ -20,6 +20,7 @@ const threeSuitsHand: NMJLHand = {
   line: 1,
   description: 'FF 2222(X) WhiteD-kong 6666(Z), X != Z',
   closed: false,
+  value: 25,
   groups: [
     { kind: 'pair', tile: { kind: 'flower' }, jokersAllowed: false },
     { kind: 'kong', tile: { kind: 'number', rank: 2, suitVar: 'X' }, jokersAllowed: true },
@@ -35,6 +36,7 @@ const consecRunHand: NMJLHand = {
   line: 2,
   description: 'FF NNNN (N+1)(N+1)(N+1)(N+1) (N+2)(N+2)(N+2)(N+2) (one suit)',
   closed: false,
+  value: 25,
   groups: [
     { kind: 'pair', tile: { kind: 'flower' }, jokersAllowed: false },
     { kind: 'kong', tile: { kind: 'number', numVar: 'N', suitVar: 'X' }, jokersAllowed: true },
@@ -50,6 +52,7 @@ const closedPairsHand: NMJLHand = {
   line: 3,
   description: 'seven pairs (closed): 11 22 33 44 55 66 77 (one suit)',
   closed: true,
+  value: 25,
   groups: [
     { kind: 'pair', tile: { kind: 'number', rank: 1, suitVar: 'X' }, jokersAllowed: false },
     { kind: 'pair', tile: { kind: 'number', rank: 2, suitVar: 'X' }, jokersAllowed: false },

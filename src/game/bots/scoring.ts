@@ -127,12 +127,23 @@ export function computeUsefulness(hands: NMJLHand[]): Usefulness {
         for (const g of hand.groups) {
           const t = g.tile;
           if (t.kind === 'wind') {
-            bump(tileKey({ id: '_x', kind: 'wind', wind: t.wind }));
+            if ('wind' in t) {
+              bump(tileKey({ id: '_x', kind: 'wind', wind: t.wind }));
+            } else {
+              // windVar: any wind could satisfy — bump all four.
+              for (const w of ['N', 'E', 'S', 'W'] as const) {
+                bump(tileKey({ id: '_x', kind: 'wind', wind: w }));
+              }
+            }
           } else if (t.kind === 'flower') {
             bump('f');
           } else if (t.kind === 'dragon') {
             if ('color' in t) {
               bump(tileKey({ id: '_x', kind: 'dragon', color: t.color }));
+            } else if ('dragonVar' in t) {
+              for (const c of ['red', 'green', 'white'] as const) {
+                bump(tileKey({ id: '_x', kind: 'dragon', color: c }));
+              }
             } else {
               const s = sb[t.suitVar];
               if (!s) continue;
@@ -226,16 +237,20 @@ function identityFor(
   sb: Partial<Record<SuitVar, Suit>>,
   nv: number | null,
 ): TileKey | null {
-  if (tile.kind === 'wind') return `w:${tile.wind}`;
+  if (tile.kind === 'wind') {
+    if ('wind' in tile) return `w:${tile.wind}`;
+    // windVar: pick an arbitrary wind for closeness scoring (any works).
+    return `w:E`;
+  }
   if (tile.kind === 'flower') return 'f';
   if (tile.kind === 'dragon') {
     if ('color' in tile) return `d:${tile.color}`;
+    if ('dragonVar' in tile) return `d:red`;
     const s = sb[tile.suitVar];
     if (!s) return null;
     const color = s === 'bams' ? 'green' : s === 'craks' ? 'red' : 'white';
     return `d:${color}`;
   }
-  // number
   if ('suit' in tile) return `n:${tile.suit}:${tile.rank}`;
   const s = sb[tile.suitVar];
   if (!s) return null;

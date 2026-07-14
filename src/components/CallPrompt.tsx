@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useMahjStore } from '../store';
 import { possibleCallsForDiscard } from '../game/turn';
 import { matchAgainstAll } from '../game/hands/match';
@@ -8,7 +9,10 @@ import type { CallKind } from '../game/types';
 export function CallPrompt(): React.ReactElement | null {
   const awaitingCall = useMahjStore((s) => s.awaitingCall);
   const eastPlayer = useMahjStore((s) => s.players.east);
-  const hands = useMahjStore((s) => s.loadHandsSafe());
+  // Load once — hands are static per session. Calling the loader inside a
+  // Zustand selector returns a fresh reference on failure paths and can loop.
+  const loadHands = useMahjStore((s) => s.loadHandsSafe);
+  const hands = useMemo(() => loadHands(), [loadHands]);
   const callWithHuman = useMahjStore((s) => s.callWithHuman);
   const passCall = useMahjStore((s) => s.passCall);
   const secondsLeft = useCallTimer();

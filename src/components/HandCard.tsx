@@ -16,7 +16,7 @@ export function HandCard(): React.ReactElement {
           <li key={h.id} style={{ borderBottom: '1px dotted #999', padding: '4px 0' }}>
             <div>
               <small style={{ opacity: 0.6 }}>
-                {h.section} · L{h.line} {h.closed ? '· closed' : ''}
+                {h.section} · L{h.line} · {h.closed ? 'C' : 'X'} {h.value}
               </small>
             </div>
             <div>{h.description}</div>

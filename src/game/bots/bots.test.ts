@@ -19,6 +19,7 @@ const winsHand: NMJLHand = {
   line: 1,
   description: 'FF 2222(X) 6666(X) 8888(X) — one suit throughout',
   closed: false,
+  value: 25,
   groups: [
     { kind: 'pair', tile: { kind: 'flower' }, jokersAllowed: false },
     { kind: 'kong', tile: { kind: 'number', rank: 2, suitVar: 'X' }, jokersAllowed: true },

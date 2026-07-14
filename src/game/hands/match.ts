@@ -8,20 +8,28 @@ import type {
 } from '../types';
 import { tilesEqual } from '../tiles';
 import type {
+  DragonVar,
   GroupKind,
   GroupPattern,
   NMJLHand,
   NumberVar,
   SuitVar,
   TilePattern,
+  WindVar,
 } from './schema';
 
 // A binding maps each variable used by a hand to a concrete value.
 type SuitBinding = Partial<Record<SuitVar, Suit>>;
 type NumberBinding = { N?: number };
-type Binding = { suits: SuitBinding; numbers: NumberBinding };
+type WindBinding = Partial<Record<WindVar, Wind>>;
+type DragonBinding = Partial<Record<DragonVar, DragonColor>>;
+type Binding = {
+  suits: SuitBinding;
+  numbers: NumberBinding;
+  winds: WindBinding;
+  dragons: DragonBinding;
+};
 
-// A concrete (fully-materialized) tile identity a group requires.
 type ConcreteTileIdentity =
   | { kind: 'number'; suit: Suit; rank: number }
   | { kind: 'wind'; wind: Wind }
@@ -35,6 +43,8 @@ type ConcreteGroup = {
 };
 
 const ALL_SUITS: readonly Suit[] = ['bams', 'craks', 'dots'];
+const ALL_WINDS: readonly Wind[] = ['N', 'E', 'S', 'W'];
+const ALL_DRAGONS: readonly DragonColor[] = ['red', 'green', 'white'];
 
 // ---------- variable enumeration ----------
 
@@ -60,6 +70,22 @@ function numberVarsIn(hand: NMJLHand): NumberVar[] {
   return [...set];
 }
 
+function windVarsIn(hand: NMJLHand): WindVar[] {
+  const set = new Set<WindVar>();
+  for (const g of hand.groups) {
+    if (g.tile.kind === 'wind' && 'windVar' in g.tile) set.add(g.tile.windVar);
+  }
+  return [...set];
+}
+
+function dragonVarsIn(hand: NMJLHand): DragonVar[] {
+  const set = new Set<DragonVar>();
+  for (const g of hand.groups) {
+    if (g.tile.kind === 'dragon' && 'dragonVar' in g.tile) set.add(g.tile.dragonVar);
+  }
+  return [...set];
+}
+
 function enumerateSuitBindings(vars: SuitVar[]): SuitBinding[] {
   if (vars.length === 0) return [{}];
   const results: SuitBinding[] = [];
@@ -77,10 +103,44 @@ function enumerateSuitBindings(vars: SuitVar[]): SuitBinding[] {
   return results;
 }
 
+function enumerateWindBindings(vars: WindVar[]): WindBinding[] {
+  if (vars.length === 0) return [{}];
+  const results: WindBinding[] = [];
+  const walk = (i: number, cur: WindBinding) => {
+    if (i === vars.length) {
+      results.push({ ...cur });
+      return;
+    }
+    for (const w of ALL_WINDS) {
+      cur[vars[i]!] = w;
+      walk(i + 1, cur);
+    }
+  };
+  walk(0, {});
+  return results;
+}
+
+function enumerateDragonBindings(vars: DragonVar[]): DragonBinding[] {
+  if (vars.length === 0) return [{}];
+  const results: DragonBinding[] = [];
+  const walk = (i: number, cur: DragonBinding) => {
+    if (i === vars.length) {
+      results.push({ ...cur });
+      return;
+    }
+    for (const d of ALL_DRAGONS) {
+      cur[vars[i]!] = d;
+      walk(i + 1, cur);
+    }
+  };
+  walk(0, {});
+  return results;
+}
+
 function suitBindingSatisfies(binding: SuitBinding, hand: NMJLHand): boolean {
   for (const c of hand.suitConstraints ?? []) {
     const values = c.vars.map((v) => binding[v]).filter((x): x is Suit => !!x);
-    if (values.length < c.vars.length) return true; // unbound var: not our job
+    if (values.length < c.vars.length) return true;
     if (c.rule === 'allDifferent') {
       if (new Set(values).size !== values.length) return false;
     } else {
@@ -91,32 +151,24 @@ function suitBindingSatisfies(binding: SuitBinding, hand: NMJLHand): boolean {
 }
 
 function enumerateNumberBindings(vars: NumberVar[], hand: NMJLHand): NumberBinding[] {
-  // Only 'N' is a free variable; N+1, N+2 etc. are derived offsets.
   const usesN = vars.length > 0;
   if (!usesN) return [{}];
-  // Find bounds on N from constraints on N. Default: 1..9.
   let candidates = new Set<number>();
   for (let n = 1; n <= 9; n++) candidates.add(n);
   for (const c of hand.numberConstraints ?? []) {
     if (c.var !== 'N') continue;
     if (c.rule === 'range') {
-      candidates = new Set(
-        [...candidates].filter((n) => n >= c.min && n <= c.max),
-      );
+      candidates = new Set([...candidates].filter((n) => n >= c.min && n <= c.max));
     } else {
-      candidates = new Set(
-        [...candidates].filter((n) => c.values.includes(n)),
-      );
+      candidates = new Set([...candidates].filter((n) => c.values.includes(n)));
     }
   }
-  // Also enforce that any N+k referenced stays in 1..9.
   const maxOffset = vars.reduce((m, v) => {
     if (v === 'N') return m;
     const off = parseInt(v.split('+')[1] ?? '0', 10);
     return Math.max(m, off);
   }, 0);
   candidates = new Set([...candidates].filter((n) => n + maxOffset <= 9));
-
   return [...candidates].sort((a, b) => a - b).map((n) => ({ N: n }));
 }
 
@@ -131,21 +183,27 @@ function materializeIdentity(
   pattern: TilePattern,
   binding: Binding,
 ): ConcreteTileIdentity | null {
-  if (pattern.kind === 'wind') return { kind: 'wind', wind: pattern.wind };
+  if (pattern.kind === 'wind') {
+    if ('wind' in pattern) return { kind: 'wind', wind: pattern.wind };
+    const w = binding.winds[pattern.windVar];
+    if (!w) return null;
+    return { kind: 'wind', wind: w };
+  }
   if (pattern.kind === 'flower') return { kind: 'flower' };
   if (pattern.kind === 'dragon') {
     if ('color' in pattern) return { kind: 'dragon', color: pattern.color };
-    // dragon by suitVar: bams→green, craks→red, dots→white (soap) is a
-    // common NMJL convention.
+    if ('dragonVar' in pattern) {
+      const d = binding.dragons[pattern.dragonVar];
+      if (!d) return null;
+      return { kind: 'dragon', color: d };
+    }
     const suit = binding.suits[pattern.suitVar];
     if (!suit) return null;
     const color: DragonColor =
       suit === 'bams' ? 'green' : suit === 'craks' ? 'red' : 'white';
     return { kind: 'dragon', color };
   }
-  // number
   if ('suit' in pattern) {
-    // fixed suit
     if ('rank' in pattern) return { kind: 'number', suit: pattern.suit, rank: pattern.rank };
     return null;
   }
@@ -158,8 +216,6 @@ function materializeIdentity(
 }
 
 function identityToTile(id: ConcreteTileIdentity): Tile {
-  // Manufacture a "template" tile with a fake id — used only for equality
-  // checks against real tiles via tilesEqual.
   switch (id.kind) {
     case 'number':
       return {
@@ -176,8 +232,6 @@ function identityToTile(id: ConcreteTileIdentity): Tile {
       return { id: '_tpl', kind: 'flower' };
   }
 }
-
-// ---------- concrete matching ----------
 
 const GROUP_SIZE: Record<GroupKind, number> = {
   single: 1,
@@ -211,7 +265,6 @@ function materializeGroups(hand: NMJLHand, binding: Binding): ConcreteGroup[] | 
   return out;
 }
 
-// Does an existing exposure exactly satisfy `group`?
 function exposureSatisfies(ex: Exposure, group: ConcreteGroup): boolean {
   if (ex.kind !== EXPOSURE_KIND_FOR[group.kind]) return false;
   if (ex.tiles.length !== GROUP_SIZE[group.kind]) return false;
@@ -225,12 +278,7 @@ function exposureSatisfies(ex: Exposure, group: ConcreteGroup): boolean {
   return true;
 }
 
-// Try to consume rack tiles to form the group. Uses jokers only where the
-// group allows them.
-function consumeGroupFromRack(
-  rack: Tile[],
-  group: ConcreteGroup,
-): Tile[] | null {
+function consumeGroupFromRack(rack: Tile[], group: ConcreteGroup): Tile[] | null {
   const template = identityToTile(group.identity);
   const need = GROUP_SIZE[group.kind];
   const naturals: Tile[] = [];
@@ -251,7 +299,6 @@ function consumeGroupFromRack(
   }
   const total = naturals.length + jokers.length;
   if (total < need) return null;
-  // Keep only what we need; return the leftover naturals/jokers to rest.
   const used = [...naturals.slice(0, need)];
   const leftover: Tile[] = [
     ...naturals.slice(need),
@@ -263,8 +310,6 @@ function consumeGroupFromRack(
   }
   return [...rest, ...leftover];
 }
-
-// ---------- top-level match ----------
 
 export type MatchResult = {
   hand: NMJLHand;
@@ -279,39 +324,38 @@ export function matchHand(
   if (totalTiles(hand.groups) !== 14) return null;
   if (hand.closed && exposures.length > 0) return null;
 
-  const suitVars = suitVarsIn(hand);
-  const numVars = numberVarsIn(hand);
-  const suitBindings = enumerateSuitBindings(suitVars).filter((b) =>
+  const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
     suitBindingSatisfies(b, hand),
   );
-  const numberBindings = enumerateNumberBindings(numVars, hand);
+  const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand);
+  const windBindings = enumerateWindBindings(windVarsIn(hand));
+  const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand));
 
   for (const s of suitBindings) {
     for (const n of numberBindings) {
-      const binding: Binding = { suits: s, numbers: n };
-      const materialized = materializeGroups(hand, binding);
-      if (!materialized) continue;
-
-      // Try every assignment of existing exposures to distinct groups.
-      const assignment = assignExposures(exposures, materialized);
-      if (!assignment) continue;
-
-      // The remaining (unassigned) groups must be formed from the rack.
-      const remainingGroups = materialized.filter((_, i) => !assignment.usedGroupIdx.has(i));
-      let workingRack = [...rack];
-      let ok = true;
-      for (const g of remainingGroups) {
-        const next = consumeGroupFromRack(workingRack, g);
-        if (!next) {
-          ok = false;
-          break;
+      for (const w of windBindings) {
+        for (const d of dragonBindings) {
+          const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d };
+          const materialized = materializeGroups(hand, binding);
+          if (!materialized) continue;
+          const assignment = assignExposures(exposures, materialized);
+          if (!assignment) continue;
+          const remainingGroups = materialized.filter((_, i) => !assignment.usedGroupIdx.has(i));
+          let workingRack = [...rack];
+          let ok = true;
+          for (const g of remainingGroups) {
+            const next = consumeGroupFromRack(workingRack, g);
+            if (!next) {
+              ok = false;
+              break;
+            }
+            workingRack = next;
+          }
+          if (!ok) continue;
+          if (workingRack.length > 0) continue;
+          return { hand, binding };
         }
-        workingRack = next;
       }
-      if (!ok) continue;
-      // All 14 tile slots claimed — leftover rack should be empty.
-      if (workingRack.length > 0) continue;
-      return { hand, binding };
     }
   }
   return null;
