@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useMahjStore } from '../store';
 import { PlayerRack } from './PlayerRack';
 import { OpponentRack } from './OpponentRack';
@@ -23,6 +24,10 @@ export function Board(): React.ReactElement {
   const eastRackOrder = useMahjStore((s) => s.eastRackOrder);
   const reorderEastRack = useMahjStore((s) => s.reorderEastRack);
   const resetEastRackOrder = useMahjStore((s) => s.resetEastRackOrder);
+
+  // Bumped whenever the human clicks somewhere on the board while they still
+  // owe a draw — replays the "Draw tile" button's attention shake.
+  const [drawNudge, setDrawNudge] = useState(0);
 
   if (phase === 'setup') {
     return (
@@ -54,6 +59,16 @@ export function Board(): React.ReactElement {
   const onEastTile = (tileId: string) => {
     if (isCharleston) toggle(tileId);
     else if (eastIsCurrent && !needsDraw) humanDiscard(tileId);
+    // When a draw is owed, clicking a tile does nothing here; the board-level
+    // handler below nudges the Draw button instead.
+  };
+
+  // While the human owes a draw, any click that isn't the Draw button itself
+  // shakes the Draw button to point them at it.
+  const onBoardClick = (e: React.MouseEvent) => {
+    if (!needsDraw) return;
+    if ((e.target as HTMLElement).closest('[data-draw-btn]')) return;
+    setDrawNudge((n) => n + 1);
   };
 
   const actionSlot = isCharleston ? (
@@ -64,6 +79,7 @@ export function Board(): React.ReactElement {
       needsDraw={needsDraw}
       currentSeat={currentSeat}
       onDraw={humanDraw}
+      nudge={drawNudge}
     />
   ) : null;
 
@@ -72,6 +88,7 @@ export function Board(): React.ReactElement {
       <GameOverBanner />
       <div
         className="board-grid"
+        onClick={onBoardClick}
         style={{
           background: 'var(--felt)',
           borderRadius: 'var(--radius-lg)',
@@ -111,7 +128,10 @@ export function Board(): React.ReactElement {
             player={players.east}
             selectedIds={isCharleston ? selectedIds : []}
             onTileClick={(t) => onEastTile(t.id)}
-            disabled={!isCharleston && !(eastIsCurrent && !needsDraw)}
+            // Enabled on the human's turn even before drawing, so a click on a
+            // tile still registers (and nudges the Draw button) rather than
+            // being swallowed by a disabled button.
+            disabled={!isCharleston && !eastIsCurrent}
             active={eastIsCurrent || isCharleston}
             actionSlot={actionSlot}
             rackOrder={eastRackOrder}
@@ -168,12 +188,27 @@ function PlayActions({
   needsDraw,
   currentSeat,
   onDraw,
+  nudge,
 }: {
   eastIsCurrent: boolean;
   needsDraw: boolean;
   currentSeat: string;
   onDraw: () => void;
+  nudge: number;
 }): React.ReactElement {
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  // Replay the shake each time `nudge` changes (a mis-click elsewhere). Resetting
+  // the animation to 'none' + forcing a reflow restarts it even mid-run.
+  useEffect(() => {
+    if (!nudge) return;
+    const el = btnRef.current;
+    if (!el) return;
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = 'draw-nudge 500ms ease';
+  }, [nudge]);
+
   if (!eastIsCurrent) {
     const name = currentSeat.charAt(0).toUpperCase() + currentSeat.slice(1);
     return (
@@ -185,7 +220,13 @@ function PlayActions({
   if (needsDraw) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button type="button" className="btn btn-gold" onClick={onDraw}>
+        <button
+          ref={btnRef}
+          data-draw-btn="true"
+          type="button"
+          className="btn btn-gold"
+          onClick={onDraw}
+        >
           Draw tile
         </button>
         <span style={{ font: '600 12px var(--font-ui)', color: 'var(--felt-ink-mute)' }}>
