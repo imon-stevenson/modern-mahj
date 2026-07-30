@@ -181,6 +181,74 @@ export function TileView({
     category === "dot" ? INK_BLACK : category === "bam" ? INK_GREEN : INK_RED;
   const cjkSize = px(22);
 
+  // Small tiles (e.g. a large discard pile) can't render the detailed suit
+  // artwork legibly, so below a threshold we draw a simplified face: a big
+  // suit-colored number/letter (plus a small suit letter for numbers).
+  const compact = !faceDown && w < 40;
+  const bigFont = `800 ${Math.max(13, px(24))}px var(--font-ui)`;
+  let compactContent: React.ReactNode = null;
+  if (compact) {
+    if (category === "dot" || category === "bam" || category === "crak") {
+      const suitLetter =
+        category === "bam" ? "B" : category === "crak" ? "C" : "D";
+      compactContent = (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            lineHeight: 1,
+          }}
+        >
+          <span style={{ font: bigFont, color: cornerColor }}>{num}</span>
+          <span
+            style={{
+              font: `700 ${Math.max(7, px(10))}px var(--font-ui)`,
+              color: cornerColor,
+            }}
+          >
+            {suitLetter}
+          </span>
+        </div>
+      );
+    } else if (category === "wind") {
+      compactContent = (
+        <span style={{ font: bigFont, color: INK_BLACK }}>{dir}</span>
+      );
+    } else if (category === "dragon" && dragon === "soap") {
+      const s = Math.max(11, px(18));
+      compactContent = (
+        <div
+          style={{ width: s, height: s, border: `2px solid ${INK_BLACK}`, borderRadius: 2 }}
+        />
+      );
+    } else if (category === "dragon") {
+      compactContent = (
+        <span
+          style={{ font: bigFont, color: dragon === "green" ? INK_GREEN : INK_RED }}
+        >
+          {dragon === "green" ? "G" : "R"}
+        </span>
+      );
+    } else if (category === "flower") {
+      compactContent = (
+        <span
+          style={{ font: `800 ${Math.max(11, px(18))}px var(--font-ui)`, color: INK_GREEN }}
+        >
+          F
+        </span>
+      );
+    } else {
+      compactContent = (
+        <span
+          style={{ font: `800 ${Math.max(9, px(15))}px var(--font-ui)`, color: INK_RED }}
+        >
+          J
+        </span>
+      );
+    }
+  }
+
   const inner = faceDown ? (
     <div
       style={{
@@ -233,7 +301,7 @@ export function TileView({
         }}
       />
 
-      {cornerLabel && (
+      {!compact && cornerLabel && (
         <div
           style={{
             position: "absolute",
@@ -257,6 +325,10 @@ export function TileView({
           justifyContent: "center",
         }}
       >
+        {compact ? (
+          compactContent
+        ) : (
+          <>
         {category === "dot" && (
           <div
             style={{
@@ -265,7 +337,7 @@ export function TileView({
               gridTemplateRows: "repeat(3, 1fr)",
               width: px(30),
               height: px(30),
-              padding: 2,
+              padding: px(2),
             }}
           >
             {(DOT_LAYOUTS[num] || []).map(([row, col, c], i) => (
@@ -295,7 +367,7 @@ export function TileView({
               display: "grid",
               gridTemplateColumns: `repeat(${num <= 3 ? num : 3}, 1fr)`,
               gap: px(3),
-              padding: 4,
+              padding: px(4),
             }}
           >
             {Array.from({ length: num }).map((_, i) => (
@@ -407,6 +479,8 @@ export function TileView({
               JOKER
             </div>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>

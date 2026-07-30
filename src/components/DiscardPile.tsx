@@ -2,15 +2,25 @@ import type { Tile } from "../game/types";
 import { TileView } from "./Tile";
 import { useDiscardFlightStore } from "../store/discardFlight";
 
+// Shrink the discard tiles as the pile grows so every tile stays visible without
+// the pile getting absurdly tall. Never smaller than a still-legible size.
+function discardTileWidth(count: number): number {
+  if (count <= 20) return 42;
+  if (count <= 36) return 36;
+  if (count <= 54) return 30;
+  if (count <= 75) return 26;
+  return 24;
+}
+
 export function DiscardPile({
   discards,
 }: {
   discards: Tile[];
 }): React.ReactElement {
-  const recent = discards.slice(-24);
   // While a discard is mid-air, keep its landing spot invisible so it isn't
   // shown in the pile and flying simultaneously; it "appears" as the clone lands.
   const inFlightTileId = useDiscardFlightStore((s) => s.inFlightTileId);
+  const tileWidth = discardTileWidth(discards.length);
   return (
     <div
       id="discard-pile"
@@ -19,6 +29,7 @@ export function DiscardPile({
         flexDirection: "column",
         alignItems: "center",
         gap: 8,
+        width: "100%",
       }}
     >
       <div
@@ -34,7 +45,7 @@ export function DiscardPile({
           · {discards.length}
         </span>
       </div>
-      {recent.length === 0 ? (
+      {discards.length === 0 ? (
         <div
           style={{
             font: "500 12px var(--font-ui)",
@@ -48,18 +59,18 @@ export function DiscardPile({
         <div
           style={{
             display: "flex",
-            gap: 4,
+            gap: 3,
             flexWrap: "wrap",
-            maxWidth: 380,
+            width: "100%",
             justifyContent: "center",
           }}
         >
-          {recent.map((t) => (
+          {discards.map((t) => (
             <div
               key={t.id}
               style={{ visibility: t.id === inFlightTileId ? "hidden" : "visible" }}
             >
-              <TileView tile={t} width={44} dimmed />
+              <TileView tile={t} width={tileWidth} dimmed />
             </div>
           ))}
         </div>
