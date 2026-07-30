@@ -154,6 +154,17 @@ h3 {
   }
 }
 
+/* Discard "tile flies to the pile" animation. The clone sets --fx/--fy to its
+   delta toward the center pile. Stays opaque; it's cleared once it lands. */
+@keyframes discard-float {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(var(--fx), var(--fy)) scale(0.9);
+  }
+}
+
 /* ---- Board layout ---- */
 
 /* Below 1000px the side columns flex and opponent tile rows may wrap. */

@@ -5,9 +5,12 @@ import { DiscardPile } from './DiscardPile';
 import { CharlestonUI } from './CharlestonUI';
 import { CallPrompt } from './CallPrompt';
 import { CharlestonFlightOverlay } from './CharlestonFlightOverlay';
+import { DiscardFlightOverlay } from './DiscardFlightOverlay';
 import { GameOverBanner } from './GameOverBanner';
+import { useDiscardFlight } from '../hooks/useDiscardFlight';
 
 export function Board(): React.ReactElement {
+  useDiscardFlight();
   const phase = useMahjStore((s) => s.phase);
   const players = useMahjStore((s) => s.players);
   const currentSeat = useMahjStore((s) => s.currentSeat);
@@ -103,7 +106,7 @@ export function Board(): React.ReactElement {
           <DiscardPile discards={discards} />
         </div>
 
-        <div style={{ gridArea: 'east' }}>
+        <div id="seat-east" style={{ gridArea: 'east' }}>
           <PlayerRack
             player={players.east}
             selectedIds={isCharleston ? selectedIds : []}
@@ -120,6 +123,7 @@ export function Board(): React.ReactElement {
 
       <CallPrompt />
       <CharlestonFlightOverlay />
+      <DiscardFlightOverlay />
     </div>
   );
 }

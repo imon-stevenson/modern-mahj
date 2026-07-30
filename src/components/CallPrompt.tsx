@@ -39,28 +39,32 @@ export function CallPrompt(): React.ReactElement | null {
   const discarder = lastAction?.kind === 'discard' ? lastAction.seat.toUpperCase() : '';
 
   return (
+    // Non-blocking: anchored top-center with no full-screen scrim, so the human
+    // can always see (and rearrange) their rack while deciding whether to call.
     <div
-      role="dialog"
-      aria-modal="true"
       style={{
         position: 'fixed',
-        inset: 0,
-        background: 'oklch(0.22 0.05 255 / 0.55)',
-        backdropFilter: 'blur(2px)',
+        top: 74,
+        left: 0,
+        right: 0,
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
         zIndex: 100,
-        padding: 20,
+        padding: '0 20px',
+        pointerEvents: 'none',
       }}
     >
       <div
+        role="dialog"
+        aria-label="Claim discarded tile"
         className="card-surface"
         style={{
           padding: 24,
           minWidth: 340,
           maxWidth: 440,
-          boxShadow: '0 24px 60px oklch(0.22 0.05 255 / 0.35)',
+          pointerEvents: 'auto',
+          boxShadow: '0 24px 60px oklch(0.22 0.05 255 / 0.45)',
+          border: '1px solid var(--gold)',
         }}
       >
         <div className="eyebrow" style={{ marginBottom: 12 }}>

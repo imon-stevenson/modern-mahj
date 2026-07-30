@@ -147,6 +147,11 @@ export function TileView({
   const interactive = !!onClick && !disabled;
 
   const outer: CSSProperties = {
+    // inline-block so the non-interactive <span> variant still respects
+    // width/height. Without this it collapses to near-zero (showing only the
+    // face marks as "dots") whenever a tile isn't a direct flex child — e.g.
+    // inside the drag wrapper, discard pile, or a flight overlay.
+    display: "inline-block",
     position: "relative",
     width: w,
     height: h,
