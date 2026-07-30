@@ -8,7 +8,7 @@ import type {
   Tile,
   Wind,
   WindTile,
-} from './types';
+} from "./types";
 
 // American Mahjong tile set: 152 tiles total.
 //   Numbers  108 = 3 suits × 9 ranks × 4 copies
@@ -17,9 +17,9 @@ import type {
 //   Flowers    8
 //   Jokers     8
 
-const SUITS: readonly Suit[] = ['bams', 'craks', 'dots'] as const;
-const WINDS: readonly Wind[] = ['N', 'E', 'S', 'W'] as const;
-const DRAGONS: readonly DragonColor[] = ['red', 'green', 'white'] as const;
+const SUITS: readonly Suit[] = ["bams", "craks", "dots"] as const;
+const WINDS: readonly Wind[] = ["N", "E", "S", "W"] as const;
+const DRAGONS: readonly DragonColor[] = ["red", "green", "white"] as const;
 const RANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
 export function createFullTileSet(): Tile[] {
@@ -29,9 +29,9 @@ export function createFullTileSet(): Tile[] {
       for (let copy = 0; copy < 4; copy++) {
         const t: NumberTile = {
           id: `n-${suit}-${rank}-${copy}`,
-          kind: 'number',
+          kind: "number",
           suit,
-          rank: rank as NumberTile['rank'],
+          rank: rank as NumberTile["rank"],
         };
         tiles.push(t);
       }
@@ -39,46 +39,59 @@ export function createFullTileSet(): Tile[] {
   }
   for (const wind of WINDS) {
     for (let copy = 0; copy < 4; copy++) {
-      const t: WindTile = { id: `w-${wind}-${copy}`, kind: 'wind', wind };
+      const t: WindTile = { id: `w-${wind}-${copy}`, kind: "wind", wind };
       tiles.push(t);
     }
   }
   for (const color of DRAGONS) {
     for (let copy = 0; copy < 4; copy++) {
-      const t: DragonTile = { id: `d-${color}-${copy}`, kind: 'dragon', color };
+      const t: DragonTile = { id: `d-${color}-${copy}`, kind: "dragon", color };
       tiles.push(t);
     }
   }
   for (let copy = 0; copy < 8; copy++) {
-    const t: FlowerTile = { id: `f-${copy}`, kind: 'flower' };
+    const t: FlowerTile = { id: `f-${copy}`, kind: "flower" };
     tiles.push(t);
   }
   for (let copy = 0; copy < 8; copy++) {
-    const t: JokerTile = { id: `j-${copy}`, kind: 'joker' };
+    const t: JokerTile = { id: `j-${copy}`, kind: "joker" };
     tiles.push(t);
   }
   return tiles;
 }
 
-const SUIT_LABEL: Record<Suit, string> = { bams: 'B', craks: 'C', dots: 'D' };
+const SUIT_LABEL: Record<Suit, string> = {
+  bams: "Bam",
+  craks: "Crak",
+  dots: "Dot",
+};
 const DRAGON_LABEL: Record<DragonColor, string> = {
-  red: 'RD',
-  green: 'GD',
-  white: 'WD',
+  red: "Red Dragon",
+  green: "Green Dragon",
+  white: "Soap",
+};
+const WIND_LABEL: Record<Wind, string> = {
+  N: "North",
+  E: "East",
+  S: "South",
+  W: "West",
 };
 
 export function tileLabel(tile: Tile): string {
   switch (tile.kind) {
-    case 'number':
-      return `${tile.rank}${SUIT_LABEL[tile.suit]}`;
-    case 'wind':
-      return `${tile.wind}W`;
-    case 'dragon':
+    case "number":
+      if (tile.rank === 1 && tile.suit === "bams") {
+        return "Bird Bam";
+      }
+      return `${tile.rank} ${SUIT_LABEL[tile.suit]}`;
+    case "wind":
+      return `${WIND_LABEL[tile.wind]} Wind`;
+    case "dragon":
       return DRAGON_LABEL[tile.color];
-    case 'flower':
-      return 'F';
-    case 'joker':
-      return 'J';
+    case "flower":
+      return "Flower";
+    case "joker":
+      return "Joker";
   }
 }
 
@@ -88,14 +101,16 @@ export function tileLabel(tile: Tile): string {
 export function tilesEqual(a: Tile, b: Tile): boolean {
   if (a.kind !== b.kind) return false;
   switch (a.kind) {
-    case 'number':
-      return a.suit === (b as NumberTile).suit && a.rank === (b as NumberTile).rank;
-    case 'wind':
+    case "number":
+      return (
+        a.suit === (b as NumberTile).suit && a.rank === (b as NumberTile).rank
+      );
+    case "wind":
       return a.wind === (b as WindTile).wind;
-    case 'dragon':
+    case "dragon":
       return a.color === (b as DragonTile).color;
-    case 'flower':
-    case 'joker':
+    case "flower":
+    case "joker":
       return true;
   }
 }

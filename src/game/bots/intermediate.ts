@@ -19,6 +19,15 @@ export const intermediateBot: BotStrategy = {
     if (!best) return false;
     return handCloseness(ctx.rack, best) < 0.5;
   },
+  chooseCourtesyCount(ctx) {
+    // The further along our best hand is, the fewer tiles we want to give away.
+    const [best] = topHands(ctx.rack, ctx.hands, 1);
+    const closeness = best ? handCloseness(ctx.rack, best) : 0;
+    if (closeness < 0.4) return 3;
+    if (closeness < 0.6) return 2;
+    if (closeness < 0.8) return 1;
+    return 0;
+  },
   chooseCourtesyPass(ctx, maxCount) {
     const use = computeUsefulness(ctx.hands);
     const sorted = sortRackByUsefulnessAsc(ctx.rack, use).filter((t) => t.kind !== 'joker');

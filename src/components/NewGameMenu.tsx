@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useMahjStore } from '../store';
-import type { Difficulty } from '../game/types';
+import { useState } from "react";
+import { useMahjStore } from "../store";
+import type { Difficulty } from "../game/types";
 
 export function NewGameMenu(): React.ReactElement {
   const currentDifficulty = useMahjStore((s) => s.difficulty);
@@ -8,17 +8,17 @@ export function NewGameMenu(): React.ReactElement {
   const newGame = useMahjStore((s) => s.newGame);
   const [difficulty, setDifficulty] = useState<Difficulty>(currentDifficulty);
 
-  const isMidGame = phase === 'charleston' || phase === 'play';
+  const isMidGame = phase === "charleston" || phase === "play";
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <label
         style={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           gap: 8,
-          font: '600 13px var(--font-ui)',
-          color: 'var(--ink-soft)',
+          font: "600 13px var(--font-ui)",
+          color: "var(--ink-soft)",
         }}
       >
         Difficulty
@@ -26,15 +26,15 @@ export function NewGameMenu(): React.ReactElement {
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as Difficulty)}
           style={{
-            font: '600 13px var(--font-ui)',
-            padding: '7px 10px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--hairline)',
-            background: 'var(--paper)',
-            color: 'var(--ink)',
+            font: "600 13px var(--font-ui)",
+            padding: "7px 10px",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--hairline)",
+            background: "var(--paper)",
+            color: "var(--ink)",
           }}
         >
-          <option value="beginner">Beginner · no call timer</option>
+          <option value="beginner">Beginner · No call timer</option>
           <option value="intermediate">Intermediate · 5s call timer</option>
           <option value="expert">Expert · 5s call timer</option>
         </select>
@@ -43,11 +43,11 @@ export function NewGameMenu(): React.ReactElement {
         type="button"
         className="btn btn-gold"
         onClick={() => {
-          if (isMidGame && !confirm('Abandon the in-progress game?')) return;
+          if (isMidGame && !confirm("Abandon the in-progress game?")) return;
           newGame(difficulty);
         }}
       >
-        {isMidGame ? 'New Game' : 'Start Game'}
+        {isMidGame ? "New Game" : "Start Game"}
       </button>
     </div>
   );

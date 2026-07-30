@@ -38,6 +38,16 @@ type CharlestonState = {
   selections: Record<Seat, string[]>;
   secondCharlestonAgreed: boolean | null;
   courtesyOffers: Record<Seat, number>;
+  // Bots that declined the optional second Charleston via their strategy.
+  // Populated when the second Charleston is skipped so the UI can explain why.
+  secondDecliners: Seat[];
+  // Courtesy pass negotiation (East ↔ West involves the human):
+  //   'choose'  — human proposes how many tiles (0–3) to exchange
+  //   'confirm' — West offered fewer than the human wanted; confirm/decline
+  //   'select'  — human picks the agreed number of tiles to pass
+  courtesyStep: 'choose' | 'confirm' | 'select' | null;
+  // The finalized East↔West exchange count (min of both offers).
+  courtesyAgreedCount: number;
 };
 
 type LastAction =
@@ -80,6 +90,8 @@ export type MahjState = {
   advanceCharleston: () => void;
   agreeSecondCharleston: (agreed: boolean) => void;
   setCourtesyOffer: (seat: Seat, count: number) => void;
+  proposeCourtesyCount: (count: number) => void;
+  confirmCourtesy: (agree: boolean) => void;
   finishSetup: () => void;
 
   humanDraw: () => void;
@@ -98,6 +110,9 @@ function emptyCharleston(): CharlestonState {
     selections: { east: [], south: [], west: [], north: [] },
     secondCharlestonAgreed: null,
     courtesyOffers: { east: 0, south: 0, west: 0, north: 0 },
+    secondDecliners: [],
+    courtesyStep: null,
+    courtesyAgreedCount: 0,
   };
 }
 
@@ -351,21 +366,30 @@ export const useMahjStore = create<MahjState>()(
         if (!s.charleston.pass) return;
         const isCourtesy = s.charleston.pass === 'courtesy';
         const nextSelections = { ...s.charleston.selections };
+        const nextOffers = { ...s.charleston.courtesyOffers };
         const bot = botFor(s.difficulty);
         for (const seat of SEATS) {
           if (!s.players[seat].isBot) continue;
           const ctx = buildBotCtx(s, seat);
           if (isCourtesy) {
-            const count = s.charleston.courtesyOffers[seat];
+            // Each bot decides how many tiles (0–3) it will offer. The pair's
+            // actual count is the min of the two offers (see advanceCharleston),
+            // so we must record the bot's own offer — not leave it at 0.
+            const count = bot.chooseCourtesyCount(ctx);
             const picks = bot.chooseCourtesyPass(ctx, count);
-            nextSelections[seat] = picks.slice(0, count).map((t) => t.id);
+            nextSelections[seat] = picks.map((t) => t.id);
+            nextOffers[seat] = picks.length;
           } else {
             const picks = bot.chooseCharlestonPass(ctx);
             nextSelections[seat] = picks.map((t) => t.id);
           }
         }
         set({
-          charleston: { ...s.charleston, selections: nextSelections },
+          charleston: {
+            ...s.charleston,
+            selections: nextSelections,
+            courtesyOffers: nextOffers,
+          },
         });
       },
 
@@ -405,16 +429,18 @@ export const useMahjStore = create<MahjState>()(
         if (nextPassId === 'secondLeft') {
           const bots = SEATS.filter((seat) => nextPlayers[seat].isBot);
           const bot = botFor(s.difficulty);
-          const votes = bots.map((seat) =>
-            bot.wantsSecondCharleston(buildBotCtx({ ...s, players: nextPlayers }, seat)),
+          // A second Charleston needs unanimous consent — record any bot that
+          // declines so the human is told who (and that it's being skipped).
+          const decliners = bots.filter(
+            (seat) => !bot.wantsSecondCharleston(buildBotCtx({ ...s, players: nextPlayers }, seat)),
           );
-          const allBotsAgree = votes.every((v) => v);
           set({
             players: nextPlayers,
             charleston: {
               ...emptyCharleston(),
               pass: null,
-              secondCharlestonAgreed: allBotsAgree ? null : false,
+              secondCharlestonAgreed: decliners.length === 0 ? null : false,
+              secondDecliners: decliners,
             },
           });
           return;
@@ -422,7 +448,11 @@ export const useMahjStore = create<MahjState>()(
 
         set({
           players: nextPlayers,
-          charleston: { ...emptyCharleston(), pass: nextPassId },
+          charleston: {
+            ...emptyCharleston(),
+            pass: nextPassId,
+            courtesyStep: nextPassId === 'courtesy' ? 'choose' : null,
+          },
         });
         if (nextPassId === null) get().finishSetup();
       },
@@ -434,6 +464,7 @@ export const useMahjStore = create<MahjState>()(
               ...emptyCharleston(),
               pass: 'courtesy',
               secondCharlestonAgreed: false,
+              courtesyStep: 'choose',
             },
           });
         } else {
@@ -456,6 +487,75 @@ export const useMahjStore = create<MahjState>()(
             courtesyOffers: { ...s.charleston.courtesyOffers, [seat]: clamped },
           },
         });
+      },
+
+      proposeCourtesyCount(count) {
+        const s0 = get();
+        if (s0.charleston.pass !== 'courtesy') return;
+        const clamped = Math.max(0, Math.min(3, count));
+        // Record the human's offer, then let every bot choose its own offer.
+        set({
+          charleston: {
+            ...s0.charleston,
+            courtesyOffers: { ...s0.charleston.courtesyOffers, east: clamped },
+          },
+        });
+        get().runBotCharlestonForAll();
+        const s = get();
+        const westOffer = s.charleston.courtesyOffers.west;
+        const agreed = Math.min(clamped, westOffer);
+        if (clamped === 0) {
+          // Human opts out entirely — East passes nothing; finish the courtesy.
+          set({
+            charleston: {
+              ...s.charleston,
+              courtesyStep: null,
+              selections: { ...s.charleston.selections, east: [] },
+            },
+          });
+          get().advanceCharleston();
+          return;
+        }
+        if (westOffer < clamped) {
+          // West can't match the human's offer — ask them to confirm/decline.
+          set({
+            charleston: { ...s.charleston, courtesyStep: 'confirm', courtesyAgreedCount: agreed },
+          });
+        } else {
+          set({
+            charleston: {
+              ...s.charleston,
+              courtesyStep: 'select',
+              courtesyAgreedCount: agreed,
+              selections: { ...s.charleston.selections, east: [] },
+            },
+          });
+        }
+      },
+
+      confirmCourtesy(agree) {
+        const s = get();
+        if (s.charleston.pass !== 'courtesy') return;
+        if (agree && s.charleston.courtesyAgreedCount > 0) {
+          set({
+            charleston: {
+              ...s.charleston,
+              courtesyStep: 'select',
+              selections: { ...s.charleston.selections, east: [] },
+            },
+          });
+          return;
+        }
+        // Declined (or nothing to exchange) — East passes no tiles, then finish.
+        set({
+          charleston: {
+            ...s.charleston,
+            courtesyStep: null,
+            courtesyOffers: { ...s.charleston.courtesyOffers, east: 0 },
+            selections: { ...s.charleston.selections, east: [] },
+          },
+        });
+        get().advanceCharleston();
       },
 
       finishSetup() {

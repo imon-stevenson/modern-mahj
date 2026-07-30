@@ -63,6 +63,19 @@ describe('beginner bot', () => {
     expect(beginnerBot.wantsJokerSwap(ctx())).toBeNull();
   });
 
+  it('offers up to maxCount (non-joker) tiles for the courtesy pass', () => {
+    const rack = [joker('j0'), n('bams', 1, 'a'), n('bams', 2, 'b'), n('craks', 3, 'c')];
+    const picks = beginnerBot.chooseCourtesyPass(ctx({ rack }), 3);
+    expect(picks).toHaveLength(3);
+    expect(picks.every((t) => t.kind !== 'joker')).toBe(true);
+  });
+
+  it('picks a courtesy count in [0, 3]', () => {
+    const count = beginnerBot.chooseCourtesyCount(ctx());
+    expect(count).toBeGreaterThanOrEqual(0);
+    expect(count).toBeLessThanOrEqual(3);
+  });
+
   it('discards a non-joker if any are available', () => {
     const rack = [joker('j0'), n('bams', 5, 'a')];
     const t = beginnerBot.chooseDiscard(ctx({ rack }));
@@ -92,6 +105,38 @@ describe('intermediate bot', () => {
       ['pung'],
     );
     expect(call).toBe('mahjong');
+  });
+
+  it('offers its least-useful tiles for the courtesy pass, never a joker', () => {
+    const rack = [
+      joker('j0'),
+      flower('f0'),
+      flower('f1'),
+      n('craks', 1, 'wasted'),
+    ];
+    const picks = intermediateBot.chooseCourtesyPass(ctx({ rack }), 3);
+    expect(picks.length).toBeGreaterThan(0);
+    expect(picks.every((t) => t.kind !== 'joker')).toBe(true);
+    // The useless craks tile (not in the winning hand) should be offered first.
+    expect(picks[0]!.id).toBe('wasted');
+  });
+
+  it('offers fewer courtesy tiles as its hand fills up', () => {
+    // A rack with all four flowers + three of each needed kong is far along the
+    // winsHand target, so the bot should be reluctant to give tiles away.
+    const strongRack: Tile[] = [
+      flower('f0'), flower('f1'),
+      n('bams', 2, 'a'), n('bams', 2, 'b'), n('bams', 2, 'c'), n('bams', 2, 'd'),
+      n('bams', 6, 'e'), n('bams', 6, 'f'), n('bams', 6, 'g'), n('bams', 6, 'h'),
+      n('bams', 8, 'i'), n('bams', 8, 'j'), n('bams', 8, 'k'),
+    ];
+    const weakRack: Tile[] = [
+      n('craks', 1, 'a'), n('craks', 3, 'b'), n('dots', 5, 'c'), n('dots', 7, 'd'),
+    ];
+    const strong = intermediateBot.chooseCourtesyCount(ctx({ rack: strongRack }));
+    const weak = intermediateBot.chooseCourtesyCount(ctx({ rack: weakRack }));
+    expect(strong).toBeLessThan(weak);
+    expect(weak).toBe(3);
   });
 
   it('offers a joker swap when it holds the matching natural', () => {

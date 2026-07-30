@@ -18,6 +18,8 @@ export type BotCtx = {
 export interface BotStrategy {
   chooseCharlestonPass(ctx: BotCtx): [Tile, Tile, Tile];
   wantsSecondCharleston(ctx: BotCtx): boolean;
+  // How many tiles (0–3) this bot is willing to exchange in the courtesy pass.
+  chooseCourtesyCount(ctx: BotCtx): number;
   chooseCourtesyPass(ctx: BotCtx, maxCount: number): Tile[];
   chooseDiscard(ctx: BotCtx): Tile;
   // Called after another player's discard. Return the highest-value call the

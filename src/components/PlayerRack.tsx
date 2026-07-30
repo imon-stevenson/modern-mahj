@@ -145,6 +145,7 @@ export function PlayerRack({
         style={{
           display: "flex",
           alignItems: "flex-end",
+          justifyContent: "center",
           gap: 16,
           flexWrap: "wrap",
         }}

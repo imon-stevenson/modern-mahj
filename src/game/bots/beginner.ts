@@ -23,8 +23,14 @@ export const beginnerBot: BotStrategy = {
   wantsSecondCharleston() {
     return false;
   },
-  chooseCourtesyPass() {
-    return [];
+  chooseCourtesyCount(ctx) {
+    // Beginner offers a random number of tiles (0–3).
+    return ctx.rng.nextInt(4);
+  },
+  chooseCourtesyPass(ctx, maxCount) {
+    // Offer up to `maxCount` random (non-joker) tiles for the courtesy pass.
+    const nonJokers = ctx.rack.filter((t) => t.kind !== 'joker');
+    return pickN(nonJokers, Math.max(0, maxCount), ctx.rng);
   },
   chooseDiscard(ctx) {
     const options = ctx.rack.filter((t) => t.kind !== 'joker');
