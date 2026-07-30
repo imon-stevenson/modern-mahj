@@ -59,7 +59,7 @@ export function DiscardPile({
               key={t.id}
               style={{ visibility: t.id === inFlightTileId ? "hidden" : "visible" }}
             >
-              <TileView tile={t} width={38} dimmed />
+              <TileView tile={t} width={44} dimmed />
             </div>
           ))}
         </div>

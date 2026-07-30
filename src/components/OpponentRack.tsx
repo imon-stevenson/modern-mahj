@@ -105,7 +105,7 @@ export function OpponentRack({
         ))}
       </div>
 
-      <ExposureRow exposures={player.exposures} tileWidth={34} />
+      <ExposureRow exposures={player.exposures} tileWidth={44} />
     </div>
   );
 }

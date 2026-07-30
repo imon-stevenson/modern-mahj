@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type {
   AwaitingCall,
   CallKind,
@@ -10,26 +10,26 @@ import type {
   PlayerState,
   Seat,
   Tile,
-} from '../game/types';
-import { SEATS } from '../game/types';
-import { createRng } from '../game/rng';
-import { dealFromWall, drawFromWall } from '../game/wall';
-import { applyPass, nextPass } from '../game/charleston';
-import { botFor } from '../game/bots';
-import type { BotCtx } from '../game/bots';
-import type { NMJLHand } from '../game/hands/schema';
-import { allHands } from '../game/hands/loader';
-import { matchAgainstAll } from '../game/hands/match';
-import { buildExposure } from '../game/exposure';
+} from "../game/types";
+import { SEATS } from "../game/types";
+import { createRng } from "../game/rng";
+import { dealFromWall, drawFromWall } from "../game/wall";
+import { applyPass, nextPass } from "../game/charleston";
+import { botFor } from "../game/bots";
+import type { BotCtx } from "../game/bots";
+import type { NMJLHand } from "../game/hands/schema";
+import { allHands } from "../game/hands/loader";
+import { matchAgainstAll } from "../game/hands/match";
+import { buildExposure } from "../game/exposure";
 import {
   nextSeat,
   possibleCallsForDiscard,
   removeTileById,
   resolveCallPriority,
   tilesForCall,
-} from '../game/turn';
-import { applyJokerSwap, validateJokerSwap } from '../game/jokerSwap';
-import type { JokerSwapOffer } from '../game/jokerSwap';
+} from "../game/turn";
+import { applyJokerSwap, validateJokerSwap } from "../game/jokerSwap";
+import type { JokerSwapOffer } from "../game/jokerSwap";
 
 // ---------- state shape ----------
 
@@ -45,16 +45,16 @@ type CharlestonState = {
   //   'choose'  — human proposes how many tiles (0–3) to exchange
   //   'confirm' — West offered fewer than the human wanted; confirm/decline
   //   'select'  — human picks the agreed number of tiles to pass
-  courtesyStep: 'choose' | 'confirm' | 'select' | null;
+  courtesyStep: "choose" | "confirm" | "select" | null;
   // The finalized East↔West exchange count (min of both offers).
   courtesyAgreedCount: number;
 };
 
 type LastAction =
-  | { kind: 'discard'; seat: Seat; tileId: string }
-  | { kind: 'call'; seat: Seat; call: CallKind; tileId: string }
-  | { kind: 'draw'; seat: Seat; tileId: string | null }
-  | { kind: 'jokerSwap'; seat: Seat }
+  | { kind: "discard"; seat: Seat; tileId: string }
+  | { kind: "call"; seat: Seat; call: CallKind; tileId: string }
+  | { kind: "draw"; seat: Seat; tileId: string | null }
+  | { kind: "jokerSwap"; seat: Seat }
   | null;
 
 export type MahjState = {
@@ -117,11 +117,14 @@ function emptyCharleston(): CharlestonState {
 }
 
 function callTimerForDifficulty(d: Difficulty): number {
-  return d === 'beginner' ? 0 : 5000;
+  return d === "beginner" ? 0 : 15000; // 0 interpreted as unlimited time
 }
 
 function tileTotal(player: PlayerState): number {
-  return player.rack.length + player.exposures.reduce((s, e) => s + e.tiles.length, 0);
+  return (
+    player.rack.length +
+    player.exposures.reduce((s, e) => s + e.tiles.length, 0)
+  );
 }
 
 function seatsExcept(seat: Seat): Seat[] {
@@ -165,7 +168,9 @@ function buildBotCtx(state: MahjState, seat: Seat, rngOffset = 0): BotCtx {
     allExposures,
     discardPile: state.discards,
     hands: state.loadHandsSafe(),
-    rng: createRng(state.rngSeed + rngOffset + state.discards.length + seat.length),
+    rng: createRng(
+      state.rngSeed + rngOffset + state.discards.length + seat.length,
+    ),
   };
 }
 
@@ -176,9 +181,13 @@ function applyCall(
   kind: CallKind,
   tile: Tile,
 ): Partial<MahjState> {
-  if (kind === 'mahjong') {
+  if (kind === "mahjong") {
     const trial = [...state.players[caller].rack, tile];
-    const match = matchAgainstAll(trial, state.players[caller].exposures, safeHands());
+    const match = matchAgainstAll(
+      trial,
+      state.players[caller].exposures,
+      safeHands(),
+    );
     const nextPlayers: Record<Seat, PlayerState> = {
       ...state.players,
       [caller]: { ...state.players[caller], rack: trial },
@@ -186,16 +195,18 @@ function applyCall(
     return {
       players: nextPlayers,
       awaitingCall: null,
-      phase: 'ended',
+      phase: "ended",
       winner: caller,
       winningHand: match?.hand ?? null,
-      lastAction: { kind: 'call', seat: caller, call: kind, tileId: tile.id },
+      lastAction: { kind: "call", seat: caller, call: kind, tileId: tile.id },
       discards: state.discards.filter((t) => t.id !== tile.id),
     };
   }
   const t = tilesForCall(kind, tile, state.players[caller].rack);
   const removeIds = new Set(t.fromRack.map((x) => x.id));
-  const newRack = state.players[caller].rack.filter((x) => !removeIds.has(x.id));
+  const newRack = state.players[caller].rack.filter(
+    (x) => !removeIds.has(x.id),
+  );
   const exposure = buildExposure(kind, [tile, ...t.fromRack], tile);
   const nextPlayers: Record<Seat, PlayerState> = {
     ...state.players,
@@ -209,7 +220,7 @@ function applyCall(
     players: nextPlayers,
     awaitingCall: null,
     currentSeat: caller,
-    lastAction: { kind: 'call', seat: caller, call: kind, tileId: tile.id },
+    lastAction: { kind: "call", seat: caller, call: kind, tileId: tile.id },
     discards: state.discards.filter((t2) => t2.id !== tile.id),
   };
 }
@@ -217,7 +228,10 @@ function applyCall(
 // Compute the winning bot call (if any) among the seats currently allowed to
 // claim, and return an updated state slice reflecting either the winning call
 // or turn advancement. Does NOT handle human input.
-function resolveBotCalls(state: MahjState, discarder: Seat): Partial<MahjState> {
+function resolveBotCalls(
+  state: MahjState,
+  discarder: Seat,
+): Partial<MahjState> {
   if (!state.awaitingCall) return {};
   const bot = botFor(state.difficulty);
   const requests: { seat: Seat; kind: CallKind }[] = [];
@@ -227,7 +241,7 @@ function resolveBotCalls(state: MahjState, discarder: Seat): Partial<MahjState> 
     if (!state.players[seat].isBot) continue;
     const trial = [...state.players[seat].rack, tile];
     if (matchAgainstAll(trial, state.players[seat].exposures, hands)) {
-      requests.push({ seat, kind: 'mahjong' });
+      requests.push({ seat, kind: "mahjong" });
       continue;
     }
     const available = possibleCallsForDiscard(state.players[seat].rack, tile);
@@ -243,27 +257,30 @@ function resolveBotCalls(state: MahjState, discarder: Seat): Partial<MahjState> 
 
 // After a seat commits a discard, decide whether we need to wait on the
 // human, resolve bot calls immediately, or just pass the turn.
-function afterDiscard(
-  state: MahjState,
-  discarder: Seat,
-): Partial<MahjState> {
+function afterDiscard(state: MahjState, discarder: Seat): Partial<MahjState> {
   const tile = state.discards[state.discards.length - 1]!;
   const hands = safeHands();
   const callable = callableSeats(state.players, discarder, tile, hands);
   if (callable.length === 0) {
     return { awaitingCall: null, currentSeat: nextSeat(discarder) };
   }
-  const humanCanCall = callable.includes('east');
+  const humanCanCall = callable.includes("east");
   const awaiting: AwaitingCall = {
     discardId: tile.id,
     discardTile: tile,
     callableBy: callable,
-    deadline: state.callTimerMs > 0 && humanCanCall ? Date.now() + state.callTimerMs : null,
+    deadline:
+      state.callTimerMs > 0 && humanCanCall
+        ? Date.now() + state.callTimerMs
+        : null,
   };
   const withAwaiting: MahjState = { ...state, awaitingCall: awaiting };
   if (!humanCanCall) {
     // No human input needed — decide bot calls now.
-    return { awaitingCall: awaiting, ...resolveBotCalls(withAwaiting, discarder) };
+    return {
+      awaitingCall: awaiting,
+      ...resolveBotCalls(withAwaiting, discarder),
+    };
   }
   return { awaitingCall: awaiting };
 }
@@ -273,21 +290,21 @@ function afterDiscard(
 export const useMahjStore = create<MahjState>()(
   persist(
     (set, get) => ({
-      difficulty: 'intermediate',
+      difficulty: "intermediate",
       botDelayMs: 800,
-      callTimerMs: callTimerForDifficulty('intermediate'),
+      callTimerMs: callTimerForDifficulty("intermediate"),
       rngSeed: 1,
 
-      phase: 'setup',
+      phase: "setup",
       wall: [],
       players: {
-        east: { seat: 'east', rack: [], exposures: [], isBot: false },
-        south: { seat: 'south', rack: [], exposures: [], isBot: true },
-        west: { seat: 'west', rack: [], exposures: [], isBot: true },
-        north: { seat: 'north', rack: [], exposures: [], isBot: true },
+        east: { seat: "east", rack: [], exposures: [], isBot: false },
+        south: { seat: "south", rack: [], exposures: [], isBot: true },
+        west: { seat: "west", rack: [], exposures: [], isBot: true },
+        north: { seat: "north", rack: [], exposures: [], isBot: true },
       },
       discards: [],
-      currentSeat: 'east',
+      currentSeat: "east",
       awaitingCall: null,
       charleston: emptyCharleston(),
       winner: null,
@@ -300,18 +317,18 @@ export const useMahjStore = create<MahjState>()(
       newGame(difficulty) {
         const seed = Math.floor(Math.random() * 0x7fffffff);
         const rng = createRng(seed);
-        const { wall, players } = dealFromWall(rng, (seat) => seat !== 'east');
+        const { wall, players } = dealFromWall(rng, (seat) => seat !== "east");
         set({
           difficulty,
           callTimerMs: callTimerForDifficulty(difficulty),
           rngSeed: seed,
-          phase: 'charleston',
+          phase: "charleston",
           wall,
           players,
           discards: [],
-          currentSeat: 'east',
+          currentSeat: "east",
           awaitingCall: null,
-          charleston: { ...emptyCharleston(), pass: 'firstRight' },
+          charleston: { ...emptyCharleston(), pass: "firstRight" },
           winner: null,
           winningHand: null,
           lastAction: null,
@@ -364,7 +381,7 @@ export const useMahjStore = create<MahjState>()(
       runBotCharlestonForAll() {
         const s = get();
         if (!s.charleston.pass) return;
-        const isCourtesy = s.charleston.pass === 'courtesy';
+        const isCourtesy = s.charleston.pass === "courtesy";
         const nextSelections = { ...s.charleston.selections };
         const nextOffers = { ...s.charleston.courtesyOffers };
         const bot = botFor(s.difficulty);
@@ -406,7 +423,7 @@ export const useMahjStore = create<MahjState>()(
         ) as Record<Seat, Tile[]>;
 
         let toApply = selectionTiles;
-        if (pass === 'courtesy') {
+        if (pass === "courtesy") {
           const eastWest = Math.min(
             s.charleston.courtesyOffers.east,
             s.charleston.courtesyOffers.west,
@@ -426,13 +443,16 @@ export const useMahjStore = create<MahjState>()(
         const nextPlayers = applyPass(s.players, pass, toApply);
         const nextPassId = nextPass(pass);
 
-        if (nextPassId === 'secondLeft') {
+        if (nextPassId === "secondLeft") {
           const bots = SEATS.filter((seat) => nextPlayers[seat].isBot);
           const bot = botFor(s.difficulty);
           // A second Charleston needs unanimous consent — record any bot that
           // declines so the human is told who (and that it's being skipped).
           const decliners = bots.filter(
-            (seat) => !bot.wantsSecondCharleston(buildBotCtx({ ...s, players: nextPlayers }, seat)),
+            (seat) =>
+              !bot.wantsSecondCharleston(
+                buildBotCtx({ ...s, players: nextPlayers }, seat),
+              ),
           );
           set({
             players: nextPlayers,
@@ -451,7 +471,7 @@ export const useMahjStore = create<MahjState>()(
           charleston: {
             ...emptyCharleston(),
             pass: nextPassId,
-            courtesyStep: nextPassId === 'courtesy' ? 'choose' : null,
+            courtesyStep: nextPassId === "courtesy" ? "choose" : null,
           },
         });
         if (nextPassId === null) get().finishSetup();
@@ -462,16 +482,16 @@ export const useMahjStore = create<MahjState>()(
           set({
             charleston: {
               ...emptyCharleston(),
-              pass: 'courtesy',
+              pass: "courtesy",
               secondCharlestonAgreed: false,
-              courtesyStep: 'choose',
+              courtesyStep: "choose",
             },
           });
         } else {
           set({
             charleston: {
               ...emptyCharleston(),
-              pass: 'secondLeft',
+              pass: "secondLeft",
               secondCharlestonAgreed: true,
             },
           });
@@ -491,7 +511,7 @@ export const useMahjStore = create<MahjState>()(
 
       proposeCourtesyCount(count) {
         const s0 = get();
-        if (s0.charleston.pass !== 'courtesy') return;
+        if (s0.charleston.pass !== "courtesy") return;
         const clamped = Math.max(0, Math.min(3, count));
         // Record the human's offer, then let every bot choose its own offer.
         set({
@@ -519,13 +539,17 @@ export const useMahjStore = create<MahjState>()(
         if (westOffer < clamped) {
           // West can't match the human's offer — ask them to confirm/decline.
           set({
-            charleston: { ...s.charleston, courtesyStep: 'confirm', courtesyAgreedCount: agreed },
+            charleston: {
+              ...s.charleston,
+              courtesyStep: "confirm",
+              courtesyAgreedCount: agreed,
+            },
           });
         } else {
           set({
             charleston: {
               ...s.charleston,
-              courtesyStep: 'select',
+              courtesyStep: "select",
               courtesyAgreedCount: agreed,
               selections: { ...s.charleston.selections, east: [] },
             },
@@ -535,12 +559,12 @@ export const useMahjStore = create<MahjState>()(
 
       confirmCourtesy(agree) {
         const s = get();
-        if (s.charleston.pass !== 'courtesy') return;
+        if (s.charleston.pass !== "courtesy") return;
         if (agree && s.charleston.courtesyAgreedCount > 0) {
           set({
             charleston: {
               ...s.charleston,
-              courtesyStep: 'select',
+              courtesyStep: "select",
               selections: { ...s.charleston.selections, east: [] },
             },
           });
@@ -559,37 +583,42 @@ export const useMahjStore = create<MahjState>()(
       },
 
       finishSetup() {
-        set({ phase: 'play', currentSeat: 'east' });
+        set({ phase: "play", currentSeat: "east" });
       },
 
       humanDraw() {
         const s = get();
-        if (s.phase !== 'play' || s.currentSeat !== 'east') return;
+        if (s.phase !== "play" || s.currentSeat !== "east") return;
         if (s.awaitingCall) return;
         // Only draw when holding 13 tiles; a call leaves East with 14 already.
         if (tileTotal(s.players.east) !== 13) return;
         const { tile, wall } = drawFromWall(s.wall);
         if (!tile) {
-          set({ phase: 'ended', winner: null, winningHand: null });
+          set({ phase: "ended", winner: null, winningHand: null });
           return;
         }
         const players: Record<Seat, PlayerState> = {
           ...s.players,
           east: { ...s.players.east, rack: [...s.players.east.rack, tile] },
         };
-        set({ wall, players, lastAction: { kind: 'draw', seat: 'east', tileId: tile.id } });
+        set({
+          wall,
+          players,
+          lastAction: { kind: "draw", seat: "east", tileId: tile.id },
+        });
         const s1 = get();
         const match = matchAgainstAll(
           s1.players.east.rack,
           s1.players.east.exposures,
           safeHands(),
         );
-        if (match) set({ phase: 'ended', winner: 'east', winningHand: match.hand });
+        if (match)
+          set({ phase: "ended", winner: "east", winningHand: match.hand });
       },
 
       humanDiscard(tileId) {
         const s = get();
-        if (s.phase !== 'play' || s.currentSeat !== 'east') return;
+        if (s.phase !== "play" || s.currentSeat !== "east") return;
         const rack = s.players.east.rack;
         const tile = rack.find((t) => t.id === tileId);
         if (!tile) return;
@@ -601,16 +630,16 @@ export const useMahjStore = create<MahjState>()(
           ...s,
           players,
           discards: [...s.discards, tile],
-          lastAction: { kind: 'discard', seat: 'east', tileId },
+          lastAction: { kind: "discard", seat: "east", tileId },
         };
-        set({ ...withDiscard, ...afterDiscard(withDiscard, 'east') });
+        set({ ...withDiscard, ...afterDiscard(withDiscard, "east") });
       },
 
       passCall() {
         const s = get();
         if (!s.awaitingCall) return;
         const discarder =
-          s.lastAction?.kind === 'discard' ? s.lastAction.seat : 'east';
+          s.lastAction?.kind === "discard" ? s.lastAction.seat : "east";
         // Human passed — see if any bot still wants to call, then apply / pass.
         set(resolveBotCalls(s, discarder));
       },
@@ -618,8 +647,8 @@ export const useMahjStore = create<MahjState>()(
       callWithHuman(kind) {
         const s = get();
         if (!s.awaitingCall) return;
-        if (!s.awaitingCall.callableBy.includes('east')) return;
-        set(applyCall(s, 'east', kind, s.awaitingCall.discardTile));
+        if (!s.awaitingCall.callableBy.includes("east")) return;
+        set(applyCall(s, "east", kind, s.awaitingCall.discardTile));
       },
 
       offerJokerSwap(offer) {
@@ -628,13 +657,13 @@ export const useMahjStore = create<MahjState>()(
         if (!v.ok) return;
         set({
           players: applyJokerSwap(s.players, offer),
-          lastAction: { kind: 'jokerSwap', seat: offer.offeringSeat },
+          lastAction: { kind: "jokerSwap", seat: offer.offeringSeat },
         });
       },
 
       runBotTurn(seat) {
         const s0 = get();
-        if (s0.phase !== 'play') return;
+        if (s0.phase !== "play") return;
         if (s0.currentSeat !== seat) return;
         if (!s0.players[seat].isBot) return;
         if (s0.awaitingCall) return;
@@ -653,17 +682,20 @@ export const useMahjStore = create<MahjState>()(
         if (total === 13) {
           const { tile, wall } = drawFromWall(s1.wall);
           if (!tile) {
-            set({ phase: 'ended', winner: null, winningHand: null });
+            set({ phase: "ended", winner: null, winningHand: null });
             return;
           }
           const players: Record<Seat, PlayerState> = {
             ...s1.players,
-            [seat]: { ...s1.players[seat], rack: [...s1.players[seat].rack, tile] },
+            [seat]: {
+              ...s1.players[seat],
+              rack: [...s1.players[seat].rack, tile],
+            },
           };
           set({
             wall,
             players,
-            lastAction: { kind: 'draw', seat, tileId: tile.id },
+            lastAction: { kind: "draw", seat, tileId: tile.id },
           });
           s1 = get();
           // Self-Mahjong?
@@ -673,7 +705,7 @@ export const useMahjStore = create<MahjState>()(
             safeHands(),
           );
           if (match) {
-            set({ phase: 'ended', winner: seat, winningHand: match.hand });
+            set({ phase: "ended", winner: seat, winningHand: match.hand });
             return;
           }
         }
@@ -684,19 +716,22 @@ export const useMahjStore = create<MahjState>()(
         const s2 = get();
         const players2: Record<Seat, PlayerState> = {
           ...s2.players,
-          [seat]: { ...s2.players[seat], rack: removeTileById(s2.players[seat].rack, discard.id) },
+          [seat]: {
+            ...s2.players[seat],
+            rack: removeTileById(s2.players[seat].rack, discard.id),
+          },
         };
         const withDiscard: MahjState = {
           ...s2,
           players: players2,
           discards: [...s2.discards, discard],
-          lastAction: { kind: 'discard', seat, tileId: discard.id },
+          lastAction: { kind: "discard", seat, tileId: discard.id },
         };
         set({ ...withDiscard, ...afterDiscard(withDiscard, seat) });
       },
     }),
     {
-      name: 'mahj-v1',
+      name: "mahj-v1",
       version: 1,
       // Only persist data fields, not the action closures.
       partialize: (state) => ({
