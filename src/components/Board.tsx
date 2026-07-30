@@ -16,6 +16,9 @@ export function Board(): React.ReactElement {
   const toggle = useMahjStore((s) => s.toggleTileSelection);
   const humanDiscard = useMahjStore((s) => s.humanDiscard);
   const humanDraw = useMahjStore((s) => s.humanDraw);
+  const eastRackOrder = useMahjStore((s) => s.eastRackOrder);
+  const reorderEastRack = useMahjStore((s) => s.reorderEastRack);
+  const resetEastRackOrder = useMahjStore((s) => s.resetEastRackOrder);
 
   if (phase === 'setup') {
     return (
@@ -64,22 +67,18 @@ export function Board(): React.ReactElement {
     <div>
       <GameOverBanner />
       <div
+        className="board-grid"
         style={{
           background: 'var(--felt)',
           borderRadius: 'var(--radius-lg)',
           padding: 24,
-          display: 'grid',
-          gap: 18,
-          gridTemplateColumns: 'minmax(150px, 1fr) 2.3fr minmax(150px, 1fr)',
-          gridTemplateAreas: `
-            "west   west   west"
-            "north  center south"
-            "east   east   east"
-          `,
         }}
       >
-        <div style={{ gridArea: 'west' }}>
-          <OpponentRack seat="west" player={players.west} isCurrent={currentSeat === 'west'} />
+        <div style={{ gridArea: 'west', display: 'flex', justifyContent: 'center' }}>
+          {/* Centered box with open felt on either side, matching N/S width. */}
+          <div style={{ width: '100%', maxWidth: 330 }}>
+            <OpponentRack seat="west" player={players.west} isCurrent={currentSeat === 'west'} centerTiles />
+          </div>
         </div>
         <div style={{ gridArea: 'north' }}>
           <OpponentRack seat="north" player={players.north} isCurrent={currentSeat === 'north'} />
@@ -111,6 +110,9 @@ export function Board(): React.ReactElement {
             disabled={!isCharleston && !(eastIsCurrent && !needsDraw)}
             active={eastIsCurrent || isCharleston}
             actionSlot={actionSlot}
+            rackOrder={eastRackOrder}
+            onReorder={reorderEastRack}
+            onResetOrder={resetEastRackOrder}
           />
         </div>
       </div>

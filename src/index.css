@@ -140,3 +140,34 @@ h3 {
   border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
 }
+
+/* ---- Board layout ---- */
+
+/* Below 1000px the side columns flex and opponent tile rows may wrap. */
+.board-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(150px, 1fr) 2.3fr minmax(150px, 1fr);
+  grid-template-areas:
+    'west   west   west'
+    'north  center south'
+    'east   east   east';
+}
+
+/* Opponent hidden-tile row: wraps by default, single straight line ≥1000px. */
+.opp-tiles {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+/* At ≥1000px the side racks get fixed widths wide enough for 13 tiles on one
+   line, and the tile rows are pinned to a single row. */
+@media (min-width: 1000px) {
+  .board-grid {
+    grid-template-columns: 330px minmax(0, 1fr) 330px;
+  }
+  .opp-tiles {
+    flex-wrap: nowrap;
+  }
+}

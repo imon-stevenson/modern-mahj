@@ -1,7 +1,8 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type DragEvent, type ReactNode } from 'react';
 import type { PlayerState, Tile } from '../game/types';
 import { TileView } from './Tile';
 import { ExposureRow } from './ExposureRow';
+import { applyRackOrder } from './rackOrder';
 
 type Props = {
   player: PlayerState;
@@ -10,24 +11,12 @@ type Props = {
   disabled?: boolean;
   active?: boolean;
   actionSlot?: ReactNode;
+  // Manual tile order (ids) and callbacks for drag-to-rearrange. When
+  // rackOrder is null the tiles fall back to the default suit/number sort.
+  rackOrder?: string[] | null;
+  onReorder?: (orderedIds: string[]) => void;
+  onResetOrder?: () => void;
 };
-
-// Stable order for East's rack: numbers by suit+rank, then winds, dragons,
-// flowers, jokers. The store shuffles ids but for display we sort for the
-// player's sanity.
-const SORT_ORDER = ['number', 'wind', 'dragon', 'flower', 'joker'] as const;
-
-function sortTiles(rack: readonly Tile[]): Tile[] {
-  const key = (t: Tile): string => {
-    const kindIdx = SORT_ORDER.indexOf(t.kind);
-    let sub = '';
-    if (t.kind === 'number') sub = `${t.suit}-${t.rank}`;
-    else if (t.kind === 'wind') sub = t.wind;
-    else if (t.kind === 'dragon') sub = t.color;
-    return `${kindIdx}-${sub}-${t.id}`;
-  };
-  return [...rack].sort((a, b) => key(a).localeCompare(key(b)));
-}
 
 export function PlayerRack({
   player,
@@ -36,11 +25,49 @@ export function PlayerRack({
   disabled,
   active,
   actionSlot,
+  rackOrder,
+  onReorder,
+  onResetOrder,
 }: Props): React.ReactElement {
-  const sorted = useMemo(() => sortTiles(player.rack), [player.rack]);
+  const ordered = useMemo(
+    () => applyRackOrder(player.rack, rackOrder),
+    [player.rack, rackOrder],
+  );
   const selected = new Set(selectedIds);
   const total =
     player.rack.length + player.exposures.reduce((n, e) => n + e.tiles.length, 0);
+
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
+
+  const commitDrop = (draggedId: string, targetId: string) => {
+    if (!onReorder || draggedId === targetId) return;
+    const ids = ordered.map((t) => t.id);
+    const from = ids.indexOf(draggedId);
+    const to = ids.indexOf(targetId);
+    if (from < 0 || to < 0) return;
+    ids.splice(from, 1);
+    const insertAt = ids.indexOf(targetId);
+    ids.splice(from < to ? insertAt + 1 : insertAt, 0, draggedId);
+    onReorder(ids);
+  };
+
+  const onDragStart = (e: DragEvent, id: string) => {
+    setDragId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    try {
+      e.dataTransfer.setData('text/plain', id);
+    } catch {
+      /* some browsers restrict setData; dragId state covers us */
+    }
+  };
+  const onDrop = (e: DragEvent, targetId: string) => {
+    e.preventDefault();
+    const dragged = e.dataTransfer.getData('text/plain') || dragId;
+    if (dragged) commitDrop(dragged, targetId);
+    setDragId(null);
+    setOverId(null);
+  };
 
   return (
     <div
@@ -78,22 +105,61 @@ export function PlayerRack({
             </span>
           )}
         </div>
-        <span className="mono" style={{ font: '600 12px var(--font-mono)', color: 'var(--gold)' }}>
-          {total} tiles
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {onResetOrder && (
+            <button
+              type="button"
+              className="btn btn-ghost"
+              style={{ padding: '5px 12px', font: '700 11px var(--font-ui)' }}
+              onClick={onResetOrder}
+              title="Sort tiles by suit and number"
+            >
+              Sort
+            </button>
+          )}
+          <span className="mono" style={{ font: '600 12px var(--font-mono)', color: 'var(--gold)' }}>
+            {total} tiles
+          </span>
+        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {sorted.map((t) => (
-            <TileView
+          {ordered.map((t) => (
+            <div
               key={t.id}
-              tile={t}
-              width={52}
-              selected={selected.has(t.id)}
-              onClick={() => onTileClick(t)}
-              disabled={disabled}
-            />
+              draggable
+              onDragStart={(e) => onDragStart(e, t.id)}
+              onDragEnd={() => {
+                setDragId(null);
+                setOverId(null);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                if (dragId && overId !== t.id) setOverId(t.id);
+              }}
+              onDragLeave={() => setOverId((cur) => (cur === t.id ? null : cur))}
+              onDrop={(e) => onDrop(e, t.id)}
+              style={{
+                cursor: 'grab',
+                borderRadius: 9,
+                opacity: dragId === t.id ? 0.35 : 1,
+                boxShadow:
+                  overId === t.id && dragId && dragId !== t.id
+                    ? '0 0 0 2px var(--gold)'
+                    : 'none',
+                transition: 'opacity 120ms ease, box-shadow 120ms ease',
+                touchAction: 'none',
+              }}
+            >
+              <TileView
+                tile={t}
+                width={52}
+                selected={selected.has(t.id)}
+                onClick={() => onTileClick(t)}
+                disabled={disabled}
+              />
+            </div>
           ))}
         </div>
         {player.exposures.length > 0 && (

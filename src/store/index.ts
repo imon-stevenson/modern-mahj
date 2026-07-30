@@ -63,10 +63,16 @@ export type MahjState = {
   winner: Seat | null;
   winningHand: NMJLHand | null;
   lastAction: LastAction;
+  // Manual left-to-right order for the human's (East) rack, as tile ids.
+  // null means "use the default suit/number sort". Tiles not listed (e.g. a
+  // freshly drawn tile) are appended after the listed ones.
+  eastRackOrder: string[] | null;
 
   loadHandsSafe: () => NMJLHand[];
 
   newGame: (difficulty: Difficulty) => void;
+  reorderEastRack: (orderedIds: string[]) => void;
+  resetEastRackOrder: () => void;
   toggleTileSelection: (tileId: string) => void;
   clearSelection: (seat: Seat) => void;
   submitCharlestonSelection: (seat: Seat, tileIds: string[]) => void;
@@ -272,6 +278,7 @@ export const useMahjStore = create<MahjState>()(
       winner: null,
       winningHand: null,
       lastAction: null,
+      eastRackOrder: null,
 
       loadHandsSafe: safeHands,
 
@@ -293,7 +300,16 @@ export const useMahjStore = create<MahjState>()(
           winner: null,
           winningHand: null,
           lastAction: null,
+          eastRackOrder: null,
         });
+      },
+
+      reorderEastRack(orderedIds) {
+        set({ eastRackOrder: [...orderedIds] });
+      },
+
+      resetEastRackOrder() {
+        set({ eastRackOrder: null });
       },
 
       toggleTileSelection(tileId) {
@@ -598,6 +614,7 @@ export const useMahjStore = create<MahjState>()(
         winner: state.winner,
         winningHand: state.winningHand,
         lastAction: state.lastAction,
+        eastRackOrder: state.eastRackOrder,
       }),
     },
   ),
