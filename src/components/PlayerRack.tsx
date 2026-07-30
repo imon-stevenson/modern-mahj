@@ -1,8 +1,66 @@
-import { useMemo, useState, type DragEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+  type ReactNode,
+} from "react";
 import type { PlayerState, Tile } from "../game/types";
 import { TileView } from "./Tile";
 import { ExposureRow } from "./ExposureRow";
 import { applyRackOrder } from "./rackOrder";
+
+// Hold + fade duration for the "new tile" highlight — keep in sync with the
+// `tile-highlight` keyframe in index.css (5s hold + 1s fade).
+const HIGHLIGHT_MS = 6000;
+
+// Tracks which rack tile ids were recently added (drawn or received in the
+// Charleston) so they can be highlighted, then auto-cleared after the fade.
+// The initial hand (first render) is treated as already-present, not new.
+function useNewTileHighlights(ids: string[]): Set<string> {
+  const seen = useRef<Set<string> | null>(null);
+  const timers = useRef<Map<string, number>>(new Map());
+  const [highlighted, setHighlighted] = useState<Set<string>>(() => new Set());
+  const key = ids.join(",");
+
+  useEffect(() => {
+    const current = key ? key.split(",") : [];
+    if (seen.current === null) {
+      seen.current = new Set(current);
+      return;
+    }
+    const added = current.filter((id) => !seen.current!.has(id));
+    seen.current = new Set(current);
+    if (added.length === 0) return;
+
+    setHighlighted((prev) => {
+      const next = new Set(prev);
+      added.forEach((id) => next.add(id));
+      return next;
+    });
+    added.forEach((id) => {
+      const existing = timers.current.get(id);
+      if (existing) window.clearTimeout(existing);
+      const t = window.setTimeout(() => {
+        setHighlighted((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+        timers.current.delete(id);
+      }, HIGHLIGHT_MS);
+      timers.current.set(id, t);
+    });
+  }, [key]);
+
+  useEffect(() => {
+    const timeouts = timers.current;
+    return () => timeouts.forEach((t) => window.clearTimeout(t));
+  }, []);
+
+  return highlighted;
+}
 
 type Props = {
   player: PlayerState;
@@ -16,6 +74,8 @@ type Props = {
   rackOrder?: string[] | null;
   onReorder?: (orderedIds: string[]) => void;
   onResetOrder?: () => void;
+  // Tile id to pin to the far right (the freshly drawn tile).
+  pinRightId?: string | null;
 };
 
 export function PlayerRack({
@@ -28,15 +88,18 @@ export function PlayerRack({
   rackOrder,
   onReorder,
   onResetOrder,
+  pinRightId,
 }: Props): React.ReactElement {
   const ordered = useMemo(
-    () => applyRackOrder(player.rack, rackOrder),
-    [player.rack, rackOrder],
+    () => applyRackOrder(player.rack, rackOrder, pinRightId),
+    [player.rack, rackOrder, pinRightId],
   );
   const selected = new Set(selectedIds);
   const total =
     player.rack.length +
     player.exposures.reduce((n, e) => n + e.tiles.length, 0);
+
+  const highlighted = useNewTileHighlights(player.rack.map((t) => t.id));
 
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -141,17 +204,23 @@ export function PlayerRack({
         </div>
       </div>
 
+      {/* Exposed sets sit above the rack, rotated to face the other players —
+          slightly smaller than the rack tiles, upside-down from your POV. */}
+      {player.exposures.length > 0 && (
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: 8 }}>
+          <ExposureRow exposures={player.exposures} tileWidth={48} flip />
+        </div>
+      )}
+
       <div
         style={{
           display: "flex",
-          alignItems: "flex-end",
           justifyContent: "center",
-          gap: 16,
           flexWrap: "wrap",
           paddingTop: "12px",
         }}
       >
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
           {ordered.map((t) => (
             <div
               key={t.id}
@@ -180,6 +249,10 @@ export function PlayerRack({
                     : "none",
                 transition: "opacity 120ms ease, box-shadow 120ms ease",
                 touchAction: "none",
+                // Freshly drawn / received tiles glow gold, then fade (~6s).
+                animation: highlighted.has(t.id)
+                  ? `tile-highlight ${HIGHLIGHT_MS}ms ease`
+                  : undefined,
               }}
             >
               <TileView
@@ -192,18 +265,6 @@ export function PlayerRack({
             </div>
           ))}
         </div>
-        {player.exposures.length > 0 && (
-          <>
-            <div
-              style={{
-                width: 1,
-                height: 60,
-                background: "var(--felt-divider)",
-              }}
-            />
-            <ExposureRow exposures={player.exposures} tileWidth={44} />
-          </>
-        )}
       </div>
 
       {actionSlot && <div style={{ marginTop: 18 }}>{actionSlot}</div>}

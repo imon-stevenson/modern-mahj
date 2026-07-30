@@ -152,6 +152,10 @@ export function TileView({
     // face marks as "dots") whenever a tile isn't a direct flex child — e.g.
     // inside the drag wrapper, discard pile, or a flight overlay.
     display: "inline-block",
+    // Align to the top of the line box so the inline-block leaves no baseline
+    // descender gap — keeps wrappers (e.g. the rack's highlight ring) hugging
+    // the tile exactly.
+    verticalAlign: "top",
     position: "relative",
     width: w,
     height: h,

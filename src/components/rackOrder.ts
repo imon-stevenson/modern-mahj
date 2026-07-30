@@ -43,14 +43,32 @@ export function defaultRackSort(rack: readonly Tile[]): Tile[] {
 // Otherwise tiles are laid out following `order`; any tile not present in the
 // list (e.g. a tile just drawn from the wall) is appended, default-sorted,
 // after the explicitly ordered tiles.
+// `pinRightId`, when given, forces that tile to the far-right position — used
+// so a freshly drawn tile sits apart on the right until the player racks it
+// (by dragging, which records it in `order`) or their turn ends.
 export function applyRackOrder(
   rack: readonly Tile[],
   order: string[] | null | undefined,
+  pinRightId?: string | null,
 ): Tile[] {
-  if (!order || order.length === 0) return defaultRackSort(rack);
-  const pos = new Map(order.map((id, i) => [id, i]));
-  const listed = rack.filter((t) => pos.has(t.id));
-  listed.sort((a, b) => pos.get(a.id)! - pos.get(b.id)!);
-  const rest = defaultRackSort(rack.filter((t) => !pos.has(t.id)));
-  return [...listed, ...rest];
+  let result: Tile[];
+  if (!order || order.length === 0) {
+    result = defaultRackSort(rack);
+  } else {
+    const pos = new Map(order.map((id, i) => [id, i]));
+    const listed = rack.filter((t) => pos.has(t.id));
+    listed.sort((a, b) => pos.get(a.id)! - pos.get(b.id)!);
+    const rest = defaultRackSort(rack.filter((t) => !pos.has(t.id)));
+    result = [...listed, ...rest];
+  }
+  // Pin the drawn tile right unless the player has explicitly placed it in
+  // their manual order (then respect that placement).
+  if (pinRightId && !(order && order.includes(pinRightId))) {
+    const idx = result.findIndex((t) => t.id === pinRightId);
+    if (idx >= 0 && idx !== result.length - 1) {
+      const [tile] = result.splice(idx, 1);
+      result.push(tile);
+    }
+  }
+  return result;
 }

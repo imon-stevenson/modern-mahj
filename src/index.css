@@ -24,6 +24,8 @@
   --suit-green: oklch(0.5 0.14 150);
   --suit-red: oklch(0.55 0.19 25);
   --label-blue: oklch(0.55 0.1 255);
+  /* Highlight for a tile just added to the human's rack */
+  --tile-new: oklch(0.8 0.13 195);
 
   /* Felt table */
   --felt: oklch(0.22 0.05 255);
@@ -162,6 +164,22 @@ h3 {
   }
   to {
     transform: translate(var(--fx), var(--fy)) scale(0.9);
+  }
+}
+
+/* Highlight a tile just added to the human player's rack (draw or Charleston): hold a
+   gold ring for ~5s, then fade over the last ~1s (6s total). */
+@keyframes tile-highlight {
+  0%,
+  83.33% {
+    box-shadow:
+      0 0 0 3px var(--tile-new),
+      0 0 14px 3px oklch(0.8 0.13 195 / 0.55);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 oklch(0.8 0.13 195 / 0),
+      0 0 0 0 oklch(0.8 0.13 195 / 0);
   }
 }
 

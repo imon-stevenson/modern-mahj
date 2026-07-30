@@ -64,4 +64,28 @@ describe('applyRackOrder', () => {
       'b3',
     ]);
   });
+
+  it('pins a drawn tile to the far right in default-sort mode', () => {
+    // b2 would normally sort into the middle; pinned, it goes last.
+    expect(applyRackOrder(rack, null, 'b2').map((t) => t.id)).toEqual(['b1', 'b3', 'b2']);
+  });
+
+  it('pins a drawn tile to the far right even past unlisted tiles', () => {
+    const withDrawn = [...rack, n('craks', 5, 'c5')];
+    expect(applyRackOrder(withDrawn, ['b1', 'b2', 'b3'], 'c5').map((t) => t.id)).toEqual([
+      'b1',
+      'b2',
+      'b3',
+      'c5',
+    ]);
+  });
+
+  it('does not pin when the player has explicitly placed the tile', () => {
+    // b2 is in the manual order (player racked it), so it stays put.
+    expect(applyRackOrder(rack, ['b2', 'b1', 'b3'], 'b2').map((t) => t.id)).toEqual([
+      'b2',
+      'b1',
+      'b3',
+    ]);
+  });
 });

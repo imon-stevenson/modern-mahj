@@ -4,13 +4,24 @@ import { TileView } from "./Tile";
 export function ExposureRow({
   exposures,
   tileWidth = 40,
+  flip = false,
 }: {
   exposures: Exposure[];
   tileWidth?: number;
+  // Rotate 180° so exposed tiles face the other players (table etiquette),
+  // appearing upside-down from the owner's point of view.
+  flip?: boolean;
 }): React.ReactElement | null {
   if (exposures.length === 0) return null;
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 14,
+        transform: flip ? "rotate(180deg)" : undefined,
+      }}
+    >
       {exposures.map((ex, i) => (
         <div
           key={i}

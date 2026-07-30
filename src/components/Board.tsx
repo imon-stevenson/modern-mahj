@@ -24,10 +24,16 @@ export function Board(): React.ReactElement {
   const eastRackOrder = useMahjStore((s) => s.eastRackOrder);
   const reorderEastRack = useMahjStore((s) => s.reorderEastRack);
   const resetEastRackOrder = useMahjStore((s) => s.resetEastRackOrder);
+  const lastAction = useMahjStore((s) => s.lastAction);
 
   // Bumped whenever the human clicks somewhere on the board while they still
   // owe a draw — replays the "Draw tile" button's attention shake.
   const [drawNudge, setDrawNudge] = useState(0);
+
+  // The tile the human just drew stays pinned to the far right of their rack
+  // until they discard (turn ends) or drag it into place.
+  const drawnTileId =
+    lastAction?.kind === 'draw' && lastAction.seat === 'east' ? lastAction.tileId : null;
 
   if (phase === 'setup') {
     return (
@@ -137,6 +143,7 @@ export function Board(): React.ReactElement {
             rackOrder={eastRackOrder}
             onReorder={reorderEastRack}
             onResetOrder={resetEastRackOrder}
+            pinRightId={drawnTileId}
           />
         </div>
       </div>
