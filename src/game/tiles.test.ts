@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { createFullTileSet, tileLabel, tilesEqual } from './tiles';
+import {
+  DRAGON_LABEL,
+  SUIT_LABEL,
+  WIND_LABEL,
+  createFullTileSet,
+  tileLabel,
+  tilesEqual,
+} from './tiles';
+import type { DragonColor, NumberTile, Suit, Wind } from './types';
 
 describe('createFullTileSet', () => {
   const tiles = createFullTileSet();
@@ -41,12 +49,38 @@ describe('createFullTileSet', () => {
 });
 
 describe('tileLabel', () => {
-  it('renders the shorthand for common tile kinds', () => {
-    expect(tileLabel({ id: 'x', kind: 'number', suit: 'bams', rank: 5 })).toBe('5B');
-    expect(tileLabel({ id: 'x', kind: 'wind', wind: 'E' })).toBe('EW');
-    expect(tileLabel({ id: 'x', kind: 'dragon', color: 'red' })).toBe('RD');
-    expect(tileLabel({ id: 'x', kind: 'flower' })).toBe('F');
-    expect(tileLabel({ id: 'x', kind: 'joker' })).toBe('J');
+  it('labels number tiles as "<rank> <Suit>" for every suit and rank', () => {
+    for (const suit of Object.keys(SUIT_LABEL) as Suit[]) {
+      for (let rank = 1; rank <= 9; rank++) {
+        // 1 Bam has a colloquial name ("Bird Bam") that isn't derived from the
+        // suit label, so it's excluded from this generic check.
+        if (suit === 'bams' && rank === 1) continue;
+        const tile: NumberTile = {
+          id: 'x',
+          kind: 'number',
+          suit,
+          rank: rank as NumberTile['rank'],
+        };
+        expect(tileLabel(tile)).toBe(`${rank} ${SUIT_LABEL[suit]}`);
+      }
+    }
+  });
+
+  it('labels winds as "<Direction> Wind"', () => {
+    for (const wind of Object.keys(WIND_LABEL) as Wind[]) {
+      expect(tileLabel({ id: 'x', kind: 'wind', wind })).toBe(`${WIND_LABEL[wind]} Wind`);
+    }
+  });
+
+  it('labels dragons by their name', () => {
+    for (const color of Object.keys(DRAGON_LABEL) as DragonColor[]) {
+      expect(tileLabel({ id: 'x', kind: 'dragon', color })).toBe(DRAGON_LABEL[color]);
+    }
+  });
+
+  it('labels flowers and jokers', () => {
+    expect(tileLabel({ id: 'x', kind: 'flower' })).toBe('Flower');
+    expect(tileLabel({ id: 'x', kind: 'joker' })).toBe('Joker');
   });
 });
 

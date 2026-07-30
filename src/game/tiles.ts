@@ -60,17 +60,17 @@ export function createFullTileSet(): Tile[] {
   return tiles;
 }
 
-const SUIT_LABEL: Record<Suit, string> = {
+export const SUIT_LABEL: Record<Suit, string> = {
   bams: "Bam",
   craks: "Crak",
   dots: "Dot",
 };
-const DRAGON_LABEL: Record<DragonColor, string> = {
+export const DRAGON_LABEL: Record<DragonColor, string> = {
   red: "Red Dragon",
   green: "Green Dragon",
   white: "Soap",
 };
-const WIND_LABEL: Record<Wind, string> = {
+export const WIND_LABEL: Record<Wind, string> = {
   N: "North",
   E: "East",
   S: "South",

@@ -148,12 +148,14 @@ export function PlayerRack({
           justifyContent: "center",
           gap: 16,
           flexWrap: "wrap",
+          paddingTop: "12px",
         }}
       >
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
           {ordered.map((t) => (
             <div
               key={t.id}
+              data-tile-id={t.id}
               draggable
               onDragStart={(e) => onDragStart(e, t.id)}
               onDragEnd={() => {

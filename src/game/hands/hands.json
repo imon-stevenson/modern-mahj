@@ -1,0 +1,1158 @@
+{
+  "year": 2026,
+  "hands": [
+    {
+      "id": "2025-1a",
+      "section": "2025",
+      "line": 1,
+      "description": "FFFF 2025 222 222 (Any 3 Suits, Like Pungs 2s or 5s in Opp. Suits) — variant with pungs of 2s",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "2025-1b",
+      "section": "2025",
+      "line": 1,
+      "description": "FFFF 2025 222 222 (Any 3 Suits, Like Pungs 2s or 5s in Opp. Suits) — variant with pungs of 5s",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 5, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "2025-2",
+      "section": "2025",
+      "line": 2,
+      "description": "222 0000 222 5555 (Any 2 Suits) — pung 2s (X), kong soaps, pung 2s (Y), kong 5s (Y)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "2025-3",
+      "section": "2025",
+      "line": 3,
+      "description": "2025 222 555 DDDD (Any 3 Suits) — singles 2025 in X, pung 2s in Y, pung 5s in Y, kong dragons matching Z",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "2025-4",
+      "section": "2025",
+      "line": 4,
+      "description": "FF 222 000 222 555 (Any 3 Suits) — closed",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 5, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+
+    {
+      "id": "2468-1a",
+      "section": "2468",
+      "line": 1,
+      "description": "222 4444 666 8888 -or- 222 4444 666 8888 (Any 1 or 2 Suits) — variant A: pungs of 2 & 6 in X, kongs of 4 & 8 in X",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "2468-1b",
+      "section": "2468",
+      "line": 1,
+      "description": "222 4444 666 8888 -or- 222 4444 666 8888 (Any 1 or 2 Suits) — variant B: pungs & kongs split across two suits",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 8, "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "2468-2a",
+      "section": "2468",
+      "line": 2,
+      "description": "FF 2222 + 4444 = 6666 -or- FF 2222 + 6666 = 8888 (Any 3 Suits) — variant with 2+4=6",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 4, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 6, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "2468-2b",
+      "section": "2468",
+      "line": 2,
+      "description": "FF 2222 + 4444 = 6666 -or- FF 2222 + 6666 = 8888 (Any 3 Suits) — variant with 2+6=8",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 8, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "2468-3",
+      "section": "2468",
+      "line": 3,
+      "description": "22 444 66 888 DDDD (Any 1 Suit)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "2468-4",
+      "section": "2468",
+      "line": 4,
+      "description": "FFFF 2468 222 222 (Any 3 Suits, Like Pungs Any Even No.)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [2, 4, 6, 8] }]
+    },
+    {
+      "id": "2468-5",
+      "section": "2468",
+      "line": 5,
+      "description": "FFF 22 44 666 8888 (Any 1 Suit)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "2468-6",
+      "section": "2468",
+      "line": 6,
+      "description": "222 4444 666 88 88 (Any 3 Suits, Pairs 8s Only)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 8, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 8, "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "2468-7",
+      "section": "2468",
+      "line": 7,
+      "description": "FF 2222 DDDD 2222 (Any 3 Suits, Like Kongs Any Even No.)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [2, 4, 6, 8] }]
+    },
+    {
+      "id": "2468-8",
+      "section": "2468",
+      "line": 8,
+      "description": "22 44 66 88 222 222 (Any 3 Suits, Like Pungs Any Even No.) — closed",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [2, 4, 6, 8] }]
+    },
+
+    {
+      "id": "any-like-1",
+      "section": "Any Like Numbers",
+      "line": 1,
+      "description": "FF 1111 D 1111 D 11 (Any 3 Suits)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "any-like-2",
+      "section": "Any Like Numbers",
+      "line": 2,
+      "description": "FFFF 11 111 111 11 (Any 3 Suits, Pairs Must Be Same Suit)",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "any-like-3",
+      "section": "Any Like Numbers",
+      "line": 3,
+      "description": "FF 111 111 111 DDD (Any 3 Suits, Any Dragon) — closed",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "dragonVar": "DV" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+
+    {
+      "id": "quints-1",
+      "section": "Quints",
+      "line": 1,
+      "description": "FF 111 2222 33333 (Any 3 Suits, Any 3 Consec. Nos.)",
+      "closed": false,
+      "value": 40,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "quint", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 7 }]
+    },
+    {
+      "id": "quints-2",
+      "section": "Quints",
+      "line": 2,
+      "description": "11111 NNNN 22222 (Any 1 Suit, Any 2 Consec. Nos., Any Wind)",
+      "closed": false,
+      "value": 45,
+      "groups": [
+        { "kind": "quint", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "windVar": "WV" }, "jokersAllowed": true },
+        { "kind": "quint", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": true }
+      ],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 8 }]
+    },
+    {
+      "id": "quints-3",
+      "section": "Quints",
+      "line": 3,
+      "description": "FF 11111 11 11111 (Any 3 Suits, Any Like Nos.)",
+      "closed": false,
+      "value": 45,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "quint", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "quint", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+
+    {
+      "id": "consec-1a",
+      "section": "Consecutive Run",
+      "line": 1,
+      "description": "11 222 3333 444 55 -or- 55 666 7777 888 99 (Any 1 Suit, These Nos. Only) — variant 1-5",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false }
+      ]
+    },
+    {
+      "id": "consec-1b",
+      "section": "Consecutive Run",
+      "line": 1,
+      "description": "11 222 3333 444 55 -or- 55 666 7777 888 99 (Any 1 Suit, These Nos. Only) — variant 5-9",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": false }
+      ]
+    },
+    {
+      "id": "consec-2a",
+      "section": "Consecutive Run",
+      "line": 2,
+      "description": "1111 2222 333 4444 -or- 111 2222 333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant one-suit K K P K",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "X" }, "jokersAllowed": true }
+      ],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 6 }]
+    },
+    {
+      "id": "consec-2b",
+      "section": "Consecutive Run",
+      "line": 2,
+      "description": "1111 2222 333 4444 -or- 111 2222 333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant two-suit split",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 6 }]
+    },
+    {
+      "id": "consec-3",
+      "section": "Consecutive Run",
+      "line": 3,
+      "description": "FFFF 1111 22 3333 (Any 1 or 3 Suits, Any 3 Consec. Nos.)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 7 }]
+    },
+    {
+      "id": "consec-4",
+      "section": "Consecutive Run",
+      "line": 4,
+      "description": "FFF 123 4444 5555 (Any 3 Suits, Any 5 Consec. Nos.)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+4", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 5 }]
+    },
+    {
+      "id": "consec-5",
+      "section": "Consecutive Run",
+      "line": 5,
+      "description": "FF 11 222 3333 DDD (Any 1 Suit, Any 3 Consec. Nos.)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": true }
+      ],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 7 }]
+    },
+    {
+      "id": "consec-6",
+      "section": "Consecutive Run",
+      "line": 6,
+      "description": "111 222 3333 DD DD (Any 3 Suits, Any 3 Consec. Nos. w Opp. Dragons)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 7 }]
+    },
+    {
+      "id": "consec-7",
+      "section": "Consecutive Run",
+      "line": 7,
+      "description": "112345 1111 1111 (Any 5 Consec. Nos., Pair Any No. in Run, Kongs Match Pair)",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+4", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 5 }]
+    },
+    {
+      "id": "consec-8",
+      "section": "Consecutive Run",
+      "line": 8,
+      "description": "FF 1 22 333 1 22 333 (Any 2 Suits, Any Same 3 Consec. Nos.) — closed",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 7 }]
+    },
+
+    {
+      "id": "13579-1a",
+      "section": "13579",
+      "line": 1,
+      "description": "11 333 5555 777 99 -or- 11 333 5555 777 99 (Any 1 or 3 Suits) — variant one-suit",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": false }
+      ]
+    },
+    {
+      "id": "13579-1b",
+      "section": "13579",
+      "line": 1,
+      "description": "11 333 5555 777 99 -or- 11 333 5555 777 99 (Any 1 or 3 Suits) — variant three-suits",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 9, "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "13579-2a",
+      "section": "13579",
+      "line": 2,
+      "description": "111 333 3333 5555 -or- 555 7777 777 9999 (Any 2 Suits) — variant 1/3/3/5",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 3, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "13579-2b",
+      "section": "13579",
+      "line": 2,
+      "description": "111 333 3333 5555 -or- 555 7777 777 9999 (Any 2 Suits) — variant 5/7/7/9",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "13579-3a",
+      "section": "13579",
+      "line": 3,
+      "description": "1111 333 5555 DDD -or- 5555 777 9999 DDD (Any 1 Suit) — variant 1/3/5",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "13579-3b",
+      "section": "13579",
+      "line": 3,
+      "description": "1111 333 5555 DDD -or- 5555 777 9999 DDD (Any 1 Suit) — variant 5/7/9",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "13579-4",
+      "section": "13579",
+      "line": 4,
+      "description": "FFFF 1111 + 9999 = 10 (Any 2 Suits, These Nos. Only) — encoded as FFFF, kong 1s, pair of soaps (the '0' in '10'), kong 9s. VERIFY.",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "13579-5a",
+      "section": "13579",
+      "line": 5,
+      "description": "FFF 135 7777 9999 -or- FFF 135 7777 9999 (Any 1 or 3 Suits) — variant one-suit",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "13579-5b",
+      "section": "13579",
+      "line": 5,
+      "description": "FFF 135 7777 9999 -or- FFF 135 7777 9999 (Any 1 or 3 Suits) — variant three-suits",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 7, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "13579-6a",
+      "section": "13579",
+      "line": 6,
+      "description": "111 333 5555 DD DD -or- 555 777 9999 DD DD (Any 3 Suits w Opp. Dragons) — variant 1/3/5",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "13579-6b",
+      "section": "13579",
+      "line": 6,
+      "description": "111 333 5555 DD DD -or- 555 777 9999 DD DD (Any 3 Suits w Opp. Dragons) — variant 5/7/9",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "13579-7a",
+      "section": "13579",
+      "line": 7,
+      "description": "11 333 NEWS 333 55 -or- 55 777 NEWS 777 99 (Any 2 Suits) — variant 1/3/5",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "13579-7b",
+      "section": "13579",
+      "line": 7,
+      "description": "11 333 NEWS 333 55 -or- 55 777 NEWS 777 99 (Any 2 Suits) — variant 5/7/9",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "13579-8",
+      "section": "13579",
+      "line": 8,
+      "description": "FF 11 33 111 333 55 -or- FF 55 77 555 777 99 (Any 3 Suits) — closed. VERIFY exact tile layout.",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+4", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [1, 5] }]
+    },
+
+    {
+      "id": "winds-dragons-1a",
+      "section": "Winds - Dragons",
+      "line": 1,
+      "description": "NNNN EEE WWW SSSS -or- NNN EEEE WWWW SSS — variant A (kongs on ends)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "winds-dragons-1b",
+      "section": "Winds - Dragons",
+      "line": 1,
+      "description": "NNNN EEE WWW SSSS -or- NNN EEEE WWWW SSS — variant B (kongs in middle)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "winds-dragons-2",
+      "section": "Winds - Dragons",
+      "line": 2,
+      "description": "FF 123 DD DDD DDDD (Any 3 Consec. Nos. in Any 1 Suit, Any 3 Dragons)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "dragon", "color": "red" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "dragon", "color": "green" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": true }
+      ],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 7 }]
+    },
+    {
+      "id": "winds-dragons-3",
+      "section": "Winds - Dragons",
+      "line": 3,
+      "description": "FFF NN EE WWW SSSS",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "winds-dragons-4",
+      "section": "Winds - Dragons",
+      "line": 4,
+      "description": "FFFF DDD NEWS DDD (Dragons Any 2 Suits)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "winds-dragons-5",
+      "section": "Winds - Dragons",
+      "line": 5,
+      "description": "NNNN 1 11 111 SSSS (Any Like Odd Nos. in 3 Suits)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [1, 3, 5, 7, 9] }]
+    },
+    {
+      "id": "winds-dragons-6",
+      "section": "Winds - Dragons",
+      "line": 6,
+      "description": "EEEE 2 22 222 WWWW (Any Like Even Nos. in 3 Suits)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [2, 4, 6, 8] }]
+    },
+    {
+      "id": "winds-dragons-7a",
+      "section": "Winds - Dragons",
+      "line": 7,
+      "description": "NN EEE WWW SS 2025 -or- NNN EE WW SSS 2025 (2025 Any 1 Suit) — variant A",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false }
+      ]
+    },
+    {
+      "id": "winds-dragons-7b",
+      "section": "Winds - Dragons",
+      "line": 7,
+      "description": "NN EEE WWW SS 2025 -or- NNN EE WW SSS 2025 (2025 Any 1 Suit) — variant B",
+      "closed": false,
+      "value": 30,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false }
+      ]
+    },
+    {
+      "id": "winds-dragons-8",
+      "section": "Winds - Dragons",
+      "line": 8,
+      "description": "NN EE WWW SSS DDDD (Kong Any Dragon) — closed",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "dragon", "dragonVar": "DV" }, "jokersAllowed": true }
+      ]
+    },
+
+    {
+      "id": "369-1a",
+      "section": "369",
+      "line": 1,
+      "description": "333 6666 666 9999 -or- 333 6666 666 9999 (Any 2 or 3 Suits) — variant A: 2 suits",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "369-1b",
+      "section": "369",
+      "line": 1,
+      "description": "333 6666 666 9999 -or- 333 6666 666 9999 (Any 2 or 3 Suits) — variant B: 3 suits",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "369-2a",
+      "section": "369",
+      "line": 2,
+      "description": "FF 3333 + 6666 = 9999 -or- FF 3333 + 6666 = 9999 (Any 1 or 3 Suits) — variant A: 1 suit",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true }
+      ]
+    },
+    {
+      "id": "369-2b",
+      "section": "369",
+      "line": 2,
+      "description": "FF 3333 + 6666 = 9999 -or- FF 3333 + 6666 = 9999 (Any 1 or 3 Suits) — variant B: 3 suits",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+    {
+      "id": "369-3",
+      "section": "369",
+      "line": 3,
+      "description": "3333 DDD 3333 DDD (Any 2 Suits, Like Kongs 3, 6, or 9 w Matching Dragons)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [3, 6, 9] }]
+    },
+    {
+      "id": "369-4",
+      "section": "369",
+      "line": 4,
+      "description": "FFF 3333 369 9999 (Any 2 Suits)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pung", "tile": { "kind": "flower" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "369-5",
+      "section": "369",
+      "line": 5,
+      "description": "33 66 99 3333 3333 (Any 3 Suits, Like Kongs 3, 6, or 9)",
+      "closed": false,
+      "value": 25,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": true }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [3, 6, 9] }]
+    },
+    {
+      "id": "369-6",
+      "section": "369",
+      "line": 6,
+      "description": "FF 333 D 666 D 999 D (Any 3 Suits w Matching Dragons) — closed",
+      "closed": true,
+      "value": 30,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 9, "suitVar": "Z" }, "jokersAllowed": true },
+        { "kind": "single", "tile": { "kind": "dragon", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    },
+
+    {
+      "id": "singles-pairs-1",
+      "section": "Singles and Pairs",
+      "line": 1,
+      "description": "NN EW SS 11 22 33 44 (Any 1 Suit, Any 4 Consec. Nos.) — closed",
+      "closed": true,
+      "value": 50,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "N" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "E" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "wind", "wind": "W" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "wind", "wind": "S" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "X" }, "jokersAllowed": false }
+      ],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 6 }]
+    },
+    {
+      "id": "singles-pairs-2",
+      "section": "Singles and Pairs",
+      "line": 2,
+      "description": "FF 2468 DD 2468 DD (Any 2 Suits w Matching Dragons) — closed",
+      "closed": true,
+      "value": 50,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 4, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 8, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 4, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 8, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "dragon", "suitVar": "Y" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
+    },
+    {
+      "id": "singles-pairs-3",
+      "section": "Singles and Pairs",
+      "line": 3,
+      "description": "336699 336699 33 (Any 3 Suits, Pair 3, 6, or 9 in Third Suit) — closed. VERIFY exact tile layout.",
+      "closed": true,
+      "value": 50,
+      "groups": [
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 3, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 6, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [3, 6, 9] }]
+    },
+    {
+      "id": "singles-pairs-4",
+      "section": "Singles and Pairs",
+      "line": 4,
+      "description": "FF 11 22 11 22 11 22 (Any 3 Suits, Any 2 Consec. Nos.) — closed",
+      "closed": true,
+      "value": 50,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 8 }]
+    },
+    {
+      "id": "singles-pairs-5",
+      "section": "Singles and Pairs",
+      "line": 5,
+      "description": "11 33 55 77 99 11 11 (Any 3 Suits, Pairs Any Like Odd Nos. in Opp. Suits) — closed",
+      "closed": true,
+      "value": 50,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 7, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pair", "tile": { "kind": "number", "numVar": "N", "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }],
+      "numberConstraints": [{ "rule": "oneOf", "var": "N", "values": [1, 3, 5, 7, 9] }]
+    },
+    {
+      "id": "singles-pairs-6",
+      "section": "Singles and Pairs",
+      "line": 6,
+      "description": "FF 2025 2025 2025 (Any 3 Suits) — closed",
+      "closed": true,
+      "value": 75,
+      "groups": [
+        { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "X" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Z" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Z" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "Z" }, "jokersAllowed": false }
+      ],
+      "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
+    }
+  ]
+}

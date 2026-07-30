@@ -141,6 +141,19 @@ h3 {
   border-radius: var(--radius-md);
 }
 
+/* Charleston "tiles floating to a seat" animation. Each clone sets --fx/--fy
+   to its per-tile delta toward the recipient panel. */
+@keyframes charleston-float {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--fx), var(--fy)) scale(0.9) rotate(-6deg);
+    opacity: 0.1;
+  }
+}
+
 /* ---- Board layout ---- */
 
 /* Below 1000px the side columns flex and opponent tile rows may wrap. */

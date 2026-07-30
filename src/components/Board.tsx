@@ -4,6 +4,7 @@ import { OpponentRack } from './OpponentRack';
 import { DiscardPile } from './DiscardPile';
 import { CharlestonUI } from './CharlestonUI';
 import { CallPrompt } from './CallPrompt';
+import { CharlestonFlightOverlay } from './CharlestonFlightOverlay';
 import { GameOverBanner } from './GameOverBanner';
 
 export function Board(): React.ReactElement {
@@ -76,14 +77,14 @@ export function Board(): React.ReactElement {
       >
         <div style={{ gridArea: 'west', display: 'flex', justifyContent: 'center' }}>
           {/* Centered box with open felt on either side, matching N/S width. */}
-          <div style={{ width: '100%', maxWidth: 330 }}>
+          <div id="seat-west" style={{ width: '100%', maxWidth: 330 }}>
             <OpponentRack seat="west" player={players.west} isCurrent={currentSeat === 'west'} centerTiles />
           </div>
         </div>
-        <div style={{ gridArea: 'north' }}>
+        <div id="seat-north" style={{ gridArea: 'north' }}>
           <OpponentRack seat="north" player={players.north} isCurrent={currentSeat === 'north'} />
         </div>
-        <div style={{ gridArea: 'south' }}>
+        <div id="seat-south" style={{ gridArea: 'south' }}>
           <OpponentRack seat="south" player={players.south} isCurrent={currentSeat === 'south'} />
         </div>
 
@@ -118,6 +119,7 @@ export function Board(): React.ReactElement {
       </div>
 
       <CallPrompt />
+      <CharlestonFlightOverlay />
     </div>
   );
 }
