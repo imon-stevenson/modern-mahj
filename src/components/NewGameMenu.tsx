@@ -34,9 +34,9 @@ export function NewGameMenu(): React.ReactElement {
             color: 'var(--ink)',
           }}
         >
-          <option value="beginner">Beginner · no timer</option>
-          <option value="intermediate">Intermediate · 5s</option>
-          <option value="expert">Expert · 5s</option>
+          <option value="beginner">Beginner · no call timer</option>
+          <option value="intermediate">Intermediate · 5s call timer</option>
+          <option value="expert">Expert · 5s call timer</option>
         </select>
       </label>
       <button

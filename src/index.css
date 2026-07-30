@@ -150,7 +150,7 @@ h3 {
   grid-template-columns: minmax(150px, 1fr) 2.3fr minmax(150px, 1fr);
   grid-template-areas:
     'west   west   west'
-    'north  center south'
+    'south  center north'
     'east   east   east';
 }
 

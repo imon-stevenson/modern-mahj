@@ -1,8 +1,8 @@
-import { useMemo, useState, type DragEvent, type ReactNode } from 'react';
-import type { PlayerState, Tile } from '../game/types';
-import { TileView } from './Tile';
-import { ExposureRow } from './ExposureRow';
-import { applyRackOrder } from './rackOrder';
+import { useMemo, useState, type DragEvent, type ReactNode } from "react";
+import type { PlayerState, Tile } from "../game/types";
+import { TileView } from "./Tile";
+import { ExposureRow } from "./ExposureRow";
+import { applyRackOrder } from "./rackOrder";
 
 type Props = {
   player: PlayerState;
@@ -35,7 +35,8 @@ export function PlayerRack({
   );
   const selected = new Set(selectedIds);
   const total =
-    player.rack.length + player.exposures.reduce((n, e) => n + e.tiles.length, 0);
+    player.rack.length +
+    player.exposures.reduce((n, e) => n + e.tiles.length, 0);
 
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -54,16 +55,16 @@ export function PlayerRack({
 
   const onDragStart = (e: DragEvent, id: string) => {
     setDragId(id);
-    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.effectAllowed = "move";
     try {
-      e.dataTransfer.setData('text/plain', id);
+      e.dataTransfer.setData("text/plain", id);
     } catch {
       /* some browsers restrict setData; dragId state covers us */
     }
   };
   const onDrop = (e: DragEvent, targetId: string) => {
     e.preventDefault();
-    const dragged = e.dataTransfer.getData('text/plain') || dragId;
+    const dragged = e.dataTransfer.getData("text/plain") || dragId;
     if (dragged) commitDrop(dragged, targetId);
     setDragId(null);
     setOverId(null);
@@ -72,32 +73,46 @@ export function PlayerRack({
   return (
     <div
       style={{
-        background: 'var(--felt-panel-2)',
-        borderRadius: 'var(--radius-md)',
-        padding: '18px 22px',
-        border: `1px solid ${active ? 'var(--gold)' : 'var(--felt-border)'}`,
-        boxShadow: active ? '0 0 0 3px oklch(0.75 0.13 80 / 0.16)' : 'none',
-        transition: 'border-color 160ms ease, box-shadow 160ms ease',
+        background: "var(--felt-panel-2)",
+        borderRadius: "var(--radius-md)",
+        padding: "18px 22px",
+        border: `1px solid ${active ? "var(--gold)" : "var(--felt-border)"}`,
+        boxShadow: active ? "0 0 0 3px oklch(0.75 0.13 80 / 0.16)" : "none",
+        transition: "border-color 160ms ease, box-shadow 160ms ease",
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 12,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span
             style={{
               width: 8,
               height: 8,
-              borderRadius: '50%',
-              background: active ? 'var(--gold)' : 'var(--felt-divider)',
+              borderRadius: "50%",
+              background: active ? "var(--gold)" : "var(--felt-divider)",
             }}
           />
-          <span style={{ font: '800 14px var(--font-ui)', color: 'var(--felt-ink)' }}>East · You</span>
+          <span
+            style={{
+              font: "800 14px var(--font-ui)",
+              color: "var(--felt-ink)",
+            }}
+          >
+            East · You
+          </span>
           {active && (
             <span
               style={{
-                font: '700 11px var(--font-ui)',
-                background: 'var(--gold)',
-                color: 'var(--gold-ink)',
-                padding: '3px 8px',
+                font: "700 11px var(--font-ui)",
+                background: "var(--gold)",
+                color: "var(--gold-ink)",
+                padding: "3px 8px",
                 borderRadius: 20,
               }}
             >
@@ -105,26 +120,36 @@ export function PlayerRack({
             </span>
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {onResetOrder && (
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '5px 12px', font: '700 11px var(--font-ui)' }}
+              style={{ padding: "5px 12px", font: "700 11px var(--font-ui)" }}
               onClick={onResetOrder}
               title="Sort tiles by suit and number"
             >
-              Sort
+              Default Sort
             </button>
           )}
-          <span className="mono" style={{ font: '600 12px var(--font-mono)', color: 'var(--gold)' }}>
+          <span
+            className="mono"
+            style={{ font: "600 12px var(--font-mono)", color: "var(--gold)" }}
+          >
             {total} tiles
           </span>
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          gap: 16,
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
           {ordered.map((t) => (
             <div
               key={t.id}
@@ -138,18 +163,20 @@ export function PlayerRack({
                 e.preventDefault();
                 if (dragId && overId !== t.id) setOverId(t.id);
               }}
-              onDragLeave={() => setOverId((cur) => (cur === t.id ? null : cur))}
+              onDragLeave={() =>
+                setOverId((cur) => (cur === t.id ? null : cur))
+              }
               onDrop={(e) => onDrop(e, t.id)}
               style={{
-                cursor: 'grab',
+                cursor: "grab",
                 borderRadius: 9,
                 opacity: dragId === t.id ? 0.35 : 1,
                 boxShadow:
                   overId === t.id && dragId && dragId !== t.id
-                    ? '0 0 0 2px var(--gold)'
-                    : 'none',
-                transition: 'opacity 120ms ease, box-shadow 120ms ease',
-                touchAction: 'none',
+                    ? "0 0 0 2px var(--gold)"
+                    : "none",
+                transition: "opacity 120ms ease, box-shadow 120ms ease",
+                touchAction: "none",
               }}
             >
               <TileView
@@ -164,7 +191,13 @@ export function PlayerRack({
         </div>
         {player.exposures.length > 0 && (
           <>
-            <div style={{ width: 1, height: 60, background: 'var(--felt-divider)' }} />
+            <div
+              style={{
+                width: 1,
+                height: 60,
+                background: "var(--felt-divider)",
+              }}
+            />
             <ExposureRow exposures={player.exposures} tileWidth={44} />
           </>
         )}
