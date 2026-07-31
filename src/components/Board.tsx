@@ -435,7 +435,7 @@ function PlayActions({
           className="btn btn-gold"
           onClick={onDraw}
         >
-          Draw tile
+          Draw
           <div style={{ fontSize: "8px", opacity: 0.75 }}>
             {isDesktop ? ' (Hint: Press "d")' : ""}
           </div>

@@ -53,26 +53,26 @@ npm run test:watch  # re-run on change while developing
 <br/>
 Everyone is dealt their tiles (as East, you get 14, but the others get 13), then the Charleston begins:
 
-- **First Charleston** (compulsory): pass 3 tiles right, across, then left (ROL)
-- **Second Charleston** (optional): pass 3 tiles left, across, then right (LOR). This only happens if _every_ player agrees. If any bot declines, you're told and it's skipped.
-- **Courtesy pass**: you and the player across from you agree on a number of tiles (0–3) to swap. If your partner, West, offers fewer than you asked, you must agree to that number or decline the courtesy.
+- **First Charleston** (compulsory): Pass 3 tiles right, across, then left (ROL)
+- **Second Charleston** (optional): Pass 3 tiles left, across, then right (LOR). This only happens if _every_ player agrees. If any bot declines, you're told and it's skipped.
+- **Courtesy pass**: You and the player across from you (West) agree on a number of tiles (0–3) to swap. If West offers fewer than you proposed, you must either agree to that number or decline the courtesy.
 
 **Playing a Turn**
 <br/>
-On your turn, click **Draw tile** to draw from the wall (the newly drawn tile sits at the far right of your rack and is momentarily highlighted), then simply click a tile to discard it. Bots take a moment to "think" before playing, and every discard floats to the central discard pile.
+On your turn, click **Draw** to draw from the wall (the newly drawn tile will sit at the far right of your rack and is briefly highlighted), then click a tile to discard it. Bots take a moment to "think" before playing, and every discard floats to the central discard pile.
 
 **Claiming Discards**
 <br/>
-When another player discards a tile you want to use, a prompt lets you claim it for a **pung** (three of a kind) or **kong** (four), or call **Mahjong** if it completes your hand. Claimed tiles are _exposed_ above your rackrotated to face your opponents—which as you know, is good table etiquette.
+When another player discards a tile you want to use, click the "Call" button to claim it for a **Pung** (three of a kind), **Kong** (four), **Quint** (five), **Sextet** (six), or call **Mahjong** if it completes your hand. Claimed tiles are _exposed_ above your rackrotated to face your opponents—which as you know, is good table etiquette.
 
 **Your Rack**
 <br/>
 Drag tiles to rearrange your hand, or click **Sort Tiles** to group
-them our preferred way: by suit and number (jokers left, winds in N-E-W-S order, dragons by color, then flowers to the right). Remember, Jokers can stand in for tiles in valid pungs/kongs/quints/sextets and can be reclaimed by swapping in the real tile.
+them our preferred way: by suit and number (Jokers left, Winds in N-E-W-S order, Dragons by color, then Flowers to the right). Remember, Jokers can stand in for tiles in valid Pungs/Kongs/Quints/Sextets and can be reclaimed by swapping in the real tile.
 
 **Winning**
 <br/>
-Complete one of the hands from the 2025 NMJL card to win. The wall counter shows how many tiles remain. If it runs out with no winner, the game is a wall game 😢.
+Complete one of the hands from the chosen card to win. The wall counter shows how many tiles remain. If it runs out with no winner, the game is a wall game 😢.
 
 **Difficulty** sets both how well the bots play and how long you get to claim a discard.
 

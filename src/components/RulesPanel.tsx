@@ -9,44 +9,35 @@ const CARDS: Card[] = [
   {
     title: "The Charleston",
     steps: [
-      { n: 1, text: "Right → Across → Left (required)" },
-      { n: 2, text: "Left → Across → Right (optional)" },
+      { n: 1, text: 'Right → Across ("Over") → Left (compulsory)' },
+      { n: 2, text: 'Left → Across ("Over") → Right (optional)' },
       { n: 3, text: "Courtesy pass between opposites" },
     ],
-    note: "Never pass jokers. Remember: R-O-L (L-O-R).",
+    note: "NOTE: All users must agree on the second Charleston and you may never pass jokers.",
   },
   {
     title: "Calling a tile",
     bullets: [
-      "Only for a pung, kong, or quint",
-      "Never for a single or pair — except the final tile for Mahjong",
-      "Call before the next player draws",
-      "Your exposure goes face-up on the rack",
+      'Click the "Call" button (or press "c" on your keyboard) before the timer runs out',
+      "Only allowed for a pung, kong, or quint—never for a single or pair",
+      "Exposure will go face-up on your rack, facing your opponents",
     ],
   },
   {
-    title: "The Joker",
+    title: "Jokers",
     bullets: [
-      "Replaces any tile in a pung, kong, or quint",
-      "Never for a single, pair, or NEWS / year set",
       "Swap your matching tile for an exposed joker at the start of your turn by clicking on the joker, then clicking the tile on your rack",
-      "A discarded joker is dead — no one may pick it up",
+      "Can replace any tile in a pung, kong, quint, or sextet",
+      "May never replace for a single, pair, or NEWS/year set",
     ],
   },
   {
     title: "Getting Mahjong",
     bullets: [
-      "A winning hand is 14 tiles",
-      "Win by drawing or by calling the final discard",
-      "Declare “Mahjong!” and expose the full hand",
-      "No winner means a “wall game”",
-    ],
-  },
-  {
-    title: "Dead hands",
-    bullets: [
-      "Wrong tile count, or wrong exposure count",
-      "Exposed jokers stay tradeable after a hand dies",
+      "Win by matching your hand to a line on the card",
+      "Can be done by drawing or calling your 14th tile",
+      "No winner means a “wall game” 😞",
+      "Watch the rain",
     ],
   },
 ];
