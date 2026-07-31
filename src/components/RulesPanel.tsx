@@ -54,21 +54,9 @@ const CARDS: Card[] = [
 export function RulesPanel(): React.ReactElement {
   return (
     <section>
-      <div className="eyebrow" style={{ marginBottom: 6 }}>
+      <div className="eyebrow" style={{ marginTop: 12, marginBottom: 12 }}>
         Rules &amp; Reference
       </div>
-      <h2 style={{ font: "800 22px var(--font-ui)", marginBottom: 4 }}>
-        Quick reference
-      </h2>
-      <p
-        style={{
-          font: "500 14px var(--font-ui)",
-          color: "var(--ink-soft)",
-          margin: "0 0 20px",
-        }}
-      >
-        For the moments new players pause the game.
-      </p>
 
       <div
         style={{

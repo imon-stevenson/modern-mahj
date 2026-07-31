@@ -284,6 +284,22 @@ h3 {
   }
 }
 
+/* Human Mahjong celebration — emojis raining down the screen for ~6s.
+   Per-piece horizontal drift and spin come from the --drift / --rot vars. */
+@keyframes emoji-rain-fall {
+  0% {
+    transform: translate(0, -12vh) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--drift, 0px), 112vh) rotate(var(--rot, 360deg));
+    opacity: 1;
+  }
+}
+
 /* ---- Board layout ---- */
 
 /* Below 1000px the side columns flex and opponent tile rows may wrap. */

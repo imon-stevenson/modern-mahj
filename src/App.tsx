@@ -4,6 +4,7 @@ import { NewGameMenu } from "./components/NewGameMenu";
 import { RulesPanel } from "./components/RulesPanel";
 import { CardDrawer } from "./components/CardDrawer";
 import { RotateNudge } from "./components/RotateNudge";
+import { EmojiRain } from "./components/EmojiRain";
 import { PauseButton } from "./components/PauseButton";
 import { useBotTurns } from "./hooks/useBotTurns";
 import { useAutoHideHeader } from "./hooks/useAutoHideHeader";
@@ -67,6 +68,7 @@ export default function App(): React.ReactElement {
       />
 
       <RotateNudge />
+      <EmojiRain />
     </div>
   );
 }
