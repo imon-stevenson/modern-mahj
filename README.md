@@ -63,20 +63,18 @@ On your turn, click **Draw tile** to draw from the wall (the newly drawn tile si
 
 **Claiming Discards**
 <br/>
-When another player discards a tile you want to use, a prompt lets you claim it for a **pung** (three of a kind) or **kong** (four), or call
-**Mahjong** if it completes your hand. Claimed tiles are _exposed_ above your rack,
-rotated to face your opponents—which as you know, is good table etiquette.
+When another player discards a tile you want to use, a prompt lets you claim it for a **pung** (three of a kind) or **kong** (four), or call **Mahjong** if it completes your hand. Claimed tiles are _exposed_ above your rackrotated to face your opponents—which as you know, is good table etiquette.
 
 **Your Rack**
 <br/>
 Drag tiles to rearrange your hand, or click **Sort Tiles** to group
-them our preferred way: by suit and number (jokers left, winds in N-E-W-S order). Remember, Jokers can stand in for tiles in pungs/kongs and can be reclaimed by swapping in the real tile.
+them our preferred way: by suit and number (jokers left, winds in N-E-W-S order, dragons by color, then flowers to the right). Remember, Jokers can stand in for tiles in valid pungs/kongs/quints/sextets and can be reclaimed by swapping in the real tile.
 
 **Winning**
 <br/>
-Complete one of the hands from the 2025 NMJL card to win. The wall counter shows how many tiles remain. If it runs out with no winner, the hand is a wall game 😢.
+Complete one of the hands from the 2025 NMJL card to win. The wall counter shows how many tiles remain. If it runs out with no winner, the game is a wall game 😢.
 
-**Difficulty** sets both how well the bots play and how long you get to claim a discard (beginner has no timer).
+**Difficulty** sets both how well the bots play and how long you get to claim a discard.
 
 ## Project layout
 

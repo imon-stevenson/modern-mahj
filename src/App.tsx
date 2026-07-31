@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { Board } from "./components/Board";
 import { NewGameMenu } from "./components/NewGameMenu";
-import { HandCard } from "./components/HandCard";
 import { RulesPanel } from "./components/RulesPanel";
+import { CardDrawer } from "./components/CardDrawer";
 import { useBotTurns } from "./hooks/useBotTurns";
 
 export default function App(): React.ReactElement {
   useBotTurns();
+  const [cardOpen, setCardOpen] = useState(false);
   return (
     <div style={{ minHeight: "100vh", background: "var(--ivory)" }}>
       <header
+        id="app-header"
         style={{
           position: "sticky",
           top: 0,
@@ -43,22 +46,14 @@ export default function App(): React.ReactElement {
       >
         <Board />
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 24,
-            alignItems: "flex-start",
-          }}
-        >
-          <div style={{ flex: "3 1 460px", minWidth: 300 }}>
-            <RulesPanel />
-          </div>
-          <div style={{ flex: "1 1 300px", minWidth: 280 }}>
-            <HandCard />
-          </div>
-        </div>
+        <RulesPanel />
       </main>
+
+      <CardDrawer
+        open={cardOpen}
+        onOpen={() => setCardOpen(true)}
+        onClose={() => setCardOpen(false)}
+      />
     </div>
   );
 }

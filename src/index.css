@@ -210,6 +210,18 @@ h3 {
   }
 }
 
+/* "The Card" right-side drawer sliding in from the edge. */
+@keyframes card-drawer-slide {
+  from {
+    opacity: 0.4;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* ---- Board layout ---- */
 
 /* Below 1000px the side columns flex and opponent tile rows may wrap. */

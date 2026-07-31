@@ -120,11 +120,11 @@ function emptyCharleston(): CharlestonState {
 function callTimerForDifficulty(d: Difficulty): number {
   switch (d) {
     case "beginner":
-      return 10000;
+      return 6000;
     case "intermediate":
-      return 7000;
+      return 4000;
     case "expert":
-      return 5000;
+      return 3000;
   }
 }
 

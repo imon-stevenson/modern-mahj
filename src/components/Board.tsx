@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { useMahjStore } from '../store';
-import { PlayerRack } from './PlayerRack';
-import { OpponentRack } from './OpponentRack';
-import { DiscardPile } from './DiscardPile';
-import { CharlestonUI } from './CharlestonUI';
-import { CallControl } from './CallControl';
-import { CharlestonFlightOverlay } from './CharlestonFlightOverlay';
-import { DiscardFlightOverlay } from './DiscardFlightOverlay';
-import { GameOverBanner } from './GameOverBanner';
-import { useDiscardFlight } from '../hooks/useDiscardFlight';
+import { useEffect, useRef, useState } from "react";
+import { useMahjStore } from "../store";
+import { PlayerRack } from "./PlayerRack";
+import { OpponentRack } from "./OpponentRack";
+import { DiscardPile } from "./DiscardPile";
+import { CharlestonUI } from "./CharlestonUI";
+import { CallControl } from "./CallControl";
+import { CharlestonFlightOverlay } from "./CharlestonFlightOverlay";
+import { DiscardFlightOverlay } from "./DiscardFlightOverlay";
+import { GameOverBanner } from "./GameOverBanner";
+import { useDiscardFlight } from "../hooks/useDiscardFlight";
 
 export function Board(): React.ReactElement {
   useDiscardFlight();
@@ -33,18 +33,20 @@ export function Board(): React.ReactElement {
   // The tile the human just drew stays pinned to the far right of their rack
   // until they discard (turn ends) or drag it into place.
   const drawnTileId =
-    lastAction?.kind === 'draw' && lastAction.seat === 'east' ? lastAction.tileId : null;
+    lastAction?.kind === "draw" && lastAction.seat === "east"
+      ? lastAction.tileId
+      : null;
 
-  if (phase === 'setup') {
+  if (phase === "setup") {
     return (
       <div
         style={{
-          background: 'var(--felt)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '64px 40px',
-          textAlign: 'center',
-          color: 'var(--felt-ink-soft)',
-          font: '500 16px var(--font-ui)',
+          background: "var(--felt)",
+          borderRadius: "var(--radius-lg)",
+          padding: "64px 40px",
+          textAlign: "center",
+          color: "var(--felt-ink-soft)",
+          font: "500 16px var(--font-ui)",
         }}
       >
         No game in progress. Start a new game to take your seat at the table.
@@ -52,9 +54,9 @@ export function Board(): React.ReactElement {
     );
   }
 
-  const isCharleston = phase === 'charleston';
-  const isPlay = phase === 'play';
-  const eastIsCurrent = isPlay && currentSeat === 'east';
+  const isCharleston = phase === "charleston";
+  const isPlay = phase === "play";
+  const eastIsCurrent = isPlay && currentSeat === "east";
   const selectedIds = charleston.selections.east;
 
   const eastTotal =
@@ -73,14 +75,23 @@ export function Board(): React.ReactElement {
   // shakes the Draw button to point them at it.
   const onBoardClick = (e: React.MouseEvent) => {
     if (!needsDraw) return;
-    if ((e.target as HTMLElement).closest('[data-draw-btn]')) return;
+    if ((e.target as HTMLElement).closest("[data-draw-btn]")) return;
     setDrawNudge((n) => n + 1);
   };
 
   const actionSlot = isCharleston ? (
     <CharlestonUI />
   ) : isPlay ? (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 20,
+        flexWrap: "wrap",
+        rowGap: 10,
+      }}
+    >
       <PlayActions
         eastIsCurrent={eastIsCurrent}
         needsDraw={needsDraw}
@@ -99,40 +110,59 @@ export function Board(): React.ReactElement {
         className="board-grid"
         onClick={onBoardClick}
         style={{
-          background: 'var(--felt)',
-          borderRadius: 'var(--radius-lg)',
+          background: "var(--felt)",
+          borderRadius: "var(--radius-lg)",
           padding: 24,
         }}
       >
-        <div style={{ gridArea: 'west', display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            gridArea: "west",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           {/* Centered box with open felt on either side, matching N/S width. */}
-          <div id="seat-west" style={{ width: '100%', maxWidth: 330 }}>
-            <OpponentRack seat="west" player={players.west} isCurrent={currentSeat === 'west'} centerTiles />
+          <div id="seat-west" style={{ width: "100%", maxWidth: 330 }}>
+            <OpponentRack
+              seat="west"
+              player={players.west}
+              isCurrent={currentSeat === "west"}
+              centerTiles
+            />
           </div>
         </div>
-        <div id="seat-north" style={{ gridArea: 'north' }}>
-          <OpponentRack seat="north" player={players.north} isCurrent={currentSeat === 'north'} />
+        <div id="seat-north" style={{ gridArea: "north" }}>
+          <OpponentRack
+            seat="north"
+            player={players.north}
+            isCurrent={currentSeat === "north"}
+          />
         </div>
-        <div id="seat-south" style={{ gridArea: 'south' }}>
-          <OpponentRack seat="south" player={players.south} isCurrent={currentSeat === 'south'} />
+        <div id="seat-south" style={{ gridArea: "south" }}>
+          <OpponentRack
+            seat="south"
+            player={players.south}
+            isCurrent={currentSeat === "south"}
+          />
         </div>
 
         <div
           style={{
-            gridArea: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
+            gridArea: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
             gap: 22,
-            padding: '8px 0',
+            padding: "8px 0",
           }}
         >
           <WallIndicator remaining={wall.length} />
           <DiscardPile discards={discards} />
         </div>
 
-        <div id="seat-east" style={{ gridArea: 'east' }}>
+        <div id="seat-east" style={{ gridArea: "east" }}>
           <PlayerRack
             player={players.east}
             selectedIds={isCharleston ? selectedIds : []}
@@ -157,20 +187,31 @@ export function Board(): React.ReactElement {
   );
 }
 
-function WallIndicator({ remaining }: { remaining: number }): React.ReactElement {
+function WallIndicator({
+  remaining,
+}: {
+  remaining: number;
+}): React.ReactElement {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 6,
+      }}
+    >
       <div
         style={{
-          font: '700 11px var(--font-ui)',
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-          color: 'var(--felt-ink-mute)',
+          font: "700 11px var(--font-ui)",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "var(--felt-ink-mute)",
         }}
       >
         Wall
       </div>
-      <div style={{ display: 'flex', gap: 2 }}>
+      <div style={{ display: "flex", gap: 2 }}>
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
@@ -178,14 +219,18 @@ function WallIndicator({ remaining }: { remaining: number }): React.ReactElement
               width: 20,
               height: 28,
               borderRadius: 4,
-              background: 'linear-gradient(155deg, oklch(0.36 0.07 255), oklch(0.22 0.06 258))',
-              border: '1px solid oklch(0.18 0.05 258)',
+              background:
+                "linear-gradient(155deg, oklch(0.36 0.07 255), oklch(0.22 0.06 258))",
+              border: "1px solid oklch(0.18 0.05 258)",
               opacity: remaining > i * (remaining / 8) ? 1 : 0.3,
             }}
           />
         ))}
       </div>
-      <div className="mono" style={{ font: '600 12px var(--font-mono)', color: 'var(--gold)' }}>
+      <div
+        className="mono"
+        style={{ font: "600 12px var(--font-mono)", color: "var(--gold)" }}
+      >
         {remaining} remaining
       </div>
     </div>
@@ -213,22 +258,27 @@ function PlayActions({
     if (!nudge) return;
     const el = btnRef.current;
     if (!el) return;
-    el.style.animation = 'none';
+    el.style.animation = "none";
     void el.offsetWidth;
-    el.style.animation = 'draw-nudge 500ms ease';
+    el.style.animation = "draw-nudge 500ms ease";
   }, [nudge]);
 
   if (!eastIsCurrent) {
     const name = currentSeat.charAt(0).toUpperCase() + currentSeat.slice(1);
     return (
-      <div style={{ font: '600 13px var(--font-ui)', color: 'var(--felt-ink-mute)' }}>
+      <div
+        style={{
+          font: "600 13px var(--font-ui)",
+          color: "var(--felt-ink-mute)",
+        }}
+      >
         Waiting for {name} to play…
       </div>
     );
   }
   if (needsDraw) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <button
           ref={btnRef}
           data-draw-btn="true"
@@ -238,14 +288,21 @@ function PlayActions({
         >
           Draw tile
         </button>
-        <span style={{ font: '600 12px var(--font-ui)', color: 'var(--felt-ink-mute)' }}>
+        <span
+          style={{
+            font: "600 12px var(--font-ui)",
+            color: "var(--felt-ink-mute)",
+          }}
+        >
           Draw from the wall to begin your turn.
         </span>
       </div>
     );
   }
   return (
-    <div style={{ font: '600 13px var(--font-ui)', color: 'var(--felt-ink-soft)' }}>
+    <div
+      style={{ font: "600 13px var(--font-ui)", color: "var(--felt-ink-soft)" }}
+    >
       Click a tile to discard it.
     </div>
   );

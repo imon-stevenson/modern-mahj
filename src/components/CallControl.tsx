@@ -99,7 +99,12 @@ export function CallControl(): React.ReactElement {
 
       {choosing ? (
         <div
-          style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            flexWrap: "wrap",
+          }}
         >
           {options.map((kind) => (
             <button
@@ -129,6 +134,15 @@ export function CallControl(): React.ReactElement {
           >
             Call
           </button>
+          {claimable && (
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => passCall()}
+            >
+              Pass
+            </button>
+          )}
           {claimable && secondsLeft !== null && (
             <span
               className="mono"

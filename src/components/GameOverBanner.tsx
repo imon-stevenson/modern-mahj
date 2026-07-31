@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMahjStore } from "../store";
 
 // Per product decision, the game surfaces only win / loss — never a score or
@@ -5,7 +6,19 @@ import { useMahjStore } from "../store";
 export function GameOverBanner(): React.ReactElement | null {
   const phase = useMahjStore((s) => s.phase);
   const winner = useMahjStore((s) => s.winner);
-  if (phase !== "ended") return null;
+  const ended = phase === "ended";
+
+  // The banner sits at the top; scroll up to it when the game ends so it isn't
+  // missed while the player is looking at their rack lower on the page.
+  useEffect(() => {
+    if (!ended || typeof window === "undefined") return;
+    const reduce = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  }, [ended]);
+
+  if (!ended) return null;
 
   const youWon = winner === "east";
   const wallGame = winner === null;
