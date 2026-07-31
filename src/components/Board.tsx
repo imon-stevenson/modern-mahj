@@ -4,7 +4,7 @@ import { PlayerRack } from './PlayerRack';
 import { OpponentRack } from './OpponentRack';
 import { DiscardPile } from './DiscardPile';
 import { CharlestonUI } from './CharlestonUI';
-import { CallPrompt } from './CallPrompt';
+import { CallControl } from './CallControl';
 import { CharlestonFlightOverlay } from './CharlestonFlightOverlay';
 import { DiscardFlightOverlay } from './DiscardFlightOverlay';
 import { GameOverBanner } from './GameOverBanner';
@@ -80,13 +80,16 @@ export function Board(): React.ReactElement {
   const actionSlot = isCharleston ? (
     <CharlestonUI />
   ) : isPlay ? (
-    <PlayActions
-      eastIsCurrent={eastIsCurrent}
-      needsDraw={needsDraw}
-      currentSeat={currentSeat}
-      onDraw={humanDraw}
-      nudge={drawNudge}
-    />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <PlayActions
+        eastIsCurrent={eastIsCurrent}
+        needsDraw={needsDraw}
+        currentSeat={currentSeat}
+        onDraw={humanDraw}
+        nudge={drawNudge}
+      />
+      <CallControl />
+    </div>
   ) : null;
 
   return (
@@ -143,12 +146,11 @@ export function Board(): React.ReactElement {
             rackOrder={eastRackOrder}
             onReorder={reorderEastRack}
             onResetOrder={resetEastRackOrder}
-            pinRightId={drawnTileId}
+            pinnedTileId={drawnTileId}
           />
         </div>
       </div>
 
-      <CallPrompt />
       <CharlestonFlightOverlay />
       <DiscardFlightOverlay />
     </div>

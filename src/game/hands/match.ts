@@ -392,3 +392,46 @@ export function matchAgainstAll(
   }
   return null;
 }
+
+// Would some hand — still viable given the player's current `exposures` — need a
+// quint/sextet of `tile`? Used to gate offering those claims: only when a target
+// hand actually calls for that grouping of the discarded tile (so the player
+// can't burn jokers exposing a group no reachable hand can use).
+export function handsAllowGroupingForTile(
+  exposures: Exposure[],
+  hands: NMJLHand[],
+  tile: Tile,
+  kind: 'quint' | 'sextet',
+): boolean {
+  for (const hand of hands) {
+    const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
+      suitBindingSatisfies(b, hand),
+    );
+    const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand);
+    const windBindings = enumerateWindBindings(windVarsIn(hand));
+    const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand));
+
+    for (const s of suitBindings) {
+      for (const n of numberBindings) {
+        for (const w of windBindings) {
+          for (const d of dragonBindings) {
+            const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d };
+            const materialized = materializeGroups(hand, binding);
+            if (!materialized) continue;
+            // The hand must still accommodate what the player has exposed.
+            const assignment = assignExposures(exposures, materialized);
+            if (!assignment) continue;
+            for (let i = 0; i < materialized.length; i++) {
+              if (assignment.usedGroupIdx.has(i)) continue;
+              const g = materialized[i]!;
+              if (g.kind === kind && tilesEqual(identityToTile(g.identity), tile)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+}

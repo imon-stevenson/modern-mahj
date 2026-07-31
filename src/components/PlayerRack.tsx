@@ -74,8 +74,8 @@ type Props = {
   rackOrder?: string[] | null;
   onReorder?: (orderedIds: string[]) => void;
   onResetOrder?: () => void;
-  // Tile id to pin to the far right (the freshly drawn tile).
-  pinRightId?: string | null;
+  // Id of the tile pinned to the far right of the rack (the freshly drawn tile).
+  pinnedTileId?: string | null;
 };
 
 export function PlayerRack({
@@ -88,11 +88,21 @@ export function PlayerRack({
   rackOrder,
   onReorder,
   onResetOrder,
-  pinRightId,
+  pinnedTileId,
 }: Props): React.ReactElement {
+  // Once the player explicitly sorts, stop pinning the drawn tile right so it
+  // merges into the sorted hand. Re-arms automatically on the next draw (new id).
+  const [dismissedPinnedTileId, setDismissedPinnedTileId] = useState<
+    string | null
+  >(null);
+  const activePinnedTileId =
+    pinnedTileId && pinnedTileId !== dismissedPinnedTileId
+      ? pinnedTileId
+      : null;
+
   const ordered = useMemo(
-    () => applyRackOrder(player.rack, rackOrder, pinRightId),
-    [player.rack, rackOrder, pinRightId],
+    () => applyRackOrder(player.rack, rackOrder, activePinnedTileId),
+    [player.rack, rackOrder, activePinnedTileId],
   );
   const selected = new Set(selectedIds);
   const total =
@@ -189,10 +199,14 @@ export function PlayerRack({
               type="button"
               className="btn btn-ghost"
               style={{ padding: "5px 12px", font: "700 11px var(--font-ui)" }}
-              onClick={onResetOrder}
+              onClick={() => {
+                // Dismiss the drawn-tile pin so it sorts in with the rest.
+                setDismissedPinnedTileId(pinnedTileId ?? null);
+                onResetOrder?.();
+              }}
               title="Sort tiles by suit and number"
             >
-              Default Sort
+              Sort Tiles
             </button>
           )}
           <span
@@ -207,7 +221,9 @@ export function PlayerRack({
       {/* Exposed sets sit above the rack, rotated to face the other players —
           slightly smaller than the rack tiles, upside-down from your POV. */}
       {player.exposures.length > 0 && (
-        <div style={{ display: "flex", justifyContent: "center", paddingTop: 8 }}>
+        <div
+          style={{ display: "flex", justifyContent: "center", paddingTop: 8 }}
+        >
           <ExposureRow exposures={player.exposures} tileWidth={48} flip />
         </div>
       )}
@@ -220,7 +236,14 @@ export function PlayerRack({
           paddingTop: "12px",
         }}
       >
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
           {ordered.map((t) => (
             <div
               key={t.id}

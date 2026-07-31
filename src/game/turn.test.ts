@@ -32,17 +32,39 @@ describe('matchingInRack', () => {
 });
 
 describe('possibleCallsForDiscard', () => {
-  it('returns pung with 2, pung+kong with 3', () => {
+  it('returns pung with exactly 2, kong-only with 3', () => {
     expect(
       possibleCallsForDiscard([fiveBam('a'), fiveBam('b')], fiveBam('t')),
     ).toEqual(['pung']);
+    // Holding 3 → only kong (a kong uses all three), pung is not offered.
     expect(
       possibleCallsForDiscard(
         [fiveBam('a'), fiveBam('b'), fiveBam('c')],
         fiveBam('t'),
       ),
-    ).toEqual(['pung', 'kong']);
+    ).toEqual(['kong']);
     expect(possibleCallsForDiscard([fiveBam('a')], fiveBam('t'))).toEqual([]);
+  });
+
+  it('counts jokers as fillers for pung/kong', () => {
+    // 1 natural + 2 jokers → both pung (nat + joker) and kong (nat + 2 jokers).
+    expect(
+      possibleCallsForDiscard(
+        [fiveBam('a'), joker('j0'), joker('j1')],
+        fiveBam('t'),
+      ),
+    ).toEqual(['pung', 'kong']);
+    // 1 natural + 1 joker → only pung.
+    expect(
+      possibleCallsForDiscard([fiveBam('a'), joker('j0')], fiveBam('t')),
+    ).toEqual(['pung']);
+    // 3 naturals + a joker → still kong-only (pure-natural kong is available).
+    expect(
+      possibleCallsForDiscard(
+        [fiveBam('a'), fiveBam('b'), fiveBam('c'), joker('j0')],
+        fiveBam('t'),
+      ),
+    ).toEqual(['kong']);
   });
 });
 
@@ -104,5 +126,36 @@ describe('tilesForCall', () => {
     const rack: Tile[] = [fiveBam('a'), fiveBam('b'), fiveBam('c'), sixBam('d')];
     const t = tilesForCall('kong', fiveBam('discard'), rack);
     expect(t.fromRack).toHaveLength(3);
+  });
+
+  it('fills with jokers after naturals', () => {
+    // 1 natural + 2 jokers, kong needs 3 from rack → natural first, then jokers.
+    const rack: Tile[] = [fiveBam('a'), joker('j0'), joker('j1')];
+    const t = tilesForCall('kong', fiveBam('discard'), rack);
+    expect(t.fromRack.map((x) => x.id)).toEqual(['a', 'j0', 'j1']);
+  });
+
+  it('throws when naturals + jokers are insufficient', () => {
+    expect(() =>
+      tilesForCall('pung', fiveBam('discard'), [fiveBam('a')]),
+    ).toThrow();
+  });
+
+  it('fills a quint (4 from rack) with jokers after naturals', () => {
+    const rack: Tile[] = [fiveBam('a'), joker('j0'), joker('j1'), joker('j2')];
+    const t = tilesForCall('quint', fiveBam('discard'), rack);
+    expect(t.fromRack.map((x) => x.id)).toEqual(['a', 'j0', 'j1', 'j2']);
+  });
+
+  it('fills a sextet (5 from rack) with jokers after naturals', () => {
+    const rack: Tile[] = [
+      fiveBam('a'),
+      fiveBam('b'),
+      fiveBam('c'),
+      joker('j0'),
+      joker('j1'),
+    ];
+    const t = tilesForCall('sextet', fiveBam('discard'), rack);
+    expect(t.fromRack.map((x) => x.id)).toEqual(['a', 'b', 'c', 'j0', 'j1']);
   });
 });

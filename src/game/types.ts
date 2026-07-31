@@ -34,13 +34,16 @@ export type PlayerState = {
 
 export type GamePhase = 'setup' | 'charleston' | 'play' | 'ended';
 
-export type CallKind = 'pung' | 'kong' | 'mahjong';
+export type CallKind = 'pung' | 'kong' | 'quint' | 'sextet' | 'mahjong';
 
 export type AwaitingCall = {
   discardId: string;
   discardTile: Tile;
   callableBy: Seat[];
   deadline: number | null;
+  // True once the human presses "Call" and is choosing which claim to make —
+  // the countdown is paused (deadline nulled) while they decide.
+  humanChoosing: boolean;
 } | null;
 
 export type CharlestonPass =

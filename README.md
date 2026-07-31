@@ -69,7 +69,7 @@ rotated to face your opponents—which as you know, is good table etiquette.
 
 **Your Rack**
 <br/>
-Drag tiles to rearrange your hand, or click **Default Sort** to group
+Drag tiles to rearrange your hand, or click **Sort Tiles** to group
 them our preferred way: by suit and number (jokers left, winds in N-E-W-S order). Remember, Jokers can stand in for tiles in pungs/kongs and can be reclaimed by swapping in the real tile.
 
 **Winning**

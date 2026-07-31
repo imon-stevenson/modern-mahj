@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { matchHand } from './match';
+import { handsAllowGroupingForTile, matchHand } from './match';
 import type { NMJLHand } from './schema';
 import { buildExposure } from '../exposure';
 import type { Tile } from '../types';
@@ -197,5 +197,52 @@ describe('matchHand — closed pair hand', () => {
     ];
     const r = matchHand(rack, [], closedPairsHand);
     expect(r).toBeNull();
+  });
+});
+
+const greenQuintHand: NMJLHand = {
+  id: 'h-quint',
+  section: 'ex',
+  line: 9,
+  description: 'FF DDDDD(green) 2222(X) 555(X) — needs a green-dragon quint',
+  closed: false,
+  value: 30,
+  groups: [
+    { kind: 'pair', tile: { kind: 'flower' }, jokersAllowed: false },
+    { kind: 'quint', tile: { kind: 'dragon', color: 'green' }, jokersAllowed: true },
+    { kind: 'kong', tile: { kind: 'number', rank: 2, suitVar: 'X' }, jokersAllowed: true },
+    { kind: 'pung', tile: { kind: 'number', rank: 5, suitVar: 'X' }, jokersAllowed: true },
+  ],
+};
+
+describe('handsAllowGroupingForTile', () => {
+  it('is true for a tile a viable hand needs as that grouping', () => {
+    expect(
+      handsAllowGroupingForTile([], [greenQuintHand], dragon('green', 't'), 'quint'),
+    ).toBe(true);
+  });
+
+  it('is false for a tile no hand groups that way', () => {
+    // Red dragon: no quint of red in the card.
+    expect(
+      handsAllowGroupingForTile([], [greenQuintHand], dragon('red', 't'), 'quint'),
+    ).toBe(false);
+    // The green-dragon group is a quint, not a sextet.
+    expect(
+      handsAllowGroupingForTile([], [greenQuintHand], dragon('green', 't'), 'sextet'),
+    ).toBe(false);
+  });
+
+  it('is false once an exposure rules the hand out', () => {
+    // A pung of 7-bam fits none of the hand's groups, so the hand is no longer
+    // viable and the green-dragon quint is not offered.
+    const ex = buildExposure(
+      'pung',
+      [n('bams', 7, 'a'), n('bams', 7, 'b'), n('bams', 7, 'c')],
+      n('bams', 7, 't'),
+    );
+    expect(
+      handsAllowGroupingForTile([ex], [greenQuintHand], dragon('green', 't'), 'quint'),
+    ).toBe(false);
   });
 });

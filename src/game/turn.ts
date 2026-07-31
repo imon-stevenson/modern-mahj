@@ -16,18 +16,33 @@ export function matchingInRack(rack: readonly Tile[], tile: Tile): number {
 // Non-mahjong calls available on a discard for this seat, given only their
 // rack (mahjong requires the hand-matching engine and is checked separately).
 export function possibleCallsForDiscard(rack: readonly Tile[], tile: Tile): CallKind[] {
-  const n = matchingInRack(rack, tile);
+  const naturals = matchingInRack(rack, tile);
+  const jokers = rack.filter((t) => t.kind === 'joker').length;
+  // Jokers can fill a pung/kong claim alongside the natural matches. A claim is
+  // the discard + `fillers` tiles from your rack (naturals and/or jokers): pung
+  // needs 2, kong needs 3. Pung is suppressed once you already hold 3 naturals,
+  // since a pure-natural kong is then strictly better.
+  const fillers = naturals + jokers;
   const calls: CallKind[] = [];
-  if (n >= 2) calls.push('pung');
-  if (n >= 3) calls.push('kong');
+  if (fillers >= 2 && naturals < 3) calls.push('pung');
+  if (fillers >= 3) calls.push('kong');
   return calls;
 }
 
 // Rank calls for priority. Higher number = higher priority.
 export function callPriority(kind: CallKind): number {
-  if (kind === 'mahjong') return 3;
-  if (kind === 'kong') return 2;
-  return 1; // pung
+  switch (kind) {
+    case 'mahjong':
+      return 5;
+    case 'sextet':
+      return 4;
+    case 'quint':
+      return 3;
+    case 'kong':
+      return 2;
+    case 'pung':
+      return 1;
+  }
 }
 
 // If more than one seat wants to call, pick the winner. Mahjong beats non-
@@ -91,17 +106,28 @@ export type CalledExposureTiles = {
   fromRack: Tile[]; // real matching tiles taken from the caller's rack
 };
 
-// Which non-joker tiles the caller must contribute from their rack for a
-// pung/kong of the given discard. (Naturals only, no joker substitution here;
-// substitution can happen if the caller chooses to bring jokers by supplying
-// them explicitly. For simplicity, MVP: use only naturals from rack.)
+// Which tiles the caller contributes from their rack for a pung/kong of the
+// given discard: natural matches first, then jokers to fill the remainder.
 export function tilesForCall(
   kind: Exclude<CallKind, 'mahjong'>,
   discard: Tile,
   rack: readonly Tile[],
 ): CalledExposureTiles {
-  const need = kind === 'pung' ? 2 : 3;
-  const { taken } = takeMatchingFromRack(rack, discard, need);
+  const need = { pung: 2, kong: 3, quint: 4, sextet: 5 }[kind];
+  const taken: Tile[] = [];
+  // Prefer natural matches...
+  for (const t of rack) {
+    if (taken.length >= need) break;
+    if (t.kind !== 'joker' && tilesEqual(t, discard)) taken.push(t);
+  }
+  // ...then top up with jokers.
+  for (const t of rack) {
+    if (taken.length >= need) break;
+    if (t.kind === 'joker') taken.push(t);
+  }
+  if (taken.length < need) {
+    throw new Error(`not enough naturals + jokers in rack to form ${kind}`);
+  }
   return { fromDiscard: discard, fromRack: taken };
 }
 

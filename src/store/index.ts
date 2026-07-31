@@ -98,6 +98,7 @@ export type MahjState = {
   humanDiscard: (tileId: string) => void;
   runBotTurn: (seat: Seat) => void;
   callWithHuman: (kind: CallKind) => void;
+  openHumanCall: () => void;
   passCall: () => void;
   offerJokerSwap: (offer: JokerSwapOffer) => void;
 };
@@ -117,7 +118,14 @@ function emptyCharleston(): CharlestonState {
 }
 
 function callTimerForDifficulty(d: Difficulty): number {
-  return d === "beginner" ? 0 : 15000; // 0 interpreted as unlimited time
+  switch (d) {
+    case "beginner":
+      return 10000;
+    case "intermediate":
+      return 7000;
+    case "expert":
+      return 5000;
+  }
 }
 
 function tileTotal(player: PlayerState): number {
@@ -273,6 +281,7 @@ function afterDiscard(state: MahjState, discarder: Seat): Partial<MahjState> {
       state.callTimerMs > 0 && humanCanCall
         ? Date.now() + state.callTimerMs
         : null,
+    humanChoosing: false,
   };
   const withAwaiting: MahjState = { ...state, awaitingCall: awaiting };
   if (!humanCanCall) {
@@ -649,6 +658,21 @@ export const useMahjStore = create<MahjState>()(
         if (!s.awaitingCall) return;
         if (!s.awaitingCall.callableBy.includes("east")) return;
         set(applyCall(s, "east", kind, s.awaitingCall.discardTile));
+      },
+
+      openHumanCall() {
+        const s = get();
+        if (!s.awaitingCall) return;
+        if (!s.awaitingCall.callableBy.includes("east")) return;
+        // Human committed to deciding — pause the countdown (unlimited) and let
+        // the UI show the specific claim options.
+        set({
+          awaitingCall: {
+            ...s.awaitingCall,
+            humanChoosing: true,
+            deadline: null,
+          },
+        });
       },
 
       offerJokerSwap(offer) {
