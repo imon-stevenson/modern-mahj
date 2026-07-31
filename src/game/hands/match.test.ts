@@ -215,6 +215,93 @@ const greenQuintHand: NMJLHand = {
   ],
 };
 
+const twoNumberQuintsHand: NMJLHand = {
+  id: 'h-two-num',
+  section: 'ex',
+  line: 10,
+  description: 'quint N(X) quint M(X) kong dragon(Y) — two different numbers, X != Y',
+  closed: false,
+  value: 40,
+  groups: [
+    { kind: 'quint', tile: { kind: 'number', numVar: 'N', suitVar: 'X' }, jokersAllowed: true },
+    { kind: 'quint', tile: { kind: 'number', numVar: 'M', suitVar: 'X' }, jokersAllowed: true },
+    { kind: 'kong', tile: { kind: 'dragon', suitVar: 'Y' }, jokersAllowed: true },
+  ],
+  suitConstraints: [{ rule: 'allDifferent', vars: ['X', 'Y'] }],
+};
+
+describe('matchHand — two independent number variables (N and M)', () => {
+  it('matches two different numbers in the same suit', () => {
+    const rack: Tile[] = [
+      n('bams', 1, 'a0'), n('bams', 1, 'a1'), n('bams', 1, 'a2'), n('bams', 1, 'a3'), n('bams', 1, 'a4'),
+      n('bams', 4, 'b0'), n('bams', 4, 'b1'), n('bams', 4, 'b2'), n('bams', 4, 'b3'), n('bams', 4, 'b4'),
+      dragon('red', 'r0'), dragon('red', 'r1'), dragon('red', 'r2'), dragon('red', 'r3'),
+    ];
+    const r = matchHand(rack, [], twoNumberQuintsHand);
+    expect(r).not.toBeNull();
+    expect(r?.binding.suits.X).toBe('bams');
+    expect([r?.binding.numbers.N, r?.binding.numbers.M].sort()).toEqual([1, 4]);
+  });
+
+  it('rejects ten of the same number (N must differ from M)', () => {
+    const rack: Tile[] = [
+      n('bams', 1, 'a0'), n('bams', 1, 'a1'), n('bams', 1, 'a2'), n('bams', 1, 'a3'), n('bams', 1, 'a4'),
+      n('bams', 1, 'a5'), n('bams', 1, 'a6'), n('bams', 1, 'a7'), n('bams', 1, 'a8'), n('bams', 1, 'a9'),
+      dragon('red', 'r0'), dragon('red', 'r1'), dragon('red', 'r2'), dragon('red', 'r3'),
+    ];
+    expect(matchHand(rack, [], twoNumberQuintsHand)).toBeNull();
+  });
+});
+
+const sevenPairsRunHand: NMJLHand = {
+  id: 'h-seven-run',
+  section: 'ex',
+  line: 11,
+  description: 'seven consecutive pairs N..N+6 (one suit)',
+  closed: true,
+  value: 50,
+  groups: [
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N', suitVar: 'X' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N+1', suitVar: 'X' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N+2', suitVar: 'X' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N+3', suitVar: 'X' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N+4', suitVar: 'X' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N+5', suitVar: 'X' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', numVar: 'N+6', suitVar: 'X' }, jokersAllowed: false },
+  ],
+  numberConstraints: [{ rule: 'range', var: 'N', min: 1, max: 3 }],
+};
+
+describe('matchHand — N+5 and N+6 offsets (seven consecutive pairs)', () => {
+  it('binds N=3 for pairs 3..9', () => {
+    const rack: Tile[] = [
+      n('bams', 3, 'a'), n('bams', 3, 'b'),
+      n('bams', 4, 'c'), n('bams', 4, 'd'),
+      n('bams', 5, 'e'), n('bams', 5, 'f'),
+      n('bams', 6, 'g'), n('bams', 6, 'h'),
+      n('bams', 7, 'i'), n('bams', 7, 'j'),
+      n('bams', 8, 'k'), n('bams', 8, 'l'),
+      n('bams', 9, 'm'), n('bams', 9, 'n'),
+    ];
+    const r = matchHand(rack, [], sevenPairsRunHand);
+    expect(r).not.toBeNull();
+    expect(r?.binding.numbers.N).toBe(3);
+  });
+
+  it('rejects a run that would need N=4 (10 does not exist)', () => {
+    const rack: Tile[] = [
+      n('bams', 4, 'a'), n('bams', 4, 'b'),
+      n('bams', 5, 'c'), n('bams', 5, 'd'),
+      n('bams', 6, 'e'), n('bams', 6, 'f'),
+      n('bams', 7, 'g'), n('bams', 7, 'h'),
+      n('bams', 8, 'i'), n('bams', 8, 'j'),
+      n('bams', 9, 'k'), n('bams', 9, 'l'),
+      n('bams', 1, 'm'), n('bams', 1, 'n'),
+    ];
+    expect(matchHand(rack, [], sevenPairsRunHand)).toBeNull();
+  });
+});
+
 describe('handsAllowGroupingForTile', () => {
   it('is true for a tile a viable hand needs as that grouping', () => {
     expect(

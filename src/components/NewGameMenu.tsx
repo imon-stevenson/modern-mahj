@@ -5,7 +5,7 @@ import type { Difficulty } from "../game/types";
 export function NewGameMenu(): React.ReactElement {
   const currentDifficulty = useMahjStore((s) => s.difficulty);
   const phase = useMahjStore((s) => s.phase);
-  const newGame = useMahjStore((s) => s.newGame);
+  const requestNewGame = useMahjStore((s) => s.requestNewGame);
   const [difficulty, setDifficulty] = useState<Difficulty>(currentDifficulty);
 
   const isMidGame = phase === "charleston" || phase === "play";
@@ -44,7 +44,7 @@ export function NewGameMenu(): React.ReactElement {
         className="btn btn-gold"
         onClick={() => {
           if (isMidGame && !confirm("Abandon the in-progress game?")) return;
-          newGame(difficulty);
+          requestNewGame(difficulty);
         }}
       >
         {isMidGame ? "New Game" : "Start Game"}

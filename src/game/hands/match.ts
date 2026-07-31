@@ -20,7 +20,7 @@ import type {
 
 // A binding maps each variable used by a hand to a concrete value.
 type SuitBinding = Partial<Record<SuitVar, Suit>>;
-type NumberBinding = { N?: number };
+type NumberBinding = { N?: number; M?: number };
 type WindBinding = Partial<Record<WindVar, Wind>>;
 type DragonBinding = Partial<Record<DragonVar, DragonColor>>;
 type Binding = {
@@ -150,33 +150,66 @@ function suitBindingSatisfies(binding: SuitBinding, hand: NMJLHand): boolean {
   return true;
 }
 
-function enumerateNumberBindings(vars: NumberVar[], hand: NMJLHand): NumberBinding[] {
-  const usesN = vars.length > 0;
-  if (!usesN) return [{}];
+type NumberBase = 'N' | 'M';
+
+function numberVarBase(v: NumberVar): NumberBase {
+  return v.startsWith('M') ? 'M' : 'N';
+}
+
+function numberVarOffset(v: NumberVar): number {
+  const plus = v.split('+')[1];
+  return plus ? parseInt(plus, 10) : 0;
+}
+
+// Candidate concrete values for one base (`N` or `M`), honouring its number
+// constraints and leaving room for the largest offset used by that base.
+function candidatesForBase(base: NumberBase, vars: NumberVar[], hand: NMJLHand): number[] {
   let candidates = new Set<number>();
   for (let n = 1; n <= 9; n++) candidates.add(n);
   for (const c of hand.numberConstraints ?? []) {
-    if (c.var !== 'N') continue;
+    if (c.var !== base) continue;
     if (c.rule === 'range') {
       candidates = new Set([...candidates].filter((n) => n >= c.min && n <= c.max));
     } else {
       candidates = new Set([...candidates].filter((n) => c.values.includes(n)));
     }
   }
-  const maxOffset = vars.reduce((m, v) => {
-    if (v === 'N') return m;
-    const off = parseInt(v.split('+')[1] ?? '0', 10);
-    return Math.max(m, off);
-  }, 0);
+  const maxOffset = vars
+    .filter((v) => numberVarBase(v) === base)
+    .reduce((m, v) => Math.max(m, numberVarOffset(v)), 0);
   candidates = new Set([...candidates].filter((n) => n + maxOffset <= 9));
-  return [...candidates].sort((a, b) => a - b).map((n) => ({ N: n }));
+  return [...candidates].sort((a, b) => a - b);
+}
+
+function enumerateNumberBindings(vars: NumberVar[], hand: NMJLHand): NumberBinding[] {
+  if (vars.length === 0) return [{}];
+  const usesN = vars.some((v) => numberVarBase(v) === 'N');
+  const usesM = vars.some((v) => numberVarBase(v) === 'M');
+  const nCands: (number | undefined)[] = usesN
+    ? candidatesForBase('N', vars, hand)
+    : [undefined];
+  const mCands: (number | undefined)[] = usesM
+    ? candidatesForBase('M', vars, hand)
+    : [undefined];
+  const out: NumberBinding[] = [];
+  for (const n of nCands) {
+    for (const m of mCands) {
+      // Two independent bases in the same hand denote two different numbers.
+      if (usesN && usesM && n === m) continue;
+      const b: NumberBinding = {};
+      if (n !== undefined) b.N = n;
+      if (m !== undefined) b.M = m;
+      out.push(b);
+    }
+  }
+  return out;
 }
 
 function resolveNumberVar(varName: NumberVar, binding: NumberBinding): number | null {
-  if (binding.N == null) return null;
-  if (varName === 'N') return binding.N;
-  const off = parseInt(varName.split('+')[1] ?? '0', 10);
-  return binding.N + off;
+  const base = numberVarBase(varName);
+  const baseVal = base === 'M' ? binding.M : binding.N;
+  if (baseVal == null) return null;
+  return baseVal + numberVarOffset(varName);
 }
 
 function materializeIdentity(

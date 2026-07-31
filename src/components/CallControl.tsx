@@ -28,7 +28,8 @@ export function CallControl(): React.ReactElement {
   // Load once — hands are static per session; calling the loader inside a
   // selector returns a fresh reference on failure paths and can loop.
   const loadHands = useMahjStore((s) => s.loadHandsSafe);
-  const hands = useMemo(() => loadHands(), [loadHands]);
+  const cardYear = useMahjStore((s) => s.cardYear);
+  const hands = useMemo(() => loadHands(cardYear), [loadHands, cardYear]);
   const callWithHuman = useMahjStore((s) => s.callWithHuman);
   const openHumanCall = useMahjStore((s) => s.openHumanCall);
   const passCall = useMahjStore((s) => s.passCall);

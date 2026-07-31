@@ -6,10 +6,12 @@ import { CardDrawer } from "./components/CardDrawer";
 import { RotateNudge } from "./components/RotateNudge";
 import { PauseButton } from "./components/PauseButton";
 import { useBotTurns } from "./hooks/useBotTurns";
+import { useAutoHideHeader } from "./hooks/useAutoHideHeader";
 
 export default function App(): React.ReactElement {
   useBotTurns();
   const [cardOpen, setCardOpen] = useState(false);
+  const headerHidden = useAutoHideHeader();
   return (
     <div style={{ minHeight: "100vh", background: "var(--ivory)" }}>
       <header
@@ -26,6 +28,10 @@ export default function App(): React.ReactElement {
           justifyContent: "space-between",
           gap: 16,
           flexWrap: "wrap",
+          // Auto-hide on scroll down, reveal on scroll up (always shown at top).
+          transform: headerHidden ? "translateY(-100%)" : "translateY(0)",
+          transition: "transform 240ms ease",
+          willChange: "transform",
         }}
       >
         <div

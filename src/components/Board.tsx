@@ -12,6 +12,7 @@ import { GameOverBanner } from "./GameOverBanner";
 import { useDiscardFlight } from "../hooks/useDiscardFlight";
 import { useIsDesktop } from "../hooks/useIsDesktop";
 import { attemptJokerSwap, useJokerSwapUi } from "../store/jokerSwapUi";
+import { CARD_YEARS } from "../game/hands/loader";
 
 export function Board(): React.ReactElement {
   useDiscardFlight();
@@ -30,6 +31,8 @@ export function Board(): React.ReactElement {
   const lastAction = useMahjStore((s) => s.lastAction);
   const paused = useMahjStore((s) => s.paused);
   const resumeGame = useMahjStore((s) => s.resumeGame);
+  const cardYear = useMahjStore((s) => s.cardYear);
+  const startGameWithCard = useMahjStore((s) => s.startGameWithCard);
 
   // Bumped whenever the human clicks somewhere on the board while they still
   // owe a draw — replays the "Draw tile" button's attention shake.
@@ -82,6 +85,65 @@ export function Board(): React.ReactElement {
         }}
       >
         No game in progress. Start a new game to take your seat at the table.
+      </div>
+    );
+  }
+
+  if (phase === "chooseCard") {
+    // Card picker drawn within the mat boundary before every game. The default
+    // (most recently used / 2026) is the primary button.
+    return (
+      <div
+        style={{
+          background: "var(--felt)",
+          borderRadius: "var(--radius-lg)",
+          padding: "56px 40px",
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 22,
+        }}
+      >
+        <div
+          style={{
+            font: "800 22px var(--font-ui)",
+            color: "var(--felt-ink)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Which card are you playing with?
+        </div>
+        <div
+          style={{
+            font: "500 14px var(--font-ui)",
+            color: "var(--felt-ink-soft)",
+          }}
+        >
+          Pick the NMJL card for this game—it can't change once you start!
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 14,
+            marginTop: 6,
+          }}
+        >
+          {CARD_YEARS.map((y) => (
+            <button
+              key={y}
+              type="button"
+              autoFocus={y === cardYear}
+              className={y === cardYear ? "btn btn-gold" : "btn btn-outline"}
+              style={{ padding: "12px 22px", font: "800 15px var(--font-ui)" }}
+              onClick={() => startGameWithCard(y)}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
       </div>
     );
   }

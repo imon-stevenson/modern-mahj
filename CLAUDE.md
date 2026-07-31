@@ -51,7 +51,7 @@ Layout:
     │   │   ├── schema.ts
     │   │   ├── loader.ts
     │   │   ├── match.ts
-    │   │   └── hands.json     # NMJL card (user-populated)
+    │   │   └── handsYEAR.json     # Card (user-populated)
     │   └── bots/
     │       ├── base.ts
     │       ├── beginner.ts
@@ -66,6 +66,7 @@ Layout:
 ```
 
 Notes:
+
 - `public/` assets are served from `/` at runtime.
 - Game logic under `src/game/` is pure and framework-free — do NOT import React there. All bot/game randomness goes through the seeded RNG in `src/game/rng.ts` so tests are deterministic.
 - TS uses project references — `tsc -b` builds both `tsconfig.app.json` and `tsconfig.node.json`.

@@ -10,7 +10,10 @@ import type { DragonColor, Suit, Wind } from '../types';
 export const SuitVar = z.enum(['X', 'Y', 'Z']);
 export type SuitVar = z.infer<typeof SuitVar>;
 
-export const NumberVar = z.enum(['N', 'N+1', 'N+2', 'N+3', 'N+4']);
+// `N` and its offsets are one consecutive-run variable; `M` is a second,
+// independent number variable (used by hands with two unrelated numbers, e.g.
+// two quints of "any 2 numbers"). When a hand uses both bases they must differ.
+export const NumberVar = z.enum(['N', 'N+1', 'N+2', 'N+3', 'N+4', 'N+5', 'N+6', 'M']);
 export type NumberVar = z.infer<typeof NumberVar>;
 
 export const WindVar = z.enum(['WV']);

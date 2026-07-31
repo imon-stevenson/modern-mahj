@@ -17,7 +17,8 @@ export function CardDrawer({
   onClose: () => void;
 }): React.ReactElement {
   const load = useMahjStore((s) => s.loadHandsSafe);
-  const hands = useMemo(() => load(), [load]);
+  const cardYear = useMahjStore((s) => s.cardYear);
+  const hands = useMemo(() => load(cardYear), [load, cardYear]);
 
   // Drawer top = just below the sticky header; bottom = just above the rack, so
   // the rack remains visible. Recomputed on scroll/resize while open.
@@ -116,16 +117,21 @@ export function CardDrawer({
           <div className="eyebrow" style={{ marginBottom: 2 }}>
             The Card
           </div>
-          <div style={{ font: "800 15px var(--font-ui)" }}>
-            Hands{" "}
+          <div
+            style={{
+              font: "800 16px var(--font-ui)",
+              color: "var(--tile-navy)",
+            }}
+          >
+            {cardYear} Card{" "}
             <span
               className="mono"
               style={{
-                font: "600 13px var(--font-mono)",
+                font: "600 12px var(--font-mono)",
                 color: "var(--ink-faint)",
               }}
             >
-              {hands.length}
+              · {hands.length} hands
             </span>
           </div>
         </div>

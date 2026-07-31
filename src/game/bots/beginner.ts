@@ -1,9 +1,9 @@
-import type { CallKind, Tile } from '../types';
-import type { JokerSwapOffer } from '../jokerSwap';
-import type { BotCtx, BotStrategy } from './base';
-import { matchAgainstAll } from '../hands/match';
+import type { CallKind, Tile } from "../types";
+import type { JokerSwapOffer } from "../jokerSwap";
+import type { BotCtx, BotStrategy } from "./base";
+import { matchAgainstAll } from "../hands/match";
 
-function pickN<T>(items: readonly T[], n: number, rng: BotCtx['rng']): T[] {
+function pickN<T>(items: readonly T[], n: number, rng: BotCtx["rng"]): T[] {
   const copy = [...items];
   const out: T[] = [];
   for (let i = 0; i < n && copy.length > 0; i++) {
@@ -16,12 +16,12 @@ function pickN<T>(items: readonly T[], n: number, rng: BotCtx['rng']): T[] {
 
 export const beginnerBot: BotStrategy = {
   chooseCharlestonPass(ctx) {
-    const nonJokers = ctx.rack.filter((t) => t.kind !== 'joker');
+    const nonJokers = ctx.rack.filter((t) => t.kind !== "joker");
     const picks = pickN(nonJokers, 3, ctx.rng);
     return picks as [Tile, Tile, Tile];
   },
   wantsSecondCharleston() {
-    return false;
+    return true;
   },
   chooseCourtesyCount(ctx) {
     // Beginner offers a random number of tiles (0–3).
@@ -29,11 +29,11 @@ export const beginnerBot: BotStrategy = {
   },
   chooseCourtesyPass(ctx, maxCount) {
     // Offer up to `maxCount` random (non-joker) tiles for the courtesy pass.
-    const nonJokers = ctx.rack.filter((t) => t.kind !== 'joker');
+    const nonJokers = ctx.rack.filter((t) => t.kind !== "joker");
     return pickN(nonJokers, Math.max(0, maxCount), ctx.rng);
   },
   chooseDiscard(ctx) {
-    const options = ctx.rack.filter((t) => t.kind !== 'joker');
+    const options = ctx.rack.filter((t) => t.kind !== "joker");
     if (options.length === 0) return ctx.rack[0]!;
     return options[ctx.rng.nextInt(options.length)]!;
   },
@@ -41,7 +41,7 @@ export const beginnerBot: BotStrategy = {
     // Only declare Mahjong, and only when a full match is possible right now
     // (including the discard as if it were in the rack).
     const trialRack = [...ctx.rack, discard];
-    if (matchAgainstAll(trialRack, ctx.exposures, ctx.hands)) return 'mahjong';
+    if (matchAgainstAll(trialRack, ctx.exposures, ctx.hands)) return "mahjong";
     // Beginner never calls pung/kong.
     void available;
     return null;

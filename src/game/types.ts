@@ -32,7 +32,12 @@ export type PlayerState = {
   isBot: boolean;
 };
 
-export type GamePhase = 'setup' | 'charleston' | 'play' | 'ended';
+export type GamePhase =
+  | 'setup'
+  | 'chooseCard'
+  | 'charleston'
+  | 'play'
+  | 'ended';
 
 export type CallKind = 'pung' | 'kong' | 'quint' | 'sextet' | 'mahjong';
 

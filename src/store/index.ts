@@ -19,6 +19,7 @@ import { botFor } from "../game/bots";
 import type { BotCtx } from "../game/bots";
 import type { NMJLHand } from "../game/hands/schema";
 import { allHands } from "../game/hands/loader";
+import type { CardYear } from "../game/hands/loader";
 import { matchAgainstAll } from "../game/hands/match";
 import { buildExposure } from "../game/exposure";
 import {
@@ -59,6 +60,8 @@ type LastAction =
 
 export type MahjState = {
   difficulty: Difficulty;
+  // Which NMJL year card is in play. Chosen at new-game time; fixed for the game.
+  cardYear: CardYear;
   botDelayMs: number;
   callTimerMs: number;
   rngSeed: number;
@@ -82,9 +85,12 @@ export type MahjState = {
   paused: boolean;
   pausedCallRemainingMs: number | null;
 
-  loadHandsSafe: () => NMJLHand[];
+  loadHandsSafe: (year?: CardYear) => NMJLHand[];
 
-  newGame: (difficulty: Difficulty) => void;
+  // Start a new game in two steps: choose difficulty (header), then pick the
+  // card on the mat before dealing.
+  requestNewGame: (difficulty: Difficulty) => void;
+  startGameWithCard: (cardYear: CardYear) => void;
   reorderEastRack: (orderedIds: string[]) => void;
   resetEastRackOrder: () => void;
   toggleTileSelection: (tileId: string) => void;
@@ -163,9 +169,9 @@ function callableSeats(
   return out;
 }
 
-function safeHands(): NMJLHand[] {
+function safeHands(year: CardYear): NMJLHand[] {
   try {
-    return allHands();
+    return allHands(year);
   } catch {
     return [];
   }
@@ -181,7 +187,7 @@ function buildBotCtx(state: MahjState, seat: Seat, rngOffset = 0): BotCtx {
     exposures: state.players[seat].exposures,
     allExposures,
     discardPile: state.discards,
-    hands: state.loadHandsSafe(),
+    hands: state.loadHandsSafe(state.cardYear),
     rng: createRng(
       state.rngSeed + rngOffset + state.discards.length + seat.length,
     ),
@@ -200,7 +206,7 @@ function applyCall(
     const match = matchAgainstAll(
       trial,
       state.players[caller].exposures,
-      safeHands(),
+      safeHands(state.cardYear),
     );
     const nextPlayers: Record<Seat, PlayerState> = {
       ...state.players,
@@ -250,7 +256,7 @@ function resolveBotCalls(
   const bot = botFor(state.difficulty);
   const requests: { seat: Seat; kind: CallKind }[] = [];
   const tile = state.awaitingCall.discardTile;
-  const hands = safeHands();
+  const hands = safeHands(state.cardYear);
   for (const seat of state.awaitingCall.callableBy) {
     if (!state.players[seat].isBot) continue;
     const trial = [...state.players[seat].rack, tile];
@@ -273,7 +279,7 @@ function resolveBotCalls(
 // human, resolve bot calls immediately, or just pass the turn.
 function afterDiscard(state: MahjState, discarder: Seat): Partial<MahjState> {
   const tile = state.discards[state.discards.length - 1]!;
-  const hands = safeHands();
+  const hands = safeHands(state.cardYear);
   const callable = callableSeats(state.players, discarder, tile, hands);
   if (callable.length === 0) {
     return { awaitingCall: null, currentSeat: nextSeat(discarder) };
@@ -306,6 +312,8 @@ export const useMahjStore = create<MahjState>()(
   persist(
     (set, get) => ({
       difficulty: "intermediate",
+      // Doubles as the picker default: the most recently used card, or 2026.
+      cardYear: 2026,
       botDelayMs: 800,
       callTimerMs: callTimerForDifficulty("intermediate"),
       rngSeed: 1,
@@ -329,15 +337,25 @@ export const useMahjStore = create<MahjState>()(
       paused: false,
       pausedCallRemainingMs: null,
 
-      loadHandsSafe: safeHands,
+      loadHandsSafe: (year) => safeHands(year ?? get().cardYear),
 
-      newGame(difficulty) {
+      // Step 1: record difficulty and show the card picker on the mat.
+      requestNewGame(difficulty) {
+        set({
+          difficulty,
+          callTimerMs: callTimerForDifficulty(difficulty),
+          phase: "chooseCard",
+        });
+      },
+
+      // Step 2: deal the game with the chosen card (also becomes the next
+      // picker default via `cardYear`).
+      startGameWithCard(cardYear) {
         const seed = Math.floor(Math.random() * 0x7fffffff);
         const rng = createRng(seed);
         const { wall, players } = dealFromWall(rng, (seat) => seat !== "east");
         set({
-          difficulty,
-          callTimerMs: callTimerForDifficulty(difficulty),
+          cardYear,
           rngSeed: seed,
           phase: "charleston",
           wall,
@@ -629,7 +647,7 @@ export const useMahjStore = create<MahjState>()(
         const match = matchAgainstAll(
           s1.players.east.rack,
           s1.players.east.exposures,
-          safeHands(),
+          safeHands(s1.cardYear),
         );
         if (match)
           set({ phase: "ended", winner: "east", winningHand: match.hand });
@@ -770,7 +788,7 @@ export const useMahjStore = create<MahjState>()(
           const match = matchAgainstAll(
             s1.players[seat].rack,
             s1.players[seat].exposures,
-            safeHands(),
+            safeHands(s1.cardYear),
           );
           if (match) {
             set({ phase: "ended", winner: seat, winningHand: match.hand });
@@ -804,6 +822,7 @@ export const useMahjStore = create<MahjState>()(
       // Only persist data fields, not the action closures.
       partialize: (state) => ({
         difficulty: state.difficulty,
+        cardYear: state.cardYear,
         botDelayMs: state.botDelayMs,
         callTimerMs: state.callTimerMs,
         rngSeed: state.rngSeed,
