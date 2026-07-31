@@ -26,6 +26,8 @@
   --label-blue: oklch(0.55 0.1 255);
   /* Highlight for a tile just added to the human's rack */
   --tile-new: oklch(0.8 0.13 195);
+  /* Bright blue used to highlight a joker-swap selection (distinct from gold). */
+  --swap-blue: oklch(0.68 0.18 250);
 
   /* Felt table */
   --felt: oklch(0.22 0.05 255);
@@ -206,6 +208,34 @@ h3 {
     transform: translateX(-3px);
   }
   90% {
+    transform: translateX(3px);
+  }
+}
+
+/* Joker-swap: tiles crossing (per-clone --fx/--fy) + shake on an invalid swap. */
+@keyframes swap-float {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(var(--fx), var(--fy)) scale(1);
+  }
+}
+@keyframes tile-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
     transform: translateX(3px);
   }
 }

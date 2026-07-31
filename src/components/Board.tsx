@@ -7,8 +7,11 @@ import { CharlestonUI } from "./CharlestonUI";
 import { CallControl } from "./CallControl";
 import { CharlestonFlightOverlay } from "./CharlestonFlightOverlay";
 import { DiscardFlightOverlay } from "./DiscardFlightOverlay";
+import { JokerSwapFlightOverlay } from "./JokerSwapFlightOverlay";
 import { GameOverBanner } from "./GameOverBanner";
 import { useDiscardFlight } from "../hooks/useDiscardFlight";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import { attemptJokerSwap, useJokerSwapUi } from "../store/jokerSwapUi";
 
 export function Board(): React.ReactElement {
   useDiscardFlight();
@@ -39,6 +42,33 @@ export function Board(): React.ReactElement {
       ? lastAction.tileId
       : null;
 
+  // Escape cancels an in-progress joker-swap selection. On desktop, "d" draws a
+  // tile when it's your turn (humanDraw self-guards to the right moment).
+  const isDesktop = useIsDesktop();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        useJokerSwapUi.getState().clearSwap();
+        return;
+      }
+      if (!isDesktop) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = document.activeElement;
+      const tag = el?.tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (el as HTMLElement | null)?.isContentEditable
+      ) {
+        return;
+      }
+      if (e.key.toLowerCase() === "d") humanDraw();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isDesktop, humanDraw]);
+
   if (phase === "setup") {
     return (
       <div
@@ -67,6 +97,8 @@ export function Board(): React.ReactElement {
   const needsDraw = eastIsCurrent && eastTotal === 13;
 
   const onEastTile = (tileId: string) => {
+    // If a joker swap is in progress, this rack tile is the offered tile.
+    if (attemptJokerSwap(tileId)) return;
     if (isCharleston) toggle(tileId);
     else if (eastIsCurrent && !needsDraw) humanDiscard(tileId);
     // When a draw is owed, clicking a tile does nothing here; the board-level
@@ -100,6 +132,7 @@ export function Board(): React.ReactElement {
         currentSeat={currentSeat}
         onDraw={humanDraw}
         nudge={drawNudge}
+        isDesktop={isDesktop}
       />
       <CallControl />
     </div>
@@ -154,7 +187,7 @@ export function Board(): React.ReactElement {
                 maxWidth: 360,
               }}
             >
-              Your turn and any pending call are on hold. <br /> Resume when
+              Your turn and any pending calls are on hold. <br /> Resume when
               you're ready.
             </div>
             <button
@@ -234,6 +267,7 @@ export function Board(): React.ReactElement {
 
       <CharlestonFlightOverlay />
       <DiscardFlightOverlay />
+      <JokerSwapFlightOverlay />
     </div>
   );
 }
@@ -294,12 +328,14 @@ function PlayActions({
   currentSeat,
   onDraw,
   nudge,
+  isDesktop,
 }: {
   eastIsCurrent: boolean;
   needsDraw: boolean;
   currentSeat: string;
   onDraw: () => void;
   nudge: number;
+  isDesktop: boolean;
 }): React.ReactElement {
   const btnRef = useRef<HTMLButtonElement>(null);
 
@@ -338,6 +374,9 @@ function PlayActions({
           onClick={onDraw}
         >
           Draw tile
+          <div style={{ fontSize: "8px", opacity: 0.75 }}>
+            {isDesktop ? ' (Hint: Press "d")' : ""}
+          </div>
         </button>
         <span
           style={{

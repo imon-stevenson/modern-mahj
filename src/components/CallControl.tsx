@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useMahjStore } from "../store";
 import { matchingInRack, possibleCallsForDiscard } from "../game/turn";
 import {
@@ -6,6 +6,7 @@ import {
   matchAgainstAll,
 } from "../game/hands/match";
 import { useCallTimer } from "../hooks/useCallTimer";
+import { useIsDesktop } from "../hooks/useIsDesktop";
 import { TileView } from "./Tile";
 import type { CallKind } from "../game/types";
 
@@ -73,6 +74,31 @@ export function CallControl(): React.ReactElement {
       ? lastAction.seat.charAt(0).toUpperCase() + lastAction.seat.slice(1)
       : "";
 
+  // Desktop keyboard shortcuts: C = Call, P = Pass. Only wired up on desktop
+  // (they need a physical keyboard); their hint is shown on the buttons below.
+  const isDesktop = useIsDesktop();
+  useEffect(() => {
+    if (!isDesktop) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack Cmd/Ctrl+C
+      const el = document.activeElement;
+      const tag = el?.tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (el as HTMLElement | null)?.isContentEditable
+      ) {
+        return;
+      }
+      const key = e.key.toLowerCase();
+      if (key === "c" && claimable && !choosing) openHumanCall();
+      else if (key === "p" && claimable) passCall();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isDesktop, claimable, choosing, openHumanCall, passCall]);
+
   return (
     <div
       style={{
@@ -122,6 +148,9 @@ export function CallControl(): React.ReactElement {
             onClick={() => passCall()}
           >
             Never mind
+            <div style={{ fontSize: "8px", opacity: 0.75 }}>
+              {isDesktop ? ' (Hint: Press "p")' : ""}
+            </div>
           </button>
         </div>
       ) : (
@@ -133,6 +162,9 @@ export function CallControl(): React.ReactElement {
             disabled={!claimable}
           >
             Call
+            <div style={{ fontSize: "8px", opacity: 0.75 }}>
+              {isDesktop ? ' (Hint: Press "c")' : ""}
+            </div>
           </button>
           {claimable && (
             <button
@@ -141,6 +173,9 @@ export function CallControl(): React.ReactElement {
               onClick={() => passCall()}
             >
               Pass
+              <div style={{ fontSize: "8px", opacity: 0.75 }}>
+                {isDesktop ? ' (Hint: Press "p")' : ""}
+              </div>
             </button>
           )}
           {claimable && secondsLeft !== null && (

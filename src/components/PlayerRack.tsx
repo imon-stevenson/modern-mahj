@@ -10,6 +10,7 @@ import type { PlayerState, Tile } from "../game/types";
 import { TileView } from "./Tile";
 import { ExposureRow } from "./ExposureRow";
 import { applyRackOrder } from "./rackOrder";
+import { useJokerSwapUi } from "../store/jokerSwapUi";
 
 // Hold + fade duration for the "new tile" highlight — keep in sync with the
 // `tile-highlight` keyframe in index.css (5s hold + 1s fade).
@@ -110,6 +111,11 @@ export function PlayerRack({
     player.exposures.reduce((n, e) => n + e.tiles.length, 0);
 
   const highlighted = useNewTileHighlights(player.rack.map((t) => t.id));
+
+  // Joker-swap UI: highlight/shake/hide the offered rack tile during a swap.
+  const swapPendingId = useJokerSwapUi((s) => s.pendingRackId);
+  const swapShakeIds = useJokerSwapUi((s) => s.shakeIds);
+  const swapHiddenIds = useJokerSwapUi((s) => s.hiddenIds);
 
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -224,7 +230,12 @@ export function PlayerRack({
         <div
           style={{ display: "flex", justifyContent: "center", paddingTop: 8 }}
         >
-          <ExposureRow exposures={player.exposures} tileWidth={48} flip />
+          <ExposureRow
+            exposures={player.exposures}
+            tileWidth={48}
+            flip
+            seat="east"
+          />
         </div>
       )}
 
@@ -266,16 +277,22 @@ export function PlayerRack({
                 cursor: "grab",
                 borderRadius: 9,
                 opacity: dragId === t.id ? 0.35 : 1,
+                visibility: swapHiddenIds.includes(t.id) ? "hidden" : "visible",
                 boxShadow:
-                  overId === t.id && dragId && dragId !== t.id
-                    ? "0 0 0 2px var(--gold)"
-                    : "none",
+                  swapPendingId === t.id
+                    ? "0 0 0 3px var(--swap-blue), 0 0 12px 2px var(--swap-blue)"
+                    : overId === t.id && dragId && dragId !== t.id
+                      ? "0 0 0 2px var(--gold)"
+                      : "none",
                 transition: "opacity 120ms ease, box-shadow 120ms ease",
                 touchAction: "none",
-                // Freshly drawn / received tiles glow gold, then fade (~6s).
-                animation: highlighted.has(t.id)
-                  ? `tile-highlight ${HIGHLIGHT_MS}ms ease`
-                  : undefined,
+                // Joker-swap shake takes priority; else freshly drawn/received
+                // tiles glow, then fade (~6s).
+                animation: swapShakeIds.includes(t.id)
+                  ? "tile-shake 450ms ease"
+                  : highlighted.has(t.id)
+                    ? `tile-highlight ${HIGHLIGHT_MS}ms ease`
+                    : undefined,
               }}
             >
               <TileView

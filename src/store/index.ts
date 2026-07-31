@@ -126,11 +126,11 @@ function emptyCharleston(): CharlestonState {
 function callTimerForDifficulty(d: Difficulty): number {
   switch (d) {
     case "beginner":
-      return 6000;
+      return 8000;
     case "intermediate":
-      return 4000;
+      return 6000;
     case "expert":
-      return 3000;
+      return 6000;
   }
 }
 
@@ -703,7 +703,10 @@ export const useMahjStore = create<MahjState>()(
         let awaitingCall = s.awaitingCall;
         let pausedCallRemainingMs: number | null = null;
         if (awaitingCall?.deadline) {
-          pausedCallRemainingMs = Math.max(0, awaitingCall.deadline - Date.now());
+          pausedCallRemainingMs = Math.max(
+            0,
+            awaitingCall.deadline - Date.now(),
+          );
           awaitingCall = { ...awaitingCall, deadline: null };
         }
         set({ paused: true, awaitingCall, pausedCallRemainingMs });
