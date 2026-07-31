@@ -3,6 +3,8 @@ import { Board } from "./components/Board";
 import { NewGameMenu } from "./components/NewGameMenu";
 import { RulesPanel } from "./components/RulesPanel";
 import { CardDrawer } from "./components/CardDrawer";
+import { RotateNudge } from "./components/RotateNudge";
+import { PauseButton } from "./components/PauseButton";
 import { useBotTurns } from "./hooks/useBotTurns";
 
 export default function App(): React.ReactElement {
@@ -31,7 +33,10 @@ export default function App(): React.ReactElement {
         >
           My <span style={{ color: "var(--label-blue)" }}>· Modern Mahj</span>
         </div>
-        <NewGameMenu />
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <PauseButton />
+          <NewGameMenu />
+        </div>
       </header>
 
       <main
@@ -54,6 +59,8 @@ export default function App(): React.ReactElement {
         onOpen={() => setCardOpen(true)}
         onClose={() => setCardOpen(false)}
       />
+
+      <RotateNudge />
     </div>
   );
 }

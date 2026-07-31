@@ -119,7 +119,7 @@ export function CharlestonUI(): React.ReactElement {
           <div style={eyebrowStyle}>Courtesy Pass · East ↔ West</div>
           <div style={bodyStyle}>
             How many tiles would you like to exchange with West? You'll pass and
-            receive the minimum amount of tiles you both agree on.
+            receive the greatest number of tiles you agree on.
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {[0, 1, 2, 3].map((n) => (

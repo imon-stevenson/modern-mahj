@@ -25,6 +25,8 @@ export function Board(): React.ReactElement {
   const reorderEastRack = useMahjStore((s) => s.reorderEastRack);
   const resetEastRackOrder = useMahjStore((s) => s.resetEastRackOrder);
   const lastAction = useMahjStore((s) => s.lastAction);
+  const paused = useMahjStore((s) => s.paused);
+  const resumeGame = useMahjStore((s) => s.resumeGame);
 
   // Bumped whenever the human clicks somewhere on the board while they still
   // owe a draw — replays the "Draw tile" button's attention shake.
@@ -110,11 +112,60 @@ export function Board(): React.ReactElement {
         className="board-grid"
         onClick={onBoardClick}
         style={{
+          position: "relative",
           background: "var(--felt)",
           borderRadius: "var(--radius-lg)",
           padding: 24,
         }}
       >
+        {paused && (
+          // Opaque overlay covering only the mat — the header, Card drawer, and
+          // Rules panel (outside the board) stay visible and usable.
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 5,
+              borderRadius: "var(--radius-lg)",
+              background:
+                "linear-gradient(160deg, oklch(0.24 0.05 258), oklch(0.19 0.05 258))",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+              textAlign: "center",
+              padding: 24,
+            }}
+          >
+            <div
+              style={{
+                font: "800 26px var(--font-ui)",
+                color: "var(--felt-ink)",
+              }}
+            >
+              Game Paused
+            </div>
+            <div
+              style={{
+                font: "500 14px var(--font-ui)",
+                color: "var(--felt-ink-soft)",
+                maxWidth: 360,
+              }}
+            >
+              Your turn and any pending call are on hold. <br /> Resume when
+              you're ready.
+            </div>
+            <button
+              type="button"
+              className="btn btn-gold"
+              onClick={() => resumeGame()}
+            >
+              Resume game
+            </button>
+          </div>
+        )}
         <div
           style={{
             gridArea: "west",

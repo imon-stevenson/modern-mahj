@@ -77,6 +77,10 @@ export type MahjState = {
   // null means "use the default suit/number sort". Tiles not listed (e.g. a
   // freshly drawn tile) are appended after the listed ones.
   eastRackOrder: string[] | null;
+  // When true, bot turns are halted and any running call timer is frozen so the
+  // human can step away without missing a call. Not persisted.
+  paused: boolean;
+  pausedCallRemainingMs: number | null;
 
   loadHandsSafe: () => NMJLHand[];
 
@@ -101,6 +105,8 @@ export type MahjState = {
   openHumanCall: () => void;
   passCall: () => void;
   offerJokerSwap: (offer: JokerSwapOffer) => void;
+  pauseGame: () => void;
+  resumeGame: () => void;
 };
 
 // ---------- helpers ----------
@@ -320,6 +326,8 @@ export const useMahjStore = create<MahjState>()(
       winningHand: null,
       lastAction: null,
       eastRackOrder: null,
+      paused: false,
+      pausedCallRemainingMs: null,
 
       loadHandsSafe: safeHands,
 
@@ -342,6 +350,8 @@ export const useMahjStore = create<MahjState>()(
           winningHand: null,
           lastAction: null,
           eastRackOrder: null,
+          paused: false,
+          pausedCallRemainingMs: null,
         });
       },
 
@@ -683,6 +693,37 @@ export const useMahjStore = create<MahjState>()(
           players: applyJokerSwap(s.players, offer),
           lastAction: { kind: "jokerSwap", seat: offer.offeringSeat },
         });
+      },
+
+      pauseGame() {
+        const s = get();
+        if (s.paused) return;
+        // Freeze a running call countdown by stashing the remaining time and
+        // nulling the deadline (same trick as openHumanCall); restored on resume.
+        let awaitingCall = s.awaitingCall;
+        let pausedCallRemainingMs: number | null = null;
+        if (awaitingCall?.deadline) {
+          pausedCallRemainingMs = Math.max(0, awaitingCall.deadline - Date.now());
+          awaitingCall = { ...awaitingCall, deadline: null };
+        }
+        set({ paused: true, awaitingCall, pausedCallRemainingMs });
+      },
+
+      resumeGame() {
+        const s = get();
+        if (!s.paused) return;
+        let awaitingCall = s.awaitingCall;
+        if (
+          awaitingCall &&
+          !awaitingCall.humanChoosing &&
+          s.pausedCallRemainingMs != null
+        ) {
+          awaitingCall = {
+            ...awaitingCall,
+            deadline: Date.now() + s.pausedCallRemainingMs,
+          };
+        }
+        set({ paused: false, awaitingCall, pausedCallRemainingMs: null });
       },
 
       runBotTurn(seat) {

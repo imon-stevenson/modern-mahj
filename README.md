@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Then open the URL Vite prints (typically <http://localhost:5173>). The board is
+Then open the URL Vite prints (typically <http://localhost:5173>). The mat is
 designed for a viewport **at least 1000px wide**.
 
 Click **Start Game**, choose a difficulty, and take your seat at the Mahjong table.

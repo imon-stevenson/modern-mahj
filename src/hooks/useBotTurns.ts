@@ -18,13 +18,15 @@ export function useBotTurns(): void {
   const currentSeat = useMahjStore((s) => s.currentSeat);
   const awaitingCall = useMahjStore((s) => s.awaitingCall);
   const players = useMahjStore((s) => s.players);
+  const paused = useMahjStore((s) => s.paused);
   const runBotTurn = useMahjStore((s) => s.runBotTurn);
 
   useEffect(() => {
     if (phase !== 'play') return;
+    if (paused) return;
     if (awaitingCall) return;
     if (!players[currentSeat].isBot) return;
     const timer = setTimeout(() => runBotTurn(currentSeat), botThinkDelay());
     return () => clearTimeout(timer);
-  }, [phase, currentSeat, awaitingCall, players, runBotTurn]);
+  }, [phase, currentSeat, awaitingCall, players, paused, runBotTurn]);
 }
