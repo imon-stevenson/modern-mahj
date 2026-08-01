@@ -15,7 +15,7 @@ export type JokerSwapOffer = {
   jokerId: string
 }
 
-export type SwapValidation = { ok: true } | { ok: false, reason: string }
+export type SwapValidation = { ok: true } | { ok: false; reason: string }
 
 export function validateJokerSwap(
   players: Record<Seat, PlayerState>,

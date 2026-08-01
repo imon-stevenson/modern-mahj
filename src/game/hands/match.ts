@@ -20,7 +20,7 @@ import type {
 
 // A binding maps each variable used by a hand to a concrete value.
 type SuitBinding = Partial<Record<SuitVar, Suit>>
-type NumberBinding = { N?: number, M?: number }
+type NumberBinding = { N?: number; M?: number }
 type WindBinding = Partial<Record<WindVar, Wind>>
 type DragonBinding = Partial<Record<DragonVar, DragonColor>>
 type Binding = {
@@ -31,9 +31,9 @@ type Binding = {
 }
 
 type ConcreteTileIdentity =
-  | { kind: 'number', suit: Suit, rank: number }
-  | { kind: 'wind', wind: Wind }
-  | { kind: 'dragon', color: DragonColor }
+  | { kind: 'number'; suit: Suit; rank: number }
+  | { kind: 'wind'; wind: Wind }
+  | { kind: 'dragon'; color: DragonColor }
   | { kind: 'flower' }
 
 type ConcreteGroup = {
@@ -311,37 +311,104 @@ function exposureSatisfies(ex: Exposure, group: ConcreteGroup): boolean {
   return true
 }
 
-function consumeGroupFromRack(rack: Tile[], group: ConcreteGroup): Tile[] | null {
-  const template = identityToTile(group.identity)
-  const need = GROUP_SIZE[group.kind]
-  const naturals: Tile[] = []
-  const jokers: Tile[] = []
-  const rest: Tile[] = []
+// Canonical string key for a concrete tile identity, so naturals can be tallied
+// and compared by identity. Jokers have no identity (return null).
+function identityKey(id: ConcreteTileIdentity): string {
+  switch (id.kind) {
+    case 'number':
+      return `n:${id.suit}:${id.rank}`
+    case 'wind':
+      return `w:${id.wind}`
+    case 'dragon':
+      return `d:${id.color}`
+    case 'flower':
+      return 'f'
+  }
+}
+
+function tileIdentityKey(t: Tile): string | null {
+  switch (t.kind) {
+    case 'number':
+      return `n:${t.suit}:${t.rank}`
+    case 'wind':
+      return `w:${t.wind}`
+    case 'dragon':
+      return `d:${t.color}`
+    case 'flower':
+      return 'f'
+    case 'joker':
+      return null
+  }
+}
+
+// Exact test: can the concealed `rack` (naturals + jokers) exactly fill every
+// group in `groups` — using each rack tile once, no tile left over? This avoids
+// the old order-dependent greedy fill by allocating per identity:
+//   - naturals of an identity can only serve groups needing that identity,
+//   - each natural must be used (surplus ⇒ leftover ⇒ not a completed hand),
+//   - non-joker groups (pairs/singles) must be covered by naturals,
+//   - jokers (fungible) fill only the remaining joker-allowed slots.
+function rackSatisfiesGroups(rack: Tile[], groups: ConcreteGroup[]): boolean {
+  const naturals = new Map<string, number>()
+  let jokers = 0
   for (const t of rack) {
-    if (naturals.length + jokers.length >= need) {
-      rest.push(t)
-      continue
-    }
-    if (t.kind !== 'joker' && tilesEqual(t, template)) {
-      naturals.push(t)
-    } else if (t.kind === 'joker' && group.jokersAllowed) {
-      jokers.push(t)
-    } else {
-      rest.push(t)
-    }
+    const k = tileIdentityKey(t)
+    if (k === null) jokers++
+    else naturals.set(k, (naturals.get(k) ?? 0) + 1)
   }
-  const total = naturals.length + jokers.length
-  if (total < need) return null
-  const used = [...naturals.slice(0, need)]
-  const leftover: Tile[] = [
-    ...naturals.slice(need),
-    ...jokers.slice(Math.max(0, need - naturals.length)),
-  ]
-  if (used.length < need) {
-    const shortfall = need - used.length
-    used.push(...jokers.slice(0, shortfall))
+  // Demand per identity, split by whether the group can absorb a joker.
+  const demandNon = new Map<string, number>()
+  const demandJok = new Map<string, number>()
+  for (const g of groups) {
+    const k = identityKey(g.identity)
+    const need = GROUP_SIZE[g.kind]
+    const bucket = g.jokersAllowed ? demandJok : demandNon
+    bucket.set(k, (bucket.get(k) ?? 0) + need)
   }
-  return [...rest, ...leftover]
+  const ids = new Set<string>([
+    ...naturals.keys(),
+    ...demandNon.keys(),
+    ...demandJok.keys(),
+  ])
+  let jokersNeeded = 0
+  for (const k of ids) {
+    const avail = naturals.get(k) ?? 0
+    const dNon = demandNon.get(k) ?? 0
+    const dJok = demandJok.get(k) ?? 0
+    const demand = dNon + dJok
+    if (avail < dNon) return false // non-joker groups need real tiles
+    if (avail > demand) return false // a natural would be left unused
+    jokersNeeded += demand - avail
+  }
+  return jokersNeeded === jokers // every joker used, and enough of them
+}
+
+// Try every way to assign each exposure to a distinct compatible group
+// (backtracking, not greedy first-match), and return true if any assignment
+// leaves the remaining groups satisfying `pred`.
+function existsExposureAssignment(
+  exposures: Exposure[],
+  groups: ConcreteGroup[],
+  pred: (unused: ConcreteGroup[]) => boolean,
+): boolean {
+  const used = new Array<boolean>(groups.length).fill(false)
+  const rec = (ei: number): boolean => {
+    if (ei === exposures.length) {
+      const unused: ConcreteGroup[] = []
+      for (let i = 0; i < groups.length; i++) if (!used[i]) unused.push(groups[i]!)
+      return pred(unused)
+    }
+    const ex = exposures[ei]!
+    for (let i = 0; i < groups.length; i++) {
+      if (used[i]) continue
+      if (!exposureSatisfies(ex, groups[i]!)) continue
+      used[i] = true
+      if (rec(ei + 1)) return true
+      used[i] = false
+    }
+    return false
+  }
+  return rec(0)
 }
 
 export type MatchResult = {
@@ -371,47 +438,17 @@ export function matchHand(
           const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
           const materialized = materializeGroups(hand, binding)
           if (!materialized) continue
-          const assignment = assignExposures(exposures, materialized)
-          if (!assignment) continue
-          const remainingGroups = materialized.filter((_, i) => !assignment.usedGroupIdx.has(i))
-          let workingRack = [...rack]
-          let ok = true
-          for (const g of remainingGroups) {
-            const next = consumeGroupFromRack(workingRack, g)
-            if (!next) {
-              ok = false
-              break
-            }
-            workingRack = next
-          }
-          if (!ok) continue
-          if (workingRack.length > 0) continue
-          return { hand, binding }
+          // Exact: some exposure→group assignment leaves groups the rack can
+          // fill precisely (naturals + jokers, every tile used).
+          const ok = existsExposureAssignment(exposures, materialized, (unused) =>
+            rackSatisfiesGroups(rack, unused),
+          )
+          if (ok) return { hand, binding }
         }
       }
     }
   }
   return null
-}
-
-function assignExposures(
-  exposures: Exposure[],
-  groups: ConcreteGroup[],
-): { usedGroupIdx: Set<number> } | null {
-  const usedGroupIdx = new Set<number>()
-  for (const ex of exposures) {
-    let matched = -1
-    for (let i = 0; i < groups.length; i++) {
-      if (usedGroupIdx.has(i)) continue
-      if (exposureSatisfies(ex, groups[i]!)) {
-        matched = i
-        break
-      }
-    }
-    if (matched < 0) return null
-    usedGroupIdx.add(matched)
-  }
-  return { usedGroupIdx }
 }
 
 export function matchAgainstAll(
@@ -451,16 +488,20 @@ export function handsAllowGroupingForTile(
             const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
             const materialized = materializeGroups(hand, binding)
             if (!materialized) continue
-            // The hand must still accommodate what the player has exposed.
-            const assignment = assignExposures(exposures, materialized)
-            if (!assignment) continue
-            for (let i = 0; i < materialized.length; i++) {
-              if (assignment.usedGroupIdx.has(i)) continue
-              const g = materialized[i]!
-              if (g.kind === kind && tilesEqual(identityToTile(g.identity), tile)) {
-                return true
-              }
-            }
+            // Some valid exposure assignment must leave an unused group that is
+            // a quint/sextet of `tile` (backtracking, so we don't miss it to a
+            // greedy first-match that consumed the group for an exposure).
+            const found = existsExposureAssignment(
+              exposures,
+              materialized,
+              (unused) =>
+                unused.some(
+                  (g) =>
+                    g.kind === kind &&
+                    tilesEqual(identityToTile(g.identity), tile),
+                ),
+            )
+            if (found) return true
           }
         }
       }

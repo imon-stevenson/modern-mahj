@@ -10,10 +10,10 @@ export type NumberTile = {
   suit: Suit
   rank: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 }
-export type WindTile = { id: string, kind: 'wind', wind: Wind }
-export type DragonTile = { id: string, kind: 'dragon', color: DragonColor }
-export type FlowerTile = { id: string, kind: 'flower' }
-export type JokerTile = { id: string, kind: 'joker' }
+export type WindTile = { id: string; kind: 'wind'; wind: Wind }
+export type DragonTile = { id: string; kind: 'dragon'; color: DragonColor }
+export type FlowerTile = { id: string; kind: 'flower' }
+export type JokerTile = { id: string; kind: 'joker' }
 
 export type Tile = NumberTile | WindTile | DragonTile | FlowerTile | JokerTile
 

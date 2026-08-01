@@ -48,7 +48,7 @@ export function callPriority(kind: CallKind): number {
 // If more than one seat wants to call, pick the winner. Mahjong beats non-
 // mahjong. Between non-mahjong calls of the same rank, the seat closest to
 // the discarder in play order wins.
-export type CallRequest = { seat: Seat, kind: CallKind }
+export type CallRequest = { seat: Seat; kind: CallKind }
 
 export function resolveCallPriority(
   discarder: Seat,
@@ -78,7 +78,7 @@ export function takeMatchingFromRack(
   rack: readonly Tile[],
   tile: Tile,
   count: number,
-): { taken: Tile[], rack: Tile[] } {
+): { taken: Tile[]; rack: Tile[] } {
   const taken: Tile[] = []
   const remaining: Tile[] = []
   for (const t of rack) {

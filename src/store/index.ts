@@ -52,10 +52,10 @@ type CharlestonState = {
 }
 
 type LastAction =
-  | { kind: "discard", seat: Seat, tileId: string }
-  | { kind: "call", seat: Seat, call: CallKind, tileId: string }
-  | { kind: "draw", seat: Seat, tileId: string | null }
-  | { kind: "jokerSwap", seat: Seat }
+  | { kind: "discard"; seat: Seat; tileId: string }
+  | { kind: "call"; seat: Seat; call: CallKind; tileId: string }
+  | { kind: "draw"; seat: Seat; tileId: string | null }
+  | { kind: "jokerSwap"; seat: Seat }
   | null
 
 export type MahjState = {
@@ -254,7 +254,7 @@ function resolveBotCalls(
 ): Partial<MahjState> {
   if (!state.awaitingCall) return {}
   const bot = botFor(state.difficulty)
-  const requests: { seat: Seat, kind: CallKind }[] = []
+  const requests: { seat: Seat; kind: CallKind }[] = []
   const tile = state.awaitingCall.discardTile
   const hands = safeHands(state.cardYear)
   for (const seat of state.awaitingCall.callableBy) {

@@ -22,7 +22,7 @@ export function CardDrawer({
 
   // Drawer top = just below the sticky header; bottom = just above the rack, so
   // the rack remains visible. Recomputed on scroll/resize while open.
-  const [bounds, setBounds] = useState<{ top: number, bottom: number }>({
+  const [bounds, setBounds] = useState<{ top: number; bottom: number }>({
     top: 76,
     bottom: 16,
   })

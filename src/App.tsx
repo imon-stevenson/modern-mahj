@@ -23,7 +23,7 @@ export default function App(): React.ReactElement {
           zIndex: 20,
           background: "var(--paper)",
           borderBottom: "1px solid var(--hairline)",
-          padding: "14px clamp(16px, 4vw, 40px)",
+          padding: "8px clamp(16px, 4vw, 40px)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",

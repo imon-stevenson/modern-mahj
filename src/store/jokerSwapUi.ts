@@ -4,8 +4,8 @@ import type { JokerSwapOffer } from "../game/jokerSwap"
 import { validateJokerSwap } from "../game/jokerSwap"
 import { useMahjStore } from "./index"
 
-export type SwapSource = { seat: Seat, exposureIndex: number, jokerId: string }
-type Clone = { key: string, tile: Tile, fromX: number, fromY: number, toX: number, toY: number }
+export type SwapSource = { seat: Seat; exposureIndex: number; jokerId: string }
+type Clone = { key: string; tile: Tile; fromX: number; fromY: number; toX: number; toY: number }
 
 const SHAKE_MS = 450
 export const SWAP_FLIGHT_MS = 480
@@ -51,7 +51,7 @@ function prefersReducedMotion(): boolean {
   )
 }
 
-function rectOf(tileId: string): { x: number, y: number } | null {
+function rectOf(tileId: string): { x: number; y: number } | null {
   if (typeof document === "undefined") return null
   const el = document.querySelector(`[data-tile-id="${cssEscape(tileId)}"]`)
   if (!el) return null

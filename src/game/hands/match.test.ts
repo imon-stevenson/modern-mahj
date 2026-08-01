@@ -200,6 +200,118 @@ describe('matchHand — closed pair hand', () => {
   })
 })
 
+// ---- exact matcher: no false negatives (previously greedy) ----
+
+// Flaw 1 (joker waste): the 2s group has only 3 naturals and needs the joker,
+// but a greedy fill grabbed the joker for the 1s group (which had 4 naturals),
+// then starved the 2s group. Exact allocation gives the joker to the 2s.
+const jokerWasteHand: NMJLHand = {
+  id: 'x-jokerwaste',
+  section: 'ex',
+  line: 20,
+  description: 'kong 1s / kong 2s / kong 3s / pair 4s (bams)',
+  closed: false,
+  value: 25,
+  groups: [
+    { kind: 'kong', tile: { kind: 'number', rank: 1, suit: 'bams' }, jokersAllowed: true },
+    { kind: 'kong', tile: { kind: 'number', rank: 2, suit: 'bams' }, jokersAllowed: true },
+    { kind: 'kong', tile: { kind: 'number', rank: 3, suit: 'bams' }, jokersAllowed: true },
+    { kind: 'pair', tile: { kind: 'number', rank: 4, suit: 'bams' }, jokersAllowed: false },
+  ],
+}
+
+// Flaw 3 (non-joker starvation): kong 5s (jokers-ok) and pair 5s (no jokers)
+// share the same identity. A greedy in-order fill let the kong take 4 of the 5
+// natural 5s, starving the pair; the joker must instead back-fill the kong.
+const sharedIdentityHand: NMJLHand = {
+  id: 'x-shared',
+  section: 'ex',
+  line: 21,
+  description: 'kong 5s / pair 5s / kong 6s / kong 7s (bams)',
+  closed: false,
+  value: 25,
+  groups: [
+    { kind: 'kong', tile: { kind: 'number', rank: 5, suit: 'bams' }, jokersAllowed: true },
+    { kind: 'pair', tile: { kind: 'number', rank: 5, suit: 'bams' }, jokersAllowed: false },
+    { kind: 'kong', tile: { kind: 'number', rank: 6, suit: 'bams' }, jokersAllowed: true },
+    { kind: 'kong', tile: { kind: 'number', rank: 7, suit: 'bams' }, jokersAllowed: true },
+  ],
+}
+
+// Flaw 2 (greedy exposure→group assignment): two kong-of-5s groups differing
+// only in jokersAllowed. A jokerless kong exposure fits both; a kong exposure
+// containing a joker fits only the jokers-ok group. Greedy assigns the jokerless
+// one to the jokers-ok group first and then can't place the joker exposure.
+const dualExposureHand: NMJLHand = {
+  id: 'x-dualexp',
+  section: 'ex',
+  line: 22,
+  description: 'kong 5s (jokers) / kong 5s (no jokers) / pair 6s / kong 7s (bams)',
+  closed: false,
+  value: 25,
+  groups: [
+    { kind: 'kong', tile: { kind: 'number', rank: 5, suit: 'bams' }, jokersAllowed: true },
+    { kind: 'kong', tile: { kind: 'number', rank: 5, suit: 'bams' }, jokersAllowed: false },
+    { kind: 'pair', tile: { kind: 'number', rank: 6, suit: 'bams' }, jokersAllowed: false },
+    { kind: 'kong', tile: { kind: 'number', rank: 7, suit: 'bams' }, jokersAllowed: true },
+  ],
+}
+
+describe('matchHand — exact allocation (no false negatives)', () => {
+  it('flaw 1: does not waste a joker a later group needs', () => {
+    const rack: Tile[] = [
+      joker('j0'),
+      n('bams', 1, 'a0'), n('bams', 1, 'a1'), n('bams', 1, 'a2'), n('bams', 1, 'a3'),
+      n('bams', 2, 'b0'), n('bams', 2, 'b1'), n('bams', 2, 'b2'),
+      n('bams', 3, 'c0'), n('bams', 3, 'c1'), n('bams', 3, 'c2'), n('bams', 3, 'c3'),
+      n('bams', 4, 'd0'), n('bams', 4, 'd1'),
+    ]
+    expect(matchHand(rack, [], jokerWasteHand)).not.toBeNull()
+  })
+
+  it('flaw 3: gives naturals to the non-joker group, joker to the kong', () => {
+    const rack: Tile[] = [
+      n('bams', 5, 'a0'), n('bams', 5, 'a1'), n('bams', 5, 'a2'), n('bams', 5, 'a3'), n('bams', 5, 'a4'),
+      joker('j0'),
+      n('bams', 6, 'b0'), n('bams', 6, 'b1'), n('bams', 6, 'b2'), n('bams', 6, 'b3'),
+      n('bams', 7, 'c0'), n('bams', 7, 'c1'), n('bams', 7, 'c2'), n('bams', 7, 'c3'),
+    ]
+    expect(matchHand(rack, [], sharedIdentityHand)).not.toBeNull()
+  })
+
+  it('is still sound: rejects a hand missing the joker it needs', () => {
+    // Same as flaw 3 but the joker is replaced by an unrelated tile: the pair/
+    // kong of 5s can no longer both be filled, and the 8s is leftover.
+    const rack: Tile[] = [
+      n('bams', 5, 'a0'), n('bams', 5, 'a1'), n('bams', 5, 'a2'), n('bams', 5, 'a3'), n('bams', 5, 'a4'),
+      n('bams', 8, 'x0'),
+      n('bams', 6, 'b0'), n('bams', 6, 'b1'), n('bams', 6, 'b2'), n('bams', 6, 'b3'),
+      n('bams', 7, 'c0'), n('bams', 7, 'c1'), n('bams', 7, 'c2'), n('bams', 7, 'c3'),
+    ]
+    expect(matchHand(rack, [], sharedIdentityHand)).toBeNull()
+  })
+
+  it('flaw 2: backtracks the exposure→group assignment', () => {
+    const jokerlessKong = buildExposure(
+      'kong',
+      [n('bams', 5, 'e0'), n('bams', 5, 'e1'), n('bams', 5, 'e2'), n('bams', 5, 'e3')],
+      n('bams', 5, 't0'),
+    )
+    const jokerKong = buildExposure(
+      'kong',
+      [n('bams', 5, 'e4'), n('bams', 5, 'e5'), n('bams', 5, 'e6'), joker('ej')],
+      n('bams', 5, 't1'),
+    )
+    const rack: Tile[] = [
+      n('bams', 6, 'b0'), n('bams', 6, 'b1'),
+      n('bams', 7, 'c0'), n('bams', 7, 'c1'), n('bams', 7, 'c2'), n('bams', 7, 'c3'),
+    ]
+    expect(
+      matchHand(rack, [jokerlessKong, jokerKong], dualExposureHand),
+    ).not.toBeNull()
+  })
+})
+
 const greenQuintHand: NMJLHand = {
   id: 'h-quint',
   section: 'ex',

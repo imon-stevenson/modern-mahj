@@ -24,11 +24,13 @@ export default defineConfig([
     },
     rules: {
       // Semicolon-free style: no statement-terminating semicolons, and no
-      // semicolon delimiters inside TS type/interface bodies.
+      // delimiters between multiline TS type/interface members. Single-line
+      // type literals use `;` to agree with Prettier (which is not configurable
+      // there); see .prettierrc.json (semi: false).
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/member-delimiter-style': ['error', {
         multiline: { delimiter: 'none' },
-        singleline: { delimiter: 'comma', requireLast: false },
+        singleline: { delimiter: 'semi', requireLast: false },
       }],
     },
   },

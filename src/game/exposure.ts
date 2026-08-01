@@ -18,7 +18,7 @@ const ALLOWS_JOKERS: Record<ExposureKind, boolean> = {
   sextet: true,
 }
 
-export type ValidationResult = { ok: true } | { ok: false, reason: string }
+export type ValidationResult = { ok: true } | { ok: false; reason: string }
 
 // Validate that `tiles` form an exposure of `kind` claiming identity `target`.
 // - Correct count.

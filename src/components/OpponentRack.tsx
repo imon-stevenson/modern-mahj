@@ -84,16 +84,6 @@ export function OpponentRack({
             THINKING…
           </span>
         )}
-        <span
-          className="mono"
-          style={{
-            marginLeft: "auto",
-            font: "600 11px var(--font-mono)",
-            color: "var(--gold)",
-          }}
-        >
-          {count} tiles
-        </span>
       </div>
 
       <div

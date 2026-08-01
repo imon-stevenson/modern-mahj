@@ -17,7 +17,7 @@ type CharlestonFlightState = {
   toX: number
   toY: number
   active: boolean
-  _start: (p: { flights: FlightTile[], toX: number, toY: number }) => void
+  _start: (p: { flights: FlightTile[]; toX: number; toY: number }) => void
   _clear: () => void
 }
 

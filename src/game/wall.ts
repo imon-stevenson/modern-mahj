@@ -41,7 +41,7 @@ export function dealFromWall(rng: Rng, isBot: (seat: Seat) => boolean): Deal {
   return { wall, players }
 }
 
-export function drawFromWall(wall: Tile[]): { tile: Tile | null, wall: Tile[] } {
+export function drawFromWall(wall: Tile[]): { tile: Tile | null; wall: Tile[] } {
   if (wall.length === 0) return { tile: null, wall }
   const [tile, ...rest] = wall
   return { tile: tile!, wall: rest }

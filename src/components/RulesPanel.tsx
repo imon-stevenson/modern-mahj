@@ -1,6 +1,6 @@
 type Card = {
   title: string
-  steps?: { n: number, text: string }[]
+  steps?: { n: number; text: string }[]
   bullets?: string[]
   note?: string
 }
