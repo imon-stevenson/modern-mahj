@@ -1,9 +1,9 @@
 type Card = {
-  title: string;
-  steps?: { n: number; text: string }[];
-  bullets?: string[];
-  note?: string;
-};
+  title: string
+  steps?: { n: number, text: string }[]
+  bullets?: string[]
+  note?: string
+}
 
 const CARDS: Card[] = [
   {
@@ -40,7 +40,7 @@ const CARDS: Card[] = [
       "Watch the rain",
     ],
   },
-];
+]
 
 export function RulesPanel(): React.ReactElement {
   return (
@@ -127,5 +127,5 @@ export function RulesPanel(): React.ReactElement {
         ))}
       </div>
     </section>
-  );
+  )
 }

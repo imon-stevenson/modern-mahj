@@ -1,24 +1,24 @@
-import type { PlayerState, Seat } from "../game/types";
-import { ExposureRow } from "./ExposureRow";
-import { TileView } from "./Tile";
+import type { PlayerState, Seat } from "../game/types"
+import { ExposureRow } from "./ExposureRow"
+import { TileView } from "./Tile"
 
 // A face-down "hidden" tile stand-in. The store hides bot racks from the human,
 // so all we render is the count as a neat row of tile backs.
-const HIDDEN = { id: "", kind: "joker" as const };
+const HIDDEN = { id: "", kind: "joker" as const }
 
 const SEAT_NAME: Record<Seat, string> = {
   east: "East",
   south: "South",
   west: "West",
   north: "North",
-};
+}
 
 const BOT_NAME: Record<Seat, string> = {
   east: "You",
   south: "",
   west: "",
   north: "",
-};
+}
 
 export function OpponentRack({
   seat,
@@ -26,14 +26,14 @@ export function OpponentRack({
   isCurrent,
   centerTiles = false,
 }: {
-  seat: Seat;
-  player: PlayerState;
-  isCurrent: boolean;
+  seat: Seat
+  player: PlayerState
+  isCurrent: boolean
   // West spans the full-width top row; centering keeps its 13-tile wall the
   // same visual size as North/South rather than stretched to the left edge.
-  centerTiles?: boolean;
+  centerTiles?: boolean
 }): React.ReactElement {
-  const count = player.rack.length;
+  const count = player.rack.length
   return (
     <div
       style={{
@@ -107,5 +107,5 @@ export function OpponentRack({
 
       <ExposureRow exposures={player.exposures} tileWidth={44} seat={seat} />
     </div>
-  );
+  )
 }

@@ -1,20 +1,20 @@
-import type { CSSProperties } from "react";
-import type { Tile } from "../game/types";
-import { tileLabel } from "../game/tiles";
+import type { CSSProperties } from "react"
+import type { Tile } from "../game/types"
+import { tileLabel } from "../game/tiles"
 
 type Props = {
-  tile: Tile;
-  width?: number;
-  faceDown?: boolean;
-  selected?: boolean;
-  dimmed?: boolean;
-  onClick?: () => void;
-  disabled?: boolean;
-};
+  tile: Tile
+  width?: number
+  faceDown?: boolean
+  selected?: boolean
+  dimmed?: boolean
+  onClick?: () => void
+  disabled?: boolean
+}
 
-const INK_GREEN = "oklch(0.5 0.14 150)";
-const INK_RED = "oklch(0.55 0.19 25)";
-const INK_BLACK = "oklch(0.2 0 0)";
+const INK_GREEN = "oklch(0.5 0.14 150)"
+const INK_RED = "oklch(0.55 0.19 25)"
+const INK_BLACK = "oklch(0.2 0 0)"
 
 const CRAK_CHARS: Record<number, string> = {
   1: "一",
@@ -26,13 +26,13 @@ const CRAK_CHARS: Record<number, string> = {
   7: "七",
   8: "八",
   9: "九",
-};
+}
 const WIND_CHARS: Record<string, string> = {
   E: "東",
   S: "南",
   W: "西",
   N: "北",
-};
+}
 
 // 1-indexed CSS grid positions (row, col, color) on a 3x3 grid — canonical dot layouts.
 const DOT_LAYOUTS: Record<number, [number, number, "g" | "r"][]> = {
@@ -97,35 +97,35 @@ const DOT_LAYOUTS: Record<number, [number, number, "g" | "r"][]> = {
     [3, 2, "g"],
     [3, 3, "r"],
   ],
-};
+}
 
 type Face = {
-  category: "dot" | "bam" | "crak" | "wind" | "dragon" | "flower" | "joker";
-  num: number;
-  dir: string;
-  dragon: "red" | "green" | "soap";
-};
+  category: "dot" | "bam" | "crak" | "wind" | "dragon" | "flower" | "joker"
+  num: number
+  dir: string
+  dragon: "red" | "green" | "soap"
+}
 
 function faceOf(tile: Tile): Face {
   switch (tile.kind) {
     case "number": {
       const cat =
-        tile.suit === "dots" ? "dot" : tile.suit === "bams" ? "bam" : "crak";
-      return { category: cat, num: tile.rank, dir: "E", dragon: "red" };
+        tile.suit === "dots" ? "dot" : tile.suit === "bams" ? "bam" : "crak"
+      return { category: cat, num: tile.rank, dir: "E", dragon: "red" }
     }
     case "wind":
-      return { category: "wind", num: 0, dir: tile.wind, dragon: "red" };
+      return { category: "wind", num: 0, dir: tile.wind, dragon: "red" }
     case "dragon":
       return {
         category: "dragon",
         num: 0,
         dir: "E",
         dragon: tile.color === "white" ? "soap" : tile.color,
-      };
+      }
     case "flower":
-      return { category: "flower", num: 0, dir: "E", dragon: "red" };
+      return { category: "flower", num: 0, dir: "E", dragon: "red" }
     case "joker":
-      return { category: "joker", num: 0, dir: "E", dragon: "red" };
+      return { category: "joker", num: 0, dir: "E", dragon: "red" }
   }
 }
 
@@ -138,13 +138,13 @@ export function TileView({
   onClick,
   disabled,
 }: Props): React.ReactElement {
-  const w = width;
-  const h = Math.round(w * 1.375);
-  const scale = w / 64;
-  const px = (n: number) => Math.round(n * scale);
+  const w = width
+  const h = Math.round(w * 1.375)
+  const scale = w / 64
+  const px = (n: number) => Math.round(n * scale)
 
-  const { category, num, dir, dragon } = faceOf(tile);
-  const interactive = !!onClick && !disabled;
+  const { category, num, dir, dragon } = faceOf(tile)
+  const interactive = !!onClick && !disabled
 
   const outer: CSSProperties = {
     // inline-block so the non-interactive <span> variant still respects
@@ -168,29 +168,29 @@ export function TileView({
     filter: dimmed ? "grayscale(0.15) brightness(0.9)" : "none",
     cursor: interactive ? "pointer" : "default",
     flex: "0 0 auto",
-  };
+  }
 
-  const cornerSize = Math.max(9, px(11));
+  const cornerSize = Math.max(9, px(11))
   const cornerLabel =
     category === "dot" || category === "bam" || category === "crak"
       ? String(num)
       : category === "wind"
         ? dir
-        : "";
+        : ""
   const cornerColor =
-    category === "dot" ? INK_BLACK : category === "bam" ? INK_GREEN : INK_RED;
-  const cjkSize = px(22);
+    category === "dot" ? INK_BLACK : category === "bam" ? INK_GREEN : INK_RED
+  const cjkSize = px(22)
 
   // Small tiles (e.g. a large discard pile) can't render the detailed suit
   // artwork legibly, so below a threshold we draw a simplified face: a big
   // suit-colored number/letter (plus a small suit letter for numbers).
-  const compact = !faceDown && w < 40;
-  const bigFont = `800 ${Math.max(13, px(24))}px var(--font-ui)`;
-  let compactContent: React.ReactNode = null;
+  const compact = !faceDown && w < 40
+  const bigFont = `800 ${Math.max(13, px(24))}px var(--font-ui)`
+  let compactContent: React.ReactNode = null
   if (compact) {
     if (category === "dot" || category === "bam" || category === "crak") {
       const suitLetter =
-        category === "bam" ? "B" : category === "crak" ? "C" : "D";
+        category === "bam" ? "B" : category === "crak" ? "C" : "D"
       compactContent = (
         <div
           style={{
@@ -210,18 +210,18 @@ export function TileView({
             {suitLetter}
           </span>
         </div>
-      );
+      )
     } else if (category === "wind") {
       compactContent = (
         <span style={{ font: bigFont, color: INK_BLACK }}>{dir}</span>
-      );
+      )
     } else if (category === "dragon" && dragon === "soap") {
-      const s = Math.max(11, px(18));
+      const s = Math.max(11, px(18))
       compactContent = (
         <div
           style={{ width: s, height: s, border: `2px solid ${INK_BLACK}`, borderRadius: 2 }}
         />
-      );
+      )
     } else if (category === "dragon") {
       compactContent = (
         <span
@@ -229,7 +229,7 @@ export function TileView({
         >
           {dragon === "green" ? "G" : "R"}
         </span>
-      );
+      )
     } else if (category === "flower") {
       compactContent = (
         <span
@@ -237,7 +237,7 @@ export function TileView({
         >
           F
         </span>
-      );
+      )
     } else {
       compactContent = (
         <span
@@ -245,7 +245,7 @@ export function TileView({
         >
           J
         </span>
-      );
+      )
     }
   }
 
@@ -484,9 +484,9 @@ export function TileView({
         )}
       </div>
     </div>
-  );
+  )
 
-  const label = faceDown ? "Face-down tile" : tileLabel(tile);
+  const label = faceDown ? "Face-down tile" : tileLabel(tile)
 
   if (interactive) {
     return (
@@ -500,17 +500,17 @@ export function TileView({
       >
         {inner}
       </button>
-    );
+    )
   }
   return (
     <span style={outer} title={label} aria-label={label} role="img">
       {inner}
     </span>
-  );
+  )
 }
 
 function BamBird({ scale }: { scale: number }): React.ReactElement {
-  const s = Math.round(30 * scale);
+  const s = Math.round(30 * scale)
   return (
     <div style={{ position: "relative", width: s, height: s }}>
       <div
@@ -561,15 +561,15 @@ function BamBird({ scale }: { scale: number }): React.ReactElement {
         }}
       />
     </div>
-  );
+  )
 }
 
 function Flower({ scale }: { scale: number }): React.ReactElement {
-  const box = Math.round(26 * scale);
-  const petal = Math.round(13 * scale);
-  const neg = -Math.round(6.5 * scale);
-  const center = Math.round(9 * scale);
-  const centerNeg = -Math.round(4.5 * scale);
+  const box = Math.round(26 * scale)
+  const petal = Math.round(13 * scale)
+  const neg = -Math.round(6.5 * scale)
+  const center = Math.round(9 * scale)
+  const centerNeg = -Math.round(4.5 * scale)
   return (
     <div style={{ position: "relative", width: box, height: box }}>
       <div
@@ -635,5 +635,5 @@ function Flower({ scale }: { scale: number }): React.ReactElement {
         }}
       />
     </div>
-  );
+  )
 }

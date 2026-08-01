@@ -5,79 +5,79 @@ import {
   useState,
   type DragEvent,
   type ReactNode,
-} from "react";
-import type { PlayerState, Tile } from "../game/types";
-import { TileView } from "./Tile";
-import { ExposureRow } from "./ExposureRow";
-import { applyRackOrder } from "./rackOrder";
-import { useJokerSwapUi } from "../store/jokerSwapUi";
+} from "react"
+import type { PlayerState, Tile } from "../game/types"
+import { TileView } from "./Tile"
+import { ExposureRow } from "./ExposureRow"
+import { applyRackOrder } from "./rackOrder"
+import { useJokerSwapUi } from "../store/jokerSwapUi"
 
 // Hold + fade duration for the "new tile" highlight — keep in sync with the
 // `tile-highlight` keyframe in index.css (5s hold + 1s fade).
-const HIGHLIGHT_MS = 6000;
+const HIGHLIGHT_MS = 6000
 
 // Tracks which rack tile ids were recently added (drawn or received in the
 // Charleston) so they can be highlighted, then auto-cleared after the fade.
 // The initial hand (first render) is treated as already-present, not new.
 function useNewTileHighlights(ids: string[]): Set<string> {
-  const seen = useRef<Set<string> | null>(null);
-  const timers = useRef<Map<string, number>>(new Map());
-  const [highlighted, setHighlighted] = useState<Set<string>>(() => new Set());
-  const key = ids.join(",");
+  const seen = useRef<Set<string> | null>(null)
+  const timers = useRef<Map<string, number>>(new Map())
+  const [highlighted, setHighlighted] = useState<Set<string>>(() => new Set())
+  const key = ids.join(",")
 
   useEffect(() => {
-    const current = key ? key.split(",") : [];
+    const current = key ? key.split(",") : []
     if (seen.current === null) {
-      seen.current = new Set(current);
-      return;
+      seen.current = new Set(current)
+      return
     }
-    const added = current.filter((id) => !seen.current!.has(id));
-    seen.current = new Set(current);
-    if (added.length === 0) return;
+    const added = current.filter((id) => !seen.current!.has(id))
+    seen.current = new Set(current)
+    if (added.length === 0) return
 
     setHighlighted((prev) => {
-      const next = new Set(prev);
-      added.forEach((id) => next.add(id));
-      return next;
-    });
+      const next = new Set(prev)
+      added.forEach((id) => next.add(id))
+      return next
+    })
     added.forEach((id) => {
-      const existing = timers.current.get(id);
-      if (existing) window.clearTimeout(existing);
+      const existing = timers.current.get(id)
+      if (existing) window.clearTimeout(existing)
       const t = window.setTimeout(() => {
         setHighlighted((prev) => {
-          const next = new Set(prev);
-          next.delete(id);
-          return next;
-        });
-        timers.current.delete(id);
-      }, HIGHLIGHT_MS);
-      timers.current.set(id, t);
-    });
-  }, [key]);
+          const next = new Set(prev)
+          next.delete(id)
+          return next
+        })
+        timers.current.delete(id)
+      }, HIGHLIGHT_MS)
+      timers.current.set(id, t)
+    })
+  }, [key])
 
   useEffect(() => {
-    const timeouts = timers.current;
-    return () => timeouts.forEach((t) => window.clearTimeout(t));
-  }, []);
+    const timeouts = timers.current
+    return () => timeouts.forEach((t) => window.clearTimeout(t))
+  }, [])
 
-  return highlighted;
+  return highlighted
 }
 
 type Props = {
-  player: PlayerState;
-  selectedIds: string[];
-  onTileClick: (tile: Tile) => void;
-  disabled?: boolean;
-  active?: boolean;
-  actionSlot?: ReactNode;
+  player: PlayerState
+  selectedIds: string[]
+  onTileClick: (tile: Tile) => void
+  disabled?: boolean
+  active?: boolean
+  actionSlot?: ReactNode
   // Manual tile order (ids) and callbacks for drag-to-rearrange. When
   // rackOrder is null the tiles fall back to the default suit/number sort.
-  rackOrder?: string[] | null;
-  onReorder?: (orderedIds: string[]) => void;
-  onResetOrder?: () => void;
+  rackOrder?: string[] | null
+  onReorder?: (orderedIds: string[]) => void
+  onResetOrder?: () => void
   // Id of the tile pinned to the far right of the rack (the freshly drawn tile).
-  pinnedTileId?: string | null;
-};
+  pinnedTileId?: string | null
+}
 
 export function PlayerRack({
   player,
@@ -95,59 +95,59 @@ export function PlayerRack({
   // merges into the sorted hand. Re-arms automatically on the next draw (new id).
   const [dismissedPinnedTileId, setDismissedPinnedTileId] = useState<
     string | null
-  >(null);
+  >(null)
   const activePinnedTileId =
     pinnedTileId && pinnedTileId !== dismissedPinnedTileId
       ? pinnedTileId
-      : null;
+      : null
 
   const ordered = useMemo(
     () => applyRackOrder(player.rack, rackOrder, activePinnedTileId),
     [player.rack, rackOrder, activePinnedTileId],
-  );
-  const selected = new Set(selectedIds);
+  )
+  const selected = new Set(selectedIds)
   const total =
     player.rack.length +
-    player.exposures.reduce((n, e) => n + e.tiles.length, 0);
+    player.exposures.reduce((n, e) => n + e.tiles.length, 0)
 
-  const highlighted = useNewTileHighlights(player.rack.map((t) => t.id));
+  const highlighted = useNewTileHighlights(player.rack.map((t) => t.id))
 
   // Joker-swap UI: highlight/shake/hide the offered rack tile during a swap.
-  const swapPendingId = useJokerSwapUi((s) => s.pendingRackId);
-  const swapShakeIds = useJokerSwapUi((s) => s.shakeIds);
-  const swapHiddenIds = useJokerSwapUi((s) => s.hiddenIds);
+  const swapPendingId = useJokerSwapUi((s) => s.pendingRackId)
+  const swapShakeIds = useJokerSwapUi((s) => s.shakeIds)
+  const swapHiddenIds = useJokerSwapUi((s) => s.hiddenIds)
 
-  const [dragId, setDragId] = useState<string | null>(null);
-  const [overId, setOverId] = useState<string | null>(null);
+  const [dragId, setDragId] = useState<string | null>(null)
+  const [overId, setOverId] = useState<string | null>(null)
 
   const commitDrop = (draggedId: string, targetId: string) => {
-    if (!onReorder || draggedId === targetId) return;
-    const ids = ordered.map((t) => t.id);
-    const from = ids.indexOf(draggedId);
-    const to = ids.indexOf(targetId);
-    if (from < 0 || to < 0) return;
-    ids.splice(from, 1);
-    const insertAt = ids.indexOf(targetId);
-    ids.splice(from < to ? insertAt + 1 : insertAt, 0, draggedId);
-    onReorder(ids);
-  };
+    if (!onReorder || draggedId === targetId) return
+    const ids = ordered.map((t) => t.id)
+    const from = ids.indexOf(draggedId)
+    const to = ids.indexOf(targetId)
+    if (from < 0 || to < 0) return
+    ids.splice(from, 1)
+    const insertAt = ids.indexOf(targetId)
+    ids.splice(from < to ? insertAt + 1 : insertAt, 0, draggedId)
+    onReorder(ids)
+  }
 
   const onDragStart = (e: DragEvent, id: string) => {
-    setDragId(id);
-    e.dataTransfer.effectAllowed = "move";
+    setDragId(id)
+    e.dataTransfer.effectAllowed = "move"
     try {
-      e.dataTransfer.setData("text/plain", id);
+      e.dataTransfer.setData("text/plain", id)
     } catch {
       /* some browsers restrict setData; dragId state covers us */
     }
-  };
+  }
   const onDrop = (e: DragEvent, targetId: string) => {
-    e.preventDefault();
-    const dragged = e.dataTransfer.getData("text/plain") || dragId;
-    if (dragged) commitDrop(dragged, targetId);
-    setDragId(null);
-    setOverId(null);
-  };
+    e.preventDefault()
+    const dragged = e.dataTransfer.getData("text/plain") || dragId
+    if (dragged) commitDrop(dragged, targetId)
+    setDragId(null)
+    setOverId(null)
+  }
 
   return (
     <div
@@ -207,8 +207,8 @@ export function PlayerRack({
               style={{ padding: "5px 12px", font: "700 11px var(--font-ui)" }}
               onClick={() => {
                 // Dismiss the drawn-tile pin so it sorts in with the rest.
-                setDismissedPinnedTileId(pinnedTileId ?? null);
-                onResetOrder?.();
+                setDismissedPinnedTileId(pinnedTileId ?? null)
+                onResetOrder?.()
               }}
               title="Sort tiles by suit and number"
             >
@@ -262,12 +262,12 @@ export function PlayerRack({
               draggable
               onDragStart={(e) => onDragStart(e, t.id)}
               onDragEnd={() => {
-                setDragId(null);
-                setOverId(null);
+                setDragId(null)
+                setOverId(null)
               }}
               onDragOver={(e) => {
-                e.preventDefault();
-                if (dragId && overId !== t.id) setOverId(t.id);
+                e.preventDefault()
+                if (dragId && overId !== t.id) setOverId(t.id)
               }}
               onDragLeave={() =>
                 setOverId((cur) => (cur === t.id ? null : cur))
@@ -309,5 +309,5 @@ export function PlayerRack({
 
       {actionSlot && <div style={{ marginTop: 18 }}>{actionSlot}</div>}
     </div>
-  );
+  )
 }

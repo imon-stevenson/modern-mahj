@@ -1,55 +1,55 @@
-export type Suit = 'bams' | 'craks' | 'dots';
-export type Wind = 'N' | 'E' | 'S' | 'W';
-export type DragonColor = 'red' | 'green' | 'white';
-export type Seat = 'east' | 'south' | 'west' | 'north';
-export type Difficulty = 'beginner' | 'intermediate' | 'expert';
+export type Suit = 'bams' | 'craks' | 'dots'
+export type Wind = 'N' | 'E' | 'S' | 'W'
+export type DragonColor = 'red' | 'green' | 'white'
+export type Seat = 'east' | 'south' | 'west' | 'north'
+export type Difficulty = 'beginner' | 'intermediate' | 'expert'
 
 export type NumberTile = {
-  id: string;
-  kind: 'number';
-  suit: Suit;
-  rank: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-};
-export type WindTile = { id: string; kind: 'wind'; wind: Wind };
-export type DragonTile = { id: string; kind: 'dragon'; color: DragonColor };
-export type FlowerTile = { id: string; kind: 'flower' };
-export type JokerTile = { id: string; kind: 'joker' };
+  id: string
+  kind: 'number'
+  suit: Suit
+  rank: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+}
+export type WindTile = { id: string, kind: 'wind', wind: Wind }
+export type DragonTile = { id: string, kind: 'dragon', color: DragonColor }
+export type FlowerTile = { id: string, kind: 'flower' }
+export type JokerTile = { id: string, kind: 'joker' }
 
-export type Tile = NumberTile | WindTile | DragonTile | FlowerTile | JokerTile;
+export type Tile = NumberTile | WindTile | DragonTile | FlowerTile | JokerTile
 
-export type ExposureKind = 'pair' | 'pung' | 'kong' | 'quint' | 'sextet';
+export type ExposureKind = 'pair' | 'pung' | 'kong' | 'quint' | 'sextet'
 
 export type Exposure = {
-  kind: ExposureKind;
-  tiles: Tile[];
-  jokerIds: string[];
-};
+  kind: ExposureKind
+  tiles: Tile[]
+  jokerIds: string[]
+}
 
 export type PlayerState = {
-  seat: Seat;
-  rack: Tile[];
-  exposures: Exposure[];
-  isBot: boolean;
-};
+  seat: Seat
+  rack: Tile[]
+  exposures: Exposure[]
+  isBot: boolean
+}
 
 export type GamePhase =
   | 'setup'
   | 'chooseCard'
   | 'charleston'
   | 'play'
-  | 'ended';
+  | 'ended'
 
-export type CallKind = 'pung' | 'kong' | 'quint' | 'sextet' | 'mahjong';
+export type CallKind = 'pung' | 'kong' | 'quint' | 'sextet' | 'mahjong'
 
 export type AwaitingCall = {
-  discardId: string;
-  discardTile: Tile;
-  callableBy: Seat[];
-  deadline: number | null;
+  discardId: string
+  discardTile: Tile
+  callableBy: Seat[]
+  deadline: number | null
   // True once the human presses "Call" and is choosing which claim to make —
   // the countdown is paused (deadline nulled) while they decide.
-  humanChoosing: boolean;
-} | null;
+  humanChoosing: boolean
+} | null
 
 export type CharlestonPass =
   | 'firstRight'
@@ -58,6 +58,6 @@ export type CharlestonPass =
   | 'secondLeft'
   | 'secondAcross'
   | 'secondRight'
-  | 'courtesy';
+  | 'courtesy'
 
-export const SEATS: readonly Seat[] = ['east', 'south', 'west', 'north'] as const;
+export const SEATS: readonly Seat[] = ['east', 'south', 'west', 'north'] as const

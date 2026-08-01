@@ -5,8 +5,8 @@ import type {
   Suit,
   Tile,
   Wind,
-} from '../types';
-import { tilesEqual } from '../tiles';
+} from '../types'
+import { tilesEqual } from '../tiles'
 import type {
   DragonVar,
   GroupKind,
@@ -16,200 +16,200 @@ import type {
   SuitVar,
   TilePattern,
   WindVar,
-} from './schema';
+} from './schema'
 
 // A binding maps each variable used by a hand to a concrete value.
-type SuitBinding = Partial<Record<SuitVar, Suit>>;
-type NumberBinding = { N?: number; M?: number };
-type WindBinding = Partial<Record<WindVar, Wind>>;
-type DragonBinding = Partial<Record<DragonVar, DragonColor>>;
+type SuitBinding = Partial<Record<SuitVar, Suit>>
+type NumberBinding = { N?: number, M?: number }
+type WindBinding = Partial<Record<WindVar, Wind>>
+type DragonBinding = Partial<Record<DragonVar, DragonColor>>
 type Binding = {
-  suits: SuitBinding;
-  numbers: NumberBinding;
-  winds: WindBinding;
-  dragons: DragonBinding;
-};
+  suits: SuitBinding
+  numbers: NumberBinding
+  winds: WindBinding
+  dragons: DragonBinding
+}
 
 type ConcreteTileIdentity =
-  | { kind: 'number'; suit: Suit; rank: number }
-  | { kind: 'wind'; wind: Wind }
-  | { kind: 'dragon'; color: DragonColor }
-  | { kind: 'flower' };
+  | { kind: 'number', suit: Suit, rank: number }
+  | { kind: 'wind', wind: Wind }
+  | { kind: 'dragon', color: DragonColor }
+  | { kind: 'flower' }
 
 type ConcreteGroup = {
-  kind: GroupKind;
-  identity: ConcreteTileIdentity;
-  jokersAllowed: boolean;
-};
+  kind: GroupKind
+  identity: ConcreteTileIdentity
+  jokersAllowed: boolean
+}
 
-const ALL_SUITS: readonly Suit[] = ['bams', 'craks', 'dots'];
-const ALL_WINDS: readonly Wind[] = ['N', 'E', 'S', 'W'];
-const ALL_DRAGONS: readonly DragonColor[] = ['red', 'green', 'white'];
+const ALL_SUITS: readonly Suit[] = ['bams', 'craks', 'dots']
+const ALL_WINDS: readonly Wind[] = ['N', 'E', 'S', 'W']
+const ALL_DRAGONS: readonly DragonColor[] = ['red', 'green', 'white']
 
 // ---------- variable enumeration ----------
 
 function suitVarsIn(hand: NMJLHand): SuitVar[] {
-  const set = new Set<SuitVar>();
+  const set = new Set<SuitVar>()
   for (const g of hand.groups) {
-    if ('suitVar' in g.tile && g.tile.suitVar) set.add(g.tile.suitVar);
+    if ('suitVar' in g.tile && g.tile.suitVar) set.add(g.tile.suitVar)
   }
   for (const c of hand.suitConstraints ?? []) {
-    for (const v of c.vars) set.add(v);
+    for (const v of c.vars) set.add(v)
   }
-  return [...set];
+  return [...set]
 }
 
 function numberVarsIn(hand: NMJLHand): NumberVar[] {
-  const set = new Set<NumberVar>();
+  const set = new Set<NumberVar>()
   for (const g of hand.groups) {
-    if (g.tile.kind === 'number' && 'numVar' in g.tile) set.add(g.tile.numVar);
+    if (g.tile.kind === 'number' && 'numVar' in g.tile) set.add(g.tile.numVar)
   }
   for (const c of hand.numberConstraints ?? []) {
-    set.add(c.var);
+    set.add(c.var)
   }
-  return [...set];
+  return [...set]
 }
 
 function windVarsIn(hand: NMJLHand): WindVar[] {
-  const set = new Set<WindVar>();
+  const set = new Set<WindVar>()
   for (const g of hand.groups) {
-    if (g.tile.kind === 'wind' && 'windVar' in g.tile) set.add(g.tile.windVar);
+    if (g.tile.kind === 'wind' && 'windVar' in g.tile) set.add(g.tile.windVar)
   }
-  return [...set];
+  return [...set]
 }
 
 function dragonVarsIn(hand: NMJLHand): DragonVar[] {
-  const set = new Set<DragonVar>();
+  const set = new Set<DragonVar>()
   for (const g of hand.groups) {
-    if (g.tile.kind === 'dragon' && 'dragonVar' in g.tile) set.add(g.tile.dragonVar);
+    if (g.tile.kind === 'dragon' && 'dragonVar' in g.tile) set.add(g.tile.dragonVar)
   }
-  return [...set];
+  return [...set]
 }
 
 function enumerateSuitBindings(vars: SuitVar[]): SuitBinding[] {
-  if (vars.length === 0) return [{}];
-  const results: SuitBinding[] = [];
+  if (vars.length === 0) return [{}]
+  const results: SuitBinding[] = []
   const walk = (i: number, cur: SuitBinding) => {
     if (i === vars.length) {
-      results.push({ ...cur });
-      return;
+      results.push({ ...cur })
+      return
     }
     for (const s of ALL_SUITS) {
-      cur[vars[i]!] = s;
-      walk(i + 1, cur);
+      cur[vars[i]!] = s
+      walk(i + 1, cur)
     }
-  };
-  walk(0, {});
-  return results;
+  }
+  walk(0, {})
+  return results
 }
 
 function enumerateWindBindings(vars: WindVar[]): WindBinding[] {
-  if (vars.length === 0) return [{}];
-  const results: WindBinding[] = [];
+  if (vars.length === 0) return [{}]
+  const results: WindBinding[] = []
   const walk = (i: number, cur: WindBinding) => {
     if (i === vars.length) {
-      results.push({ ...cur });
-      return;
+      results.push({ ...cur })
+      return
     }
     for (const w of ALL_WINDS) {
-      cur[vars[i]!] = w;
-      walk(i + 1, cur);
+      cur[vars[i]!] = w
+      walk(i + 1, cur)
     }
-  };
-  walk(0, {});
-  return results;
+  }
+  walk(0, {})
+  return results
 }
 
 function enumerateDragonBindings(vars: DragonVar[]): DragonBinding[] {
-  if (vars.length === 0) return [{}];
-  const results: DragonBinding[] = [];
+  if (vars.length === 0) return [{}]
+  const results: DragonBinding[] = []
   const walk = (i: number, cur: DragonBinding) => {
     if (i === vars.length) {
-      results.push({ ...cur });
-      return;
+      results.push({ ...cur })
+      return
     }
     for (const d of ALL_DRAGONS) {
-      cur[vars[i]!] = d;
-      walk(i + 1, cur);
+      cur[vars[i]!] = d
+      walk(i + 1, cur)
     }
-  };
-  walk(0, {});
-  return results;
+  }
+  walk(0, {})
+  return results
 }
 
 function suitBindingSatisfies(binding: SuitBinding, hand: NMJLHand): boolean {
   for (const c of hand.suitConstraints ?? []) {
-    const values = c.vars.map((v) => binding[v]).filter((x): x is Suit => !!x);
-    if (values.length < c.vars.length) return true;
+    const values = c.vars.map((v) => binding[v]).filter((x): x is Suit => !!x)
+    if (values.length < c.vars.length) return true
     if (c.rule === 'allDifferent') {
-      if (new Set(values).size !== values.length) return false;
+      if (new Set(values).size !== values.length) return false
     } else {
-      if (new Set(values).size !== 1) return false;
+      if (new Set(values).size !== 1) return false
     }
   }
-  return true;
+  return true
 }
 
-type NumberBase = 'N' | 'M';
+type NumberBase = 'N' | 'M'
 
 function numberVarBase(v: NumberVar): NumberBase {
-  return v.startsWith('M') ? 'M' : 'N';
+  return v.startsWith('M') ? 'M' : 'N'
 }
 
 function numberVarOffset(v: NumberVar): number {
-  const plus = v.split('+')[1];
-  return plus ? parseInt(plus, 10) : 0;
+  const plus = v.split('+')[1]
+  return plus ? parseInt(plus, 10) : 0
 }
 
 // Candidate concrete values for one base (`N` or `M`), honouring its number
 // constraints and leaving room for the largest offset used by that base.
 function candidatesForBase(base: NumberBase, vars: NumberVar[], hand: NMJLHand): number[] {
-  let candidates = new Set<number>();
-  for (let n = 1; n <= 9; n++) candidates.add(n);
+  let candidates = new Set<number>()
+  for (let n = 1; n <= 9; n++) candidates.add(n)
   for (const c of hand.numberConstraints ?? []) {
-    if (c.var !== base) continue;
+    if (c.var !== base) continue
     if (c.rule === 'range') {
-      candidates = new Set([...candidates].filter((n) => n >= c.min && n <= c.max));
+      candidates = new Set([...candidates].filter((n) => n >= c.min && n <= c.max))
     } else {
-      candidates = new Set([...candidates].filter((n) => c.values.includes(n)));
+      candidates = new Set([...candidates].filter((n) => c.values.includes(n)))
     }
   }
   const maxOffset = vars
     .filter((v) => numberVarBase(v) === base)
-    .reduce((m, v) => Math.max(m, numberVarOffset(v)), 0);
-  candidates = new Set([...candidates].filter((n) => n + maxOffset <= 9));
-  return [...candidates].sort((a, b) => a - b);
+    .reduce((m, v) => Math.max(m, numberVarOffset(v)), 0)
+  candidates = new Set([...candidates].filter((n) => n + maxOffset <= 9))
+  return [...candidates].sort((a, b) => a - b)
 }
 
 function enumerateNumberBindings(vars: NumberVar[], hand: NMJLHand): NumberBinding[] {
-  if (vars.length === 0) return [{}];
-  const usesN = vars.some((v) => numberVarBase(v) === 'N');
-  const usesM = vars.some((v) => numberVarBase(v) === 'M');
+  if (vars.length === 0) return [{}]
+  const usesN = vars.some((v) => numberVarBase(v) === 'N')
+  const usesM = vars.some((v) => numberVarBase(v) === 'M')
   const nCands: (number | undefined)[] = usesN
     ? candidatesForBase('N', vars, hand)
-    : [undefined];
+    : [undefined]
   const mCands: (number | undefined)[] = usesM
     ? candidatesForBase('M', vars, hand)
-    : [undefined];
-  const out: NumberBinding[] = [];
+    : [undefined]
+  const out: NumberBinding[] = []
   for (const n of nCands) {
     for (const m of mCands) {
       // Two independent bases in the same hand denote two different numbers.
-      if (usesN && usesM && n === m) continue;
-      const b: NumberBinding = {};
-      if (n !== undefined) b.N = n;
-      if (m !== undefined) b.M = m;
-      out.push(b);
+      if (usesN && usesM && n === m) continue
+      const b: NumberBinding = {}
+      if (n !== undefined) b.N = n
+      if (m !== undefined) b.M = m
+      out.push(b)
     }
   }
-  return out;
+  return out
 }
 
 function resolveNumberVar(varName: NumberVar, binding: NumberBinding): number | null {
-  const base = numberVarBase(varName);
-  const baseVal = base === 'M' ? binding.M : binding.N;
-  if (baseVal == null) return null;
-  return baseVal + numberVarOffset(varName);
+  const base = numberVarBase(varName)
+  const baseVal = base === 'M' ? binding.M : binding.N
+  if (baseVal == null) return null
+  return baseVal + numberVarOffset(varName)
 }
 
 function materializeIdentity(
@@ -217,35 +217,35 @@ function materializeIdentity(
   binding: Binding,
 ): ConcreteTileIdentity | null {
   if (pattern.kind === 'wind') {
-    if ('wind' in pattern) return { kind: 'wind', wind: pattern.wind };
-    const w = binding.winds[pattern.windVar];
-    if (!w) return null;
-    return { kind: 'wind', wind: w };
+    if ('wind' in pattern) return { kind: 'wind', wind: pattern.wind }
+    const w = binding.winds[pattern.windVar]
+    if (!w) return null
+    return { kind: 'wind', wind: w }
   }
-  if (pattern.kind === 'flower') return { kind: 'flower' };
+  if (pattern.kind === 'flower') return { kind: 'flower' }
   if (pattern.kind === 'dragon') {
-    if ('color' in pattern) return { kind: 'dragon', color: pattern.color };
+    if ('color' in pattern) return { kind: 'dragon', color: pattern.color }
     if ('dragonVar' in pattern) {
-      const d = binding.dragons[pattern.dragonVar];
-      if (!d) return null;
-      return { kind: 'dragon', color: d };
+      const d = binding.dragons[pattern.dragonVar]
+      if (!d) return null
+      return { kind: 'dragon', color: d }
     }
-    const suit = binding.suits[pattern.suitVar];
-    if (!suit) return null;
+    const suit = binding.suits[pattern.suitVar]
+    if (!suit) return null
     const color: DragonColor =
-      suit === 'bams' ? 'green' : suit === 'craks' ? 'red' : 'white';
-    return { kind: 'dragon', color };
+      suit === 'bams' ? 'green' : suit === 'craks' ? 'red' : 'white'
+    return { kind: 'dragon', color }
   }
   if ('suit' in pattern) {
-    if ('rank' in pattern) return { kind: 'number', suit: pattern.suit, rank: pattern.rank };
-    return null;
+    if ('rank' in pattern) return { kind: 'number', suit: pattern.suit, rank: pattern.rank }
+    return null
   }
-  const suit = binding.suits[pattern.suitVar];
-  if (!suit) return null;
-  if ('rank' in pattern) return { kind: 'number', suit, rank: pattern.rank };
-  const n = resolveNumberVar(pattern.numVar, binding.numbers);
-  if (n == null) return null;
-  return { kind: 'number', suit, rank: n };
+  const suit = binding.suits[pattern.suitVar]
+  if (!suit) return null
+  if ('rank' in pattern) return { kind: 'number', suit, rank: pattern.rank }
+  const n = resolveNumberVar(pattern.numVar, binding.numbers)
+  if (n == null) return null
+  return { kind: 'number', suit, rank: n }
 }
 
 function identityToTile(id: ConcreteTileIdentity): Tile {
@@ -256,13 +256,13 @@ function identityToTile(id: ConcreteTileIdentity): Tile {
         kind: 'number',
         suit: id.suit,
         rank: id.rank as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
-      };
+      }
     case 'wind':
-      return { id: '_tpl', kind: 'wind', wind: id.wind };
+      return { id: '_tpl', kind: 'wind', wind: id.wind }
     case 'dragon':
-      return { id: '_tpl', kind: 'dragon', color: id.color };
+      return { id: '_tpl', kind: 'dragon', color: id.color }
     case 'flower':
-      return { id: '_tpl', kind: 'flower' };
+      return { id: '_tpl', kind: 'flower' }
   }
 }
 
@@ -273,7 +273,7 @@ const GROUP_SIZE: Record<GroupKind, number> = {
   kong: 4,
   quint: 5,
   sextet: 6,
-};
+}
 
 const EXPOSURE_KIND_FOR: Record<GroupKind, ExposureKind | null> = {
   single: null,
@@ -282,136 +282,136 @@ const EXPOSURE_KIND_FOR: Record<GroupKind, ExposureKind | null> = {
   kong: 'kong',
   quint: 'quint',
   sextet: 'sextet',
-};
+}
 
 function totalTiles(groups: GroupPattern[]): number {
-  return groups.reduce((s, g) => s + GROUP_SIZE[g.kind], 0);
+  return groups.reduce((s, g) => s + GROUP_SIZE[g.kind], 0)
 }
 
 function materializeGroups(hand: NMJLHand, binding: Binding): ConcreteGroup[] | null {
-  const out: ConcreteGroup[] = [];
+  const out: ConcreteGroup[] = []
   for (const g of hand.groups) {
-    const id = materializeIdentity(g.tile, binding);
-    if (!id) return null;
-    out.push({ kind: g.kind, identity: id, jokersAllowed: g.jokersAllowed });
+    const id = materializeIdentity(g.tile, binding)
+    if (!id) return null
+    out.push({ kind: g.kind, identity: id, jokersAllowed: g.jokersAllowed })
   }
-  return out;
+  return out
 }
 
 function exposureSatisfies(ex: Exposure, group: ConcreteGroup): boolean {
-  if (ex.kind !== EXPOSURE_KIND_FOR[group.kind]) return false;
-  if (ex.tiles.length !== GROUP_SIZE[group.kind]) return false;
-  const template = identityToTile(group.identity);
-  const jokerCount = ex.jokerIds.length;
-  if (jokerCount > 0 && !group.jokersAllowed) return false;
+  if (ex.kind !== EXPOSURE_KIND_FOR[group.kind]) return false
+  if (ex.tiles.length !== GROUP_SIZE[group.kind]) return false
+  const template = identityToTile(group.identity)
+  const jokerCount = ex.jokerIds.length
+  if (jokerCount > 0 && !group.jokersAllowed) return false
   for (const t of ex.tiles) {
-    if (t.kind === 'joker') continue;
-    if (!tilesEqual(t, template)) return false;
+    if (t.kind === 'joker') continue
+    if (!tilesEqual(t, template)) return false
   }
-  return true;
+  return true
 }
 
 function consumeGroupFromRack(rack: Tile[], group: ConcreteGroup): Tile[] | null {
-  const template = identityToTile(group.identity);
-  const need = GROUP_SIZE[group.kind];
-  const naturals: Tile[] = [];
-  const jokers: Tile[] = [];
-  const rest: Tile[] = [];
+  const template = identityToTile(group.identity)
+  const need = GROUP_SIZE[group.kind]
+  const naturals: Tile[] = []
+  const jokers: Tile[] = []
+  const rest: Tile[] = []
   for (const t of rack) {
     if (naturals.length + jokers.length >= need) {
-      rest.push(t);
-      continue;
+      rest.push(t)
+      continue
     }
     if (t.kind !== 'joker' && tilesEqual(t, template)) {
-      naturals.push(t);
+      naturals.push(t)
     } else if (t.kind === 'joker' && group.jokersAllowed) {
-      jokers.push(t);
+      jokers.push(t)
     } else {
-      rest.push(t);
+      rest.push(t)
     }
   }
-  const total = naturals.length + jokers.length;
-  if (total < need) return null;
-  const used = [...naturals.slice(0, need)];
+  const total = naturals.length + jokers.length
+  if (total < need) return null
+  const used = [...naturals.slice(0, need)]
   const leftover: Tile[] = [
     ...naturals.slice(need),
     ...jokers.slice(Math.max(0, need - naturals.length)),
-  ];
+  ]
   if (used.length < need) {
-    const shortfall = need - used.length;
-    used.push(...jokers.slice(0, shortfall));
+    const shortfall = need - used.length
+    used.push(...jokers.slice(0, shortfall))
   }
-  return [...rest, ...leftover];
+  return [...rest, ...leftover]
 }
 
 export type MatchResult = {
-  hand: NMJLHand;
-  binding: Binding;
-};
+  hand: NMJLHand
+  binding: Binding
+}
 
 export function matchHand(
   rack: Tile[],
   exposures: Exposure[],
   hand: NMJLHand,
 ): MatchResult | null {
-  if (totalTiles(hand.groups) !== 14) return null;
-  if (hand.closed && exposures.length > 0) return null;
+  if (totalTiles(hand.groups) !== 14) return null
+  if (hand.closed && exposures.length > 0) return null
 
   const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
     suitBindingSatisfies(b, hand),
-  );
-  const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand);
-  const windBindings = enumerateWindBindings(windVarsIn(hand));
-  const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand));
+  )
+  const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand)
+  const windBindings = enumerateWindBindings(windVarsIn(hand))
+  const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand))
 
   for (const s of suitBindings) {
     for (const n of numberBindings) {
       for (const w of windBindings) {
         for (const d of dragonBindings) {
-          const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d };
-          const materialized = materializeGroups(hand, binding);
-          if (!materialized) continue;
-          const assignment = assignExposures(exposures, materialized);
-          if (!assignment) continue;
-          const remainingGroups = materialized.filter((_, i) => !assignment.usedGroupIdx.has(i));
-          let workingRack = [...rack];
-          let ok = true;
+          const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
+          const materialized = materializeGroups(hand, binding)
+          if (!materialized) continue
+          const assignment = assignExposures(exposures, materialized)
+          if (!assignment) continue
+          const remainingGroups = materialized.filter((_, i) => !assignment.usedGroupIdx.has(i))
+          let workingRack = [...rack]
+          let ok = true
           for (const g of remainingGroups) {
-            const next = consumeGroupFromRack(workingRack, g);
+            const next = consumeGroupFromRack(workingRack, g)
             if (!next) {
-              ok = false;
-              break;
+              ok = false
+              break
             }
-            workingRack = next;
+            workingRack = next
           }
-          if (!ok) continue;
-          if (workingRack.length > 0) continue;
-          return { hand, binding };
+          if (!ok) continue
+          if (workingRack.length > 0) continue
+          return { hand, binding }
         }
       }
     }
   }
-  return null;
+  return null
 }
 
 function assignExposures(
   exposures: Exposure[],
   groups: ConcreteGroup[],
 ): { usedGroupIdx: Set<number> } | null {
-  const usedGroupIdx = new Set<number>();
+  const usedGroupIdx = new Set<number>()
   for (const ex of exposures) {
-    let matched = -1;
+    let matched = -1
     for (let i = 0; i < groups.length; i++) {
-      if (usedGroupIdx.has(i)) continue;
+      if (usedGroupIdx.has(i)) continue
       if (exposureSatisfies(ex, groups[i]!)) {
-        matched = i;
-        break;
+        matched = i
+        break
       }
     }
-    if (matched < 0) return null;
-    usedGroupIdx.add(matched);
+    if (matched < 0) return null
+    usedGroupIdx.add(matched)
   }
-  return { usedGroupIdx };
+  return { usedGroupIdx }
 }
 
 export function matchAgainstAll(
@@ -420,10 +420,10 @@ export function matchAgainstAll(
   hands: NMJLHand[],
 ): MatchResult | null {
   for (const h of hands) {
-    const r = matchHand(rack, exposures, h);
-    if (r) return r;
+    const r = matchHand(rack, exposures, h)
+    if (r) return r
   }
-  return null;
+  return null
 }
 
 // Would some hand — still viable given the player's current `exposures` — need a
@@ -439,26 +439,26 @@ export function handsAllowGroupingForTile(
   for (const hand of hands) {
     const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
       suitBindingSatisfies(b, hand),
-    );
-    const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand);
-    const windBindings = enumerateWindBindings(windVarsIn(hand));
-    const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand));
+    )
+    const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand)
+    const windBindings = enumerateWindBindings(windVarsIn(hand))
+    const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand))
 
     for (const s of suitBindings) {
       for (const n of numberBindings) {
         for (const w of windBindings) {
           for (const d of dragonBindings) {
-            const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d };
-            const materialized = materializeGroups(hand, binding);
-            if (!materialized) continue;
+            const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
+            const materialized = materializeGroups(hand, binding)
+            if (!materialized) continue
             // The hand must still accommodate what the player has exposed.
-            const assignment = assignExposures(exposures, materialized);
-            if (!assignment) continue;
+            const assignment = assignExposures(exposures, materialized)
+            if (!assignment) continue
             for (let i = 0; i < materialized.length; i++) {
-              if (assignment.usedGroupIdx.has(i)) continue;
-              const g = materialized[i]!;
+              if (assignment.usedGroupIdx.has(i)) continue
+              const g = materialized[i]!
               if (g.kind === kind && tilesEqual(identityToTile(g.identity), tile)) {
-                return true;
+                return true
               }
             }
           }
@@ -466,5 +466,5 @@ export function handsAllowGroupingForTile(
       }
     }
   }
-  return false;
+  return false
 }

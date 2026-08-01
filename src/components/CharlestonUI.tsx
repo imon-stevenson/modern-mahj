@@ -1,9 +1,9 @@
-import { useMahjStore } from "../store";
-import { passDirection, passTarget } from "../game/charleston";
+import { useMahjStore } from "../store"
+import { passDirection, passTarget } from "../game/charleston"
 import {
   captureCharlestonFlight,
   playCharlestonFlight,
-} from "../store/charlestonFlight";
+} from "../store/charlestonFlight"
 
 const PASS_LABEL: Record<string, string> = {
   firstRight: "First Right",
@@ -13,38 +13,38 @@ const PASS_LABEL: Record<string, string> = {
   secondAcross: "Second Across",
   secondRight: "Second Right",
   courtesy: "Courtesy · With West",
-};
+}
 
 const eyebrowStyle: React.CSSProperties = {
   font: "600 14px var(--font-ui)",
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   color: "var(--gold)",
-};
+}
 
 const bodyStyle: React.CSSProperties = {
   font: "600 13px var(--font-ui)",
   color: "var(--felt-ink)",
-};
+}
 
-const plural = (n: number) => (n === 1 ? "tile" : "tiles");
+const plural = (n: number) => (n === 1 ? "tile" : "tiles")
 
 export function CharlestonUI(): React.ReactElement {
-  const charleston = useMahjStore((s) => s.charleston);
-  const selections = charleston.selections.east;
-  const clearSelection = useMahjStore((s) => s.clearSelection);
-  const submit = useMahjStore((s) => s.submitCharlestonSelection);
-  const runBotsAll = useMahjStore((s) => s.runBotCharlestonForAll);
-  const advance = useMahjStore((s) => s.advanceCharleston);
-  const agreeSecond = useMahjStore((s) => s.agreeSecondCharleston);
-  const setCourtesyOffer = useMahjStore((s) => s.setCourtesyOffer);
-  const proposeCourtesy = useMahjStore((s) => s.proposeCourtesyCount);
-  const confirmCourtesy = useMahjStore((s) => s.confirmCourtesy);
-  const eastRack = useMahjStore((s) => s.players.east.rack);
-  const courtesyOffers = charleston.courtesyOffers;
+  const charleston = useMahjStore((s) => s.charleston)
+  const selections = charleston.selections.east
+  const clearSelection = useMahjStore((s) => s.clearSelection)
+  const submit = useMahjStore((s) => s.submitCharlestonSelection)
+  const runBotsAll = useMahjStore((s) => s.runBotCharlestonForAll)
+  const advance = useMahjStore((s) => s.advanceCharleston)
+  const agreeSecond = useMahjStore((s) => s.agreeSecondCharleston)
+  const setCourtesyOffer = useMahjStore((s) => s.setCourtesyOffer)
+  const proposeCourtesy = useMahjStore((s) => s.proposeCourtesyCount)
+  const confirmCourtesy = useMahjStore((s) => s.confirmCourtesy)
+  const eastRack = useMahjStore((s) => s.players.east.rack)
+  const courtesyOffers = charleston.courtesyOffers
 
   // Resolve currently-selected ids to Tile objects for the flight animation.
-  const selectedTiles = () => eastRack.filter((t) => selections.includes(t.id));
+  const selectedTiles = () => eastRack.filter((t) => selections.includes(t.id))
 
   if (charleston.pass === null && charleston.secondCharlestonAgreed === null) {
     // Between first and second — bots agreed, waiting on the human.
@@ -71,15 +71,15 @@ export function CharlestonUI(): React.ReactElement {
           </button>
         </div>
       </div>
-    );
+    )
   }
   if (charleston.pass === null && charleston.secondCharlestonAgreed === false) {
     // A computer player declined the optional second Charleston. Per the rules
     // it only takes one decline to skip it — make that clear to the human.
-    const decliners = charleston.secondDecliners ?? [];
+    const decliners = charleston.secondDecliners ?? []
     const names = decliners.map(
       (seat) => seat[0]!.toUpperCase() + seat.slice(1),
-    );
+    )
     const who =
       names.length === 0
         ? "A computer player"
@@ -87,7 +87,7 @@ export function CharlestonUI(): React.ReactElement {
           ? names[0]!
           : names.length === 2
             ? `${names[0]} and ${names[1]}`
-            : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+            : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={eyebrowStyle}>Charleston</div>
@@ -102,16 +102,16 @@ export function CharlestonUI(): React.ReactElement {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
-  const pass = charleston.pass;
-  if (!pass) return <></>;
+  const pass = charleston.pass
+  if (!pass) return <></>
 
   // ---- Courtesy pass: negotiate a count with West, then select tiles ----
   if (pass === "courtesy") {
-    const step = charleston.courtesyStep ?? "choose";
-    const agreed = charleston.courtesyAgreedCount;
+    const step = charleston.courtesyStep ?? "choose"
+    const agreed = charleston.courtesyAgreedCount
 
     if (step === "choose") {
       return (
@@ -148,7 +148,7 @@ export function CharlestonUI(): React.ReactElement {
             </button>
           </div>
         </div>
-      );
+      )
     }
 
     if (step === "confirm") {
@@ -179,17 +179,17 @@ export function CharlestonUI(): React.ReactElement {
             </button>
           </div>
         </div>
-      );
+      )
     }
 
     // step === 'select'
-    const canSubmit = selections.length === agreed;
+    const canSubmit = selections.length === agreed
     const doCourtesyPass = () => {
       // Capture positions before the pass mutates the rack, then float clones.
-      const captured = captureCharlestonFlight(selectedTiles(), "west");
-      advance();
-      void playCharlestonFlight(captured);
-    };
+      const captured = captureCharlestonFlight(selectedTiles(), "west")
+      advance()
+      void playCharlestonFlight(captured)
+    }
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div style={eyebrowStyle}>Courtesy Pass · East ↔ West</div>
@@ -218,22 +218,22 @@ export function CharlestonUI(): React.ReactElement {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   // ---- First / second Charleston: always exactly 3 tiles ----
-  const target = passTarget("east", pass);
-  const direction = passDirection(pass);
+  const target = passTarget("east", pass)
+  const direction = passDirection(pass)
 
   const doPass = () => {
     // Capture tile positions before the pass mutates the rack, then float the
     // clones toward the recipient seat.
-    const captured = captureCharlestonFlight(selectedTiles(), target);
-    submit("east", selections);
-    runBotsAll();
-    advance();
-    void playCharlestonFlight(captured);
-  };
+    const captured = captureCharlestonFlight(selectedTiles(), target)
+    submit("east", selections)
+    runBotsAll()
+    advance()
+    void playCharlestonFlight(captured)
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -264,5 +264,5 @@ export function CharlestonUI(): React.ReactElement {
         </button>
       </div>
     </div>
-  );
+  )
 }

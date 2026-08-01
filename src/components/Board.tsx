@@ -1,76 +1,76 @@
-import { useEffect, useRef, useState } from "react";
-import { useMahjStore } from "../store";
-import { PlayerRack } from "./PlayerRack";
-import { OpponentRack } from "./OpponentRack";
-import { DiscardPile } from "./DiscardPile";
-import { CharlestonUI } from "./CharlestonUI";
-import { CallControl } from "./CallControl";
-import { CharlestonFlightOverlay } from "./CharlestonFlightOverlay";
-import { DiscardFlightOverlay } from "./DiscardFlightOverlay";
-import { JokerSwapFlightOverlay } from "./JokerSwapFlightOverlay";
-import { GameOverBanner } from "./GameOverBanner";
-import { useDiscardFlight } from "../hooks/useDiscardFlight";
-import { useIsDesktop } from "../hooks/useIsDesktop";
-import { attemptJokerSwap, useJokerSwapUi } from "../store/jokerSwapUi";
-import { CARD_YEARS } from "../game/hands/loader";
+import { useEffect, useRef, useState } from "react"
+import { useMahjStore } from "../store"
+import { PlayerRack } from "./PlayerRack"
+import { OpponentRack } from "./OpponentRack"
+import { DiscardPile } from "./DiscardPile"
+import { CharlestonUI } from "./CharlestonUI"
+import { CallControl } from "./CallControl"
+import { CharlestonFlightOverlay } from "./CharlestonFlightOverlay"
+import { DiscardFlightOverlay } from "./DiscardFlightOverlay"
+import { JokerSwapFlightOverlay } from "./JokerSwapFlightOverlay"
+import { GameOverBanner } from "./GameOverBanner"
+import { useDiscardFlight } from "../hooks/useDiscardFlight"
+import { useIsDesktop } from "../hooks/useIsDesktop"
+import { attemptJokerSwap, useJokerSwapUi } from "../store/jokerSwapUi"
+import { CARD_YEARS } from "../game/hands/loader"
 
 export function Board(): React.ReactElement {
-  useDiscardFlight();
-  const phase = useMahjStore((s) => s.phase);
-  const players = useMahjStore((s) => s.players);
-  const currentSeat = useMahjStore((s) => s.currentSeat);
-  const discards = useMahjStore((s) => s.discards);
-  const wall = useMahjStore((s) => s.wall);
-  const charleston = useMahjStore((s) => s.charleston);
-  const toggle = useMahjStore((s) => s.toggleTileSelection);
-  const humanDiscard = useMahjStore((s) => s.humanDiscard);
-  const humanDraw = useMahjStore((s) => s.humanDraw);
-  const eastRackOrder = useMahjStore((s) => s.eastRackOrder);
-  const reorderEastRack = useMahjStore((s) => s.reorderEastRack);
-  const resetEastRackOrder = useMahjStore((s) => s.resetEastRackOrder);
-  const lastAction = useMahjStore((s) => s.lastAction);
-  const paused = useMahjStore((s) => s.paused);
-  const resumeGame = useMahjStore((s) => s.resumeGame);
-  const cardYear = useMahjStore((s) => s.cardYear);
-  const startGameWithCard = useMahjStore((s) => s.startGameWithCard);
+  useDiscardFlight()
+  const phase = useMahjStore((s) => s.phase)
+  const players = useMahjStore((s) => s.players)
+  const currentSeat = useMahjStore((s) => s.currentSeat)
+  const discards = useMahjStore((s) => s.discards)
+  const wall = useMahjStore((s) => s.wall)
+  const charleston = useMahjStore((s) => s.charleston)
+  const toggle = useMahjStore((s) => s.toggleTileSelection)
+  const humanDiscard = useMahjStore((s) => s.humanDiscard)
+  const humanDraw = useMahjStore((s) => s.humanDraw)
+  const eastRackOrder = useMahjStore((s) => s.eastRackOrder)
+  const reorderEastRack = useMahjStore((s) => s.reorderEastRack)
+  const resetEastRackOrder = useMahjStore((s) => s.resetEastRackOrder)
+  const lastAction = useMahjStore((s) => s.lastAction)
+  const paused = useMahjStore((s) => s.paused)
+  const resumeGame = useMahjStore((s) => s.resumeGame)
+  const cardYear = useMahjStore((s) => s.cardYear)
+  const startGameWithCard = useMahjStore((s) => s.startGameWithCard)
 
   // Bumped whenever the human clicks somewhere on the board while they still
   // owe a draw — replays the "Draw tile" button's attention shake.
-  const [drawNudge, setDrawNudge] = useState(0);
+  const [drawNudge, setDrawNudge] = useState(0)
 
   // The tile the human just drew stays pinned to the far right of their rack
   // until they discard (turn ends) or drag it into place.
   const drawnTileId =
     lastAction?.kind === "draw" && lastAction.seat === "east"
       ? lastAction.tileId
-      : null;
+      : null
 
   // Escape cancels an in-progress joker-swap selection. On desktop, "d" draws a
   // tile when it's your turn (humanDraw self-guards to the right moment).
-  const isDesktop = useIsDesktop();
+  const isDesktop = useIsDesktop()
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        useJokerSwapUi.getState().clearSwap();
-        return;
+        useJokerSwapUi.getState().clearSwap()
+        return
       }
-      if (!isDesktop) return;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const el = document.activeElement;
-      const tag = el?.tagName;
+      if (!isDesktop) return
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const el = document.activeElement
+      const tag = el?.tagName
       if (
         tag === "INPUT" ||
         tag === "TEXTAREA" ||
         tag === "SELECT" ||
         (el as HTMLElement | null)?.isContentEditable
       ) {
-        return;
+        return
       }
-      if (e.key.toLowerCase() === "d") humanDraw();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isDesktop, humanDraw]);
+      if (e.key.toLowerCase() === "d") humanDraw()
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [isDesktop, humanDraw])
 
   if (phase === "setup") {
     return (
@@ -86,7 +86,7 @@ export function Board(): React.ReactElement {
       >
         No game in progress. Start a new game to take your seat at the table.
       </div>
-    );
+    )
   }
 
   if (phase === "chooseCard") {
@@ -145,35 +145,35 @@ export function Board(): React.ReactElement {
           ))}
         </div>
       </div>
-    );
+    )
   }
 
-  const isCharleston = phase === "charleston";
-  const isPlay = phase === "play";
-  const eastIsCurrent = isPlay && currentSeat === "east";
-  const selectedIds = charleston.selections.east;
+  const isCharleston = phase === "charleston"
+  const isPlay = phase === "play"
+  const eastIsCurrent = isPlay && currentSeat === "east"
+  const selectedIds = charleston.selections.east
 
   const eastTotal =
     players.east.rack.length +
-    players.east.exposures.reduce((n, e) => n + e.tiles.length, 0);
-  const needsDraw = eastIsCurrent && eastTotal === 13;
+    players.east.exposures.reduce((n, e) => n + e.tiles.length, 0)
+  const needsDraw = eastIsCurrent && eastTotal === 13
 
   const onEastTile = (tileId: string) => {
     // If a joker swap is in progress, this rack tile is the offered tile.
-    if (attemptJokerSwap(tileId)) return;
-    if (isCharleston) toggle(tileId);
-    else if (eastIsCurrent && !needsDraw) humanDiscard(tileId);
+    if (attemptJokerSwap(tileId)) return
+    if (isCharleston) toggle(tileId)
+    else if (eastIsCurrent && !needsDraw) humanDiscard(tileId)
     // When a draw is owed, clicking a tile does nothing here; the board-level
     // handler below nudges the Draw button instead.
-  };
+  }
 
   // While the human owes a draw, any click that isn't the Draw button itself
   // shakes the Draw button to point them at it.
   const onBoardClick = (e: React.MouseEvent) => {
-    if (!needsDraw) return;
-    if ((e.target as HTMLElement).closest("[data-draw-btn]")) return;
-    setDrawNudge((n) => n + 1);
-  };
+    if (!needsDraw) return
+    if ((e.target as HTMLElement).closest("[data-draw-btn]")) return
+    setDrawNudge((n) => n + 1)
+  }
 
   const actionSlot = isCharleston ? (
     <CharlestonUI />
@@ -198,7 +198,7 @@ export function Board(): React.ReactElement {
       />
       <CallControl />
     </div>
-  ) : null;
+  ) : null
 
   return (
     <div>
@@ -249,8 +249,7 @@ export function Board(): React.ReactElement {
                 maxWidth: 360,
               }}
             >
-              Your turn and any pending calls are on hold. <br /> Resume when
-              you're ready.
+              The game is on hold. Resume when you're ready.
             </div>
             <button
               type="button"
@@ -331,13 +330,13 @@ export function Board(): React.ReactElement {
       <DiscardFlightOverlay />
       <JokerSwapFlightOverlay />
     </div>
-  );
+  )
 }
 
 function WallIndicator({
   remaining,
 }: {
-  remaining: number;
+  remaining: number
 }): React.ReactElement {
   return (
     <div
@@ -381,7 +380,7 @@ function WallIndicator({
         {remaining} remaining
       </div>
     </div>
-  );
+  )
 }
 
 function PlayActions({
@@ -392,28 +391,28 @@ function PlayActions({
   nudge,
   isDesktop,
 }: {
-  eastIsCurrent: boolean;
-  needsDraw: boolean;
-  currentSeat: string;
-  onDraw: () => void;
-  nudge: number;
-  isDesktop: boolean;
+  eastIsCurrent: boolean
+  needsDraw: boolean
+  currentSeat: string
+  onDraw: () => void
+  nudge: number
+  isDesktop: boolean
 }): React.ReactElement {
-  const btnRef = useRef<HTMLButtonElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null)
 
   // Replay the shake each time `nudge` changes (a mis-click elsewhere). Resetting
   // the animation to 'none' + forcing a reflow restarts it even mid-run.
   useEffect(() => {
-    if (!nudge) return;
-    const el = btnRef.current;
-    if (!el) return;
-    el.style.animation = "none";
-    void el.offsetWidth;
-    el.style.animation = "draw-nudge 500ms ease";
-  }, [nudge]);
+    if (!nudge) return
+    const el = btnRef.current
+    if (!el) return
+    el.style.animation = "none"
+    void el.offsetWidth
+    el.style.animation = "draw-nudge 500ms ease"
+  }, [nudge])
 
   if (!eastIsCurrent) {
-    const name = currentSeat.charAt(0).toUpperCase() + currentSeat.slice(1);
+    const name = currentSeat.charAt(0).toUpperCase() + currentSeat.slice(1)
     return (
       <div
         style={{
@@ -423,7 +422,7 @@ function PlayActions({
       >
         Waiting for {name} to play…
       </div>
-    );
+    )
   }
   if (needsDraw) {
     return (
@@ -449,7 +448,7 @@ function PlayActions({
           Draw from the wall to begin your turn.
         </span>
       </div>
-    );
+    )
   }
   return (
     <div
@@ -457,5 +456,5 @@ function PlayActions({
     >
       Click a tile to discard it.
     </div>
-  );
+  )
 }

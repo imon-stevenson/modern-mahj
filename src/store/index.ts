@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import type {
   AwaitingCall,
   CallKind,
@@ -10,110 +10,110 @@ import type {
   PlayerState,
   Seat,
   Tile,
-} from "../game/types";
-import { SEATS } from "../game/types";
-import { createRng } from "../game/rng";
-import { dealFromWall, drawFromWall } from "../game/wall";
-import { applyPass, nextPass } from "../game/charleston";
-import { botFor } from "../game/bots";
-import type { BotCtx } from "../game/bots";
-import type { NMJLHand } from "../game/hands/schema";
-import { allHands } from "../game/hands/loader";
-import type { CardYear } from "../game/hands/loader";
-import { matchAgainstAll } from "../game/hands/match";
-import { buildExposure } from "../game/exposure";
+} from "../game/types"
+import { SEATS } from "../game/types"
+import { createRng } from "../game/rng"
+import { dealFromWall, drawFromWall } from "../game/wall"
+import { applyPass, nextPass } from "../game/charleston"
+import { botFor } from "../game/bots"
+import type { BotCtx } from "../game/bots"
+import type { NMJLHand } from "../game/hands/schema"
+import { allHands } from "../game/hands/loader"
+import type { CardYear } from "../game/hands/loader"
+import { matchAgainstAll } from "../game/hands/match"
+import { buildExposure } from "../game/exposure"
 import {
   nextSeat,
   possibleCallsForDiscard,
   removeTileById,
   resolveCallPriority,
   tilesForCall,
-} from "../game/turn";
-import { applyJokerSwap, validateJokerSwap } from "../game/jokerSwap";
-import type { JokerSwapOffer } from "../game/jokerSwap";
+} from "../game/turn"
+import { applyJokerSwap, validateJokerSwap } from "../game/jokerSwap"
+import type { JokerSwapOffer } from "../game/jokerSwap"
 
 // ---------- state shape ----------
 
 type CharlestonState = {
-  pass: CharlestonPass | null;
-  selections: Record<Seat, string[]>;
-  secondCharlestonAgreed: boolean | null;
-  courtesyOffers: Record<Seat, number>;
+  pass: CharlestonPass | null
+  selections: Record<Seat, string[]>
+  secondCharlestonAgreed: boolean | null
+  courtesyOffers: Record<Seat, number>
   // Bots that declined the optional second Charleston via their strategy.
   // Populated when the second Charleston is skipped so the UI can explain why.
-  secondDecliners: Seat[];
+  secondDecliners: Seat[]
   // Courtesy pass negotiation (East ↔ West involves the human):
   //   'choose'  — human proposes how many tiles (0–3) to exchange
   //   'confirm' — West offered fewer than the human wanted; confirm/decline
   //   'select'  — human picks the agreed number of tiles to pass
-  courtesyStep: "choose" | "confirm" | "select" | null;
+  courtesyStep: "choose" | "confirm" | "select" | null
   // The finalized East↔West exchange count (min of both offers).
-  courtesyAgreedCount: number;
-};
+  courtesyAgreedCount: number
+}
 
 type LastAction =
-  | { kind: "discard"; seat: Seat; tileId: string }
-  | { kind: "call"; seat: Seat; call: CallKind; tileId: string }
-  | { kind: "draw"; seat: Seat; tileId: string | null }
-  | { kind: "jokerSwap"; seat: Seat }
-  | null;
+  | { kind: "discard", seat: Seat, tileId: string }
+  | { kind: "call", seat: Seat, call: CallKind, tileId: string }
+  | { kind: "draw", seat: Seat, tileId: string | null }
+  | { kind: "jokerSwap", seat: Seat }
+  | null
 
 export type MahjState = {
-  difficulty: Difficulty;
+  difficulty: Difficulty
   // Which NMJL year card is in play. Chosen at new-game time; fixed for the game.
-  cardYear: CardYear;
-  botDelayMs: number;
-  callTimerMs: number;
-  rngSeed: number;
+  cardYear: CardYear
+  botDelayMs: number
+  callTimerMs: number
+  rngSeed: number
 
-  phase: GamePhase;
-  wall: Tile[];
-  players: Record<Seat, PlayerState>;
-  discards: Tile[];
-  currentSeat: Seat;
-  awaitingCall: AwaitingCall;
-  charleston: CharlestonState;
-  winner: Seat | null;
-  winningHand: NMJLHand | null;
-  lastAction: LastAction;
+  phase: GamePhase
+  wall: Tile[]
+  players: Record<Seat, PlayerState>
+  discards: Tile[]
+  currentSeat: Seat
+  awaitingCall: AwaitingCall
+  charleston: CharlestonState
+  winner: Seat | null
+  winningHand: NMJLHand | null
+  lastAction: LastAction
   // Manual left-to-right order for the human's (East) rack, as tile ids.
   // null means "use the default suit/number sort". Tiles not listed (e.g. a
   // freshly drawn tile) are appended after the listed ones.
-  eastRackOrder: string[] | null;
+  eastRackOrder: string[] | null
   // When true, bot turns are halted and any running call timer is frozen so the
   // human can step away without missing a call. Not persisted.
-  paused: boolean;
-  pausedCallRemainingMs: number | null;
+  paused: boolean
+  pausedCallRemainingMs: number | null
 
-  loadHandsSafe: (year?: CardYear) => NMJLHand[];
+  loadHandsSafe: (year?: CardYear) => NMJLHand[]
 
   // Start a new game in two steps: choose difficulty (header), then pick the
   // card on the mat before dealing.
-  requestNewGame: (difficulty: Difficulty) => void;
-  startGameWithCard: (cardYear: CardYear) => void;
-  reorderEastRack: (orderedIds: string[]) => void;
-  resetEastRackOrder: () => void;
-  toggleTileSelection: (tileId: string) => void;
-  clearSelection: (seat: Seat) => void;
-  submitCharlestonSelection: (seat: Seat, tileIds: string[]) => void;
-  runBotCharlestonForAll: () => void;
-  advanceCharleston: () => void;
-  agreeSecondCharleston: (agreed: boolean) => void;
-  setCourtesyOffer: (seat: Seat, count: number) => void;
-  proposeCourtesyCount: (count: number) => void;
-  confirmCourtesy: (agree: boolean) => void;
-  finishSetup: () => void;
+  requestNewGame: (difficulty: Difficulty) => void
+  startGameWithCard: (cardYear: CardYear) => void
+  reorderEastRack: (orderedIds: string[]) => void
+  resetEastRackOrder: () => void
+  toggleTileSelection: (tileId: string) => void
+  clearSelection: (seat: Seat) => void
+  submitCharlestonSelection: (seat: Seat, tileIds: string[]) => void
+  runBotCharlestonForAll: () => void
+  advanceCharleston: () => void
+  agreeSecondCharleston: (agreed: boolean) => void
+  setCourtesyOffer: (seat: Seat, count: number) => void
+  proposeCourtesyCount: (count: number) => void
+  confirmCourtesy: (agree: boolean) => void
+  finishSetup: () => void
 
-  humanDraw: () => void;
-  humanDiscard: (tileId: string) => void;
-  runBotTurn: (seat: Seat) => void;
-  callWithHuman: (kind: CallKind) => void;
-  openHumanCall: () => void;
-  passCall: () => void;
-  offerJokerSwap: (offer: JokerSwapOffer) => void;
-  pauseGame: () => void;
-  resumeGame: () => void;
-};
+  humanDraw: () => void
+  humanDiscard: (tileId: string) => void
+  runBotTurn: (seat: Seat) => void
+  callWithHuman: (kind: CallKind) => void
+  openHumanCall: () => void
+  passCall: () => void
+  offerJokerSwap: (offer: JokerSwapOffer) => void
+  pauseGame: () => void
+  resumeGame: () => void
+}
 
 // ---------- helpers ----------
 
@@ -126,17 +126,17 @@ function emptyCharleston(): CharlestonState {
     secondDecliners: [],
     courtesyStep: null,
     courtesyAgreedCount: 0,
-  };
+  }
 }
 
 function callTimerForDifficulty(d: Difficulty): number {
   switch (d) {
     case "beginner":
-      return 8000;
+      return 8000
     case "intermediate":
-      return 6000;
+      return 6000
     case "expert":
-      return 6000;
+      return 6000
   }
 }
 
@@ -144,11 +144,11 @@ function tileTotal(player: PlayerState): number {
   return (
     player.rack.length +
     player.exposures.reduce((s, e) => s + e.tiles.length, 0)
-  );
+  )
 }
 
 function seatsExcept(seat: Seat): Seat[] {
-  return SEATS.filter((s) => s !== seat);
+  return SEATS.filter((s) => s !== seat)
 }
 
 function callableSeats(
@@ -157,30 +157,30 @@ function callableSeats(
   tile: Tile,
   hands: NMJLHand[],
 ): Seat[] {
-  const out: Seat[] = [];
+  const out: Seat[] = []
   for (const seat of seatsExcept(discarder)) {
     if (possibleCallsForDiscard(players[seat].rack, tile).length > 0) {
-      out.push(seat);
-      continue;
+      out.push(seat)
+      continue
     }
-    const trial = [...players[seat].rack, tile];
-    if (matchAgainstAll(trial, players[seat].exposures, hands)) out.push(seat);
+    const trial = [...players[seat].rack, tile]
+    if (matchAgainstAll(trial, players[seat].exposures, hands)) out.push(seat)
   }
-  return out;
+  return out
 }
 
 function safeHands(year: CardYear): NMJLHand[] {
   try {
-    return allHands(year);
+    return allHands(year)
   } catch {
-    return [];
+    return []
   }
 }
 
 function buildBotCtx(state: MahjState, seat: Seat, rngOffset = 0): BotCtx {
   const allExposures: Record<Seat, Exposure[]> = Object.fromEntries(
     SEATS.map((s) => [s, state.players[s].exposures]),
-  ) as Record<Seat, Exposure[]>;
+  ) as Record<Seat, Exposure[]>
   return {
     seat,
     rack: state.players[seat].rack,
@@ -191,7 +191,7 @@ function buildBotCtx(state: MahjState, seat: Seat, rngOffset = 0): BotCtx {
     rng: createRng(
       state.rngSeed + rngOffset + state.discards.length + seat.length,
     ),
-  };
+  }
 }
 
 // Apply a claim (pung/kong/mahjong) as an atomic state mutation.
@@ -202,16 +202,16 @@ function applyCall(
   tile: Tile,
 ): Partial<MahjState> {
   if (kind === "mahjong") {
-    const trial = [...state.players[caller].rack, tile];
+    const trial = [...state.players[caller].rack, tile]
     const match = matchAgainstAll(
       trial,
       state.players[caller].exposures,
       safeHands(state.cardYear),
-    );
+    )
     const nextPlayers: Record<Seat, PlayerState> = {
       ...state.players,
       [caller]: { ...state.players[caller], rack: trial },
-    };
+    }
     return {
       players: nextPlayers,
       awaitingCall: null,
@@ -220,14 +220,14 @@ function applyCall(
       winningHand: match?.hand ?? null,
       lastAction: { kind: "call", seat: caller, call: kind, tileId: tile.id },
       discards: state.discards.filter((t) => t.id !== tile.id),
-    };
+    }
   }
-  const t = tilesForCall(kind, tile, state.players[caller].rack);
-  const removeIds = new Set(t.fromRack.map((x) => x.id));
+  const t = tilesForCall(kind, tile, state.players[caller].rack)
+  const removeIds = new Set(t.fromRack.map((x) => x.id))
   const newRack = state.players[caller].rack.filter(
     (x) => !removeIds.has(x.id),
-  );
-  const exposure = buildExposure(kind, [tile, ...t.fromRack], tile);
+  )
+  const exposure = buildExposure(kind, [tile, ...t.fromRack], tile)
   const nextPlayers: Record<Seat, PlayerState> = {
     ...state.players,
     [caller]: {
@@ -235,14 +235,14 @@ function applyCall(
       rack: newRack,
       exposures: [...state.players[caller].exposures, exposure],
     },
-  };
+  }
   return {
     players: nextPlayers,
     awaitingCall: null,
     currentSeat: caller,
     lastAction: { kind: "call", seat: caller, call: kind, tileId: tile.id },
     discards: state.discards.filter((t2) => t2.id !== tile.id),
-  };
+  }
 }
 
 // Compute the winning bot call (if any) among the seats currently allowed to
@@ -252,39 +252,39 @@ function resolveBotCalls(
   state: MahjState,
   discarder: Seat,
 ): Partial<MahjState> {
-  if (!state.awaitingCall) return {};
-  const bot = botFor(state.difficulty);
-  const requests: { seat: Seat; kind: CallKind }[] = [];
-  const tile = state.awaitingCall.discardTile;
-  const hands = safeHands(state.cardYear);
+  if (!state.awaitingCall) return {}
+  const bot = botFor(state.difficulty)
+  const requests: { seat: Seat, kind: CallKind }[] = []
+  const tile = state.awaitingCall.discardTile
+  const hands = safeHands(state.cardYear)
   for (const seat of state.awaitingCall.callableBy) {
-    if (!state.players[seat].isBot) continue;
-    const trial = [...state.players[seat].rack, tile];
+    if (!state.players[seat].isBot) continue
+    const trial = [...state.players[seat].rack, tile]
     if (matchAgainstAll(trial, state.players[seat].exposures, hands)) {
-      requests.push({ seat, kind: "mahjong" });
-      continue;
+      requests.push({ seat, kind: "mahjong" })
+      continue
     }
-    const available = possibleCallsForDiscard(state.players[seat].rack, tile);
-    const decision = bot.decideCall(buildBotCtx(state, seat), tile, available);
-    if (decision) requests.push({ seat, kind: decision });
+    const available = possibleCallsForDiscard(state.players[seat].rack, tile)
+    const decision = bot.decideCall(buildBotCtx(state, seat), tile, available)
+    if (decision) requests.push({ seat, kind: decision })
   }
-  const winner = resolveCallPriority(discarder, requests);
+  const winner = resolveCallPriority(discarder, requests)
   if (!winner) {
-    return { awaitingCall: null, currentSeat: nextSeat(discarder) };
+    return { awaitingCall: null, currentSeat: nextSeat(discarder) }
   }
-  return applyCall(state, winner.seat, winner.kind, tile);
+  return applyCall(state, winner.seat, winner.kind, tile)
 }
 
 // After a seat commits a discard, decide whether we need to wait on the
 // human, resolve bot calls immediately, or just pass the turn.
 function afterDiscard(state: MahjState, discarder: Seat): Partial<MahjState> {
-  const tile = state.discards[state.discards.length - 1]!;
-  const hands = safeHands(state.cardYear);
-  const callable = callableSeats(state.players, discarder, tile, hands);
+  const tile = state.discards[state.discards.length - 1]!
+  const hands = safeHands(state.cardYear)
+  const callable = callableSeats(state.players, discarder, tile, hands)
   if (callable.length === 0) {
-    return { awaitingCall: null, currentSeat: nextSeat(discarder) };
+    return { awaitingCall: null, currentSeat: nextSeat(discarder) }
   }
-  const humanCanCall = callable.includes("east");
+  const humanCanCall = callable.includes("east")
   const awaiting: AwaitingCall = {
     discardId: tile.id,
     discardTile: tile,
@@ -294,16 +294,16 @@ function afterDiscard(state: MahjState, discarder: Seat): Partial<MahjState> {
         ? Date.now() + state.callTimerMs
         : null,
     humanChoosing: false,
-  };
-  const withAwaiting: MahjState = { ...state, awaitingCall: awaiting };
+  }
+  const withAwaiting: MahjState = { ...state, awaitingCall: awaiting }
   if (!humanCanCall) {
     // No human input needed — decide bot calls now.
     return {
       awaitingCall: awaiting,
       ...resolveBotCalls(withAwaiting, discarder),
-    };
+    }
   }
-  return { awaitingCall: awaiting };
+  return { awaitingCall: awaiting }
 }
 
 // ---------- store ----------
@@ -345,15 +345,15 @@ export const useMahjStore = create<MahjState>()(
           difficulty,
           callTimerMs: callTimerForDifficulty(difficulty),
           phase: "chooseCard",
-        });
+        })
       },
 
       // Step 2: deal the game with the chosen card (also becomes the next
       // picker default via `cardYear`).
       startGameWithCard(cardYear) {
-        const seed = Math.floor(Math.random() * 0x7fffffff);
-        const rng = createRng(seed);
-        const { wall, players } = dealFromWall(rng, (seat) => seat !== "east");
+        const seed = Math.floor(Math.random() * 0x7fffffff)
+        const rng = createRng(seed)
+        const { wall, players } = dealFromWall(rng, (seat) => seat !== "east")
         set({
           cardYear,
           rngSeed: seed,
@@ -370,72 +370,72 @@ export const useMahjStore = create<MahjState>()(
           eastRackOrder: null,
           paused: false,
           pausedCallRemainingMs: null,
-        });
+        })
       },
 
       reorderEastRack(orderedIds) {
-        set({ eastRackOrder: [...orderedIds] });
+        set({ eastRackOrder: [...orderedIds] })
       },
 
       resetEastRackOrder() {
-        set({ eastRackOrder: null });
+        set({ eastRackOrder: null })
       },
 
       toggleTileSelection(tileId) {
-        const s = get();
-        const cur = s.charleston.selections.east;
+        const s = get()
+        const cur = s.charleston.selections.east
         const next = cur.includes(tileId)
           ? cur.filter((id) => id !== tileId)
-          : [...cur, tileId];
+          : [...cur, tileId]
         set({
           charleston: {
             ...s.charleston,
             selections: { ...s.charleston.selections, east: next },
           },
-        });
+        })
       },
 
       clearSelection(seat) {
-        const s = get();
+        const s = get()
         set({
           charleston: {
             ...s.charleston,
             selections: { ...s.charleston.selections, [seat]: [] },
           },
-        });
+        })
       },
 
       submitCharlestonSelection(seat, tileIds) {
-        const s = get();
+        const s = get()
         set({
           charleston: {
             ...s.charleston,
             selections: { ...s.charleston.selections, [seat]: tileIds },
           },
-        });
+        })
       },
 
       runBotCharlestonForAll() {
-        const s = get();
-        if (!s.charleston.pass) return;
-        const isCourtesy = s.charleston.pass === "courtesy";
-        const nextSelections = { ...s.charleston.selections };
-        const nextOffers = { ...s.charleston.courtesyOffers };
-        const bot = botFor(s.difficulty);
+        const s = get()
+        if (!s.charleston.pass) return
+        const isCourtesy = s.charleston.pass === "courtesy"
+        const nextSelections = { ...s.charleston.selections }
+        const nextOffers = { ...s.charleston.courtesyOffers }
+        const bot = botFor(s.difficulty)
         for (const seat of SEATS) {
-          if (!s.players[seat].isBot) continue;
-          const ctx = buildBotCtx(s, seat);
+          if (!s.players[seat].isBot) continue
+          const ctx = buildBotCtx(s, seat)
           if (isCourtesy) {
             // Each bot decides how many tiles (0–3) it will offer. The pair's
             // actual count is the min of the two offers (see advanceCharleston),
             // so we must record the bot's own offer — not leave it at 0.
-            const count = bot.chooseCourtesyCount(ctx);
-            const picks = bot.chooseCourtesyPass(ctx, count);
-            nextSelections[seat] = picks.map((t) => t.id);
-            nextOffers[seat] = picks.length;
+            const count = bot.chooseCourtesyCount(ctx)
+            const picks = bot.chooseCourtesyPass(ctx, count)
+            nextSelections[seat] = picks.map((t) => t.id)
+            nextOffers[seat] = picks.length
           } else {
-            const picks = bot.chooseCharlestonPass(ctx);
-            nextSelections[seat] = picks.map((t) => t.id);
+            const picks = bot.chooseCharlestonPass(ctx)
+            nextSelections[seat] = picks.map((t) => t.id)
           }
         }
         set({
@@ -444,45 +444,45 @@ export const useMahjStore = create<MahjState>()(
             selections: nextSelections,
             courtesyOffers: nextOffers,
           },
-        });
+        })
       },
 
       advanceCharleston() {
-        const s = get();
-        const pass = s.charleston.pass;
-        if (!pass) return;
+        const s = get()
+        const pass = s.charleston.pass
+        if (!pass) return
 
         const selectionTiles: Record<Seat, Tile[]> = Object.fromEntries(
           SEATS.map((seat) => {
-            const ids = new Set(s.charleston.selections[seat]);
-            return [seat, s.players[seat].rack.filter((t) => ids.has(t.id))];
+            const ids = new Set(s.charleston.selections[seat])
+            return [seat, s.players[seat].rack.filter((t) => ids.has(t.id))]
           }),
-        ) as Record<Seat, Tile[]>;
+        ) as Record<Seat, Tile[]>
 
-        let toApply = selectionTiles;
+        let toApply = selectionTiles
         if (pass === "courtesy") {
           const eastWest = Math.min(
             s.charleston.courtesyOffers.east,
             s.charleston.courtesyOffers.west,
-          );
+          )
           const southNorth = Math.min(
             s.charleston.courtesyOffers.south,
             s.charleston.courtesyOffers.north,
-          );
+          )
           toApply = {
             east: selectionTiles.east.slice(0, eastWest),
             west: selectionTiles.west.slice(0, eastWest),
             south: selectionTiles.south.slice(0, southNorth),
             north: selectionTiles.north.slice(0, southNorth),
-          };
+          }
         }
 
-        const nextPlayers = applyPass(s.players, pass, toApply);
-        const nextPassId = nextPass(pass);
+        const nextPlayers = applyPass(s.players, pass, toApply)
+        const nextPassId = nextPass(pass)
 
         if (nextPassId === "secondLeft") {
-          const bots = SEATS.filter((seat) => nextPlayers[seat].isBot);
-          const bot = botFor(s.difficulty);
+          const bots = SEATS.filter((seat) => nextPlayers[seat].isBot)
+          const bot = botFor(s.difficulty)
           // A second Charleston needs unanimous consent — record any bot that
           // declines so the human is told who (and that it's being skipped).
           const decliners = bots.filter(
@@ -490,7 +490,7 @@ export const useMahjStore = create<MahjState>()(
               !bot.wantsSecondCharleston(
                 buildBotCtx({ ...s, players: nextPlayers }, seat),
               ),
-          );
+          )
           set({
             players: nextPlayers,
             charleston: {
@@ -499,8 +499,8 @@ export const useMahjStore = create<MahjState>()(
               secondCharlestonAgreed: decliners.length === 0 ? null : false,
               secondDecliners: decliners,
             },
-          });
-          return;
+          })
+          return
         }
 
         set({
@@ -510,8 +510,8 @@ export const useMahjStore = create<MahjState>()(
             pass: nextPassId,
             courtesyStep: nextPassId === "courtesy" ? "choose" : null,
           },
-        });
-        if (nextPassId === null) get().finishSetup();
+        })
+        if (nextPassId === null) get().finishSetup()
       },
 
       agreeSecondCharleston(agreed) {
@@ -523,7 +523,7 @@ export const useMahjStore = create<MahjState>()(
               secondCharlestonAgreed: false,
               courtesyStep: "choose",
             },
-          });
+          })
         } else {
           set({
             charleston: {
@@ -531,36 +531,36 @@ export const useMahjStore = create<MahjState>()(
               pass: "secondLeft",
               secondCharlestonAgreed: true,
             },
-          });
+          })
         }
       },
 
       setCourtesyOffer(seat, count) {
-        const s = get();
-        const clamped = Math.max(0, Math.min(3, count));
+        const s = get()
+        const clamped = Math.max(0, Math.min(3, count))
         set({
           charleston: {
             ...s.charleston,
             courtesyOffers: { ...s.charleston.courtesyOffers, [seat]: clamped },
           },
-        });
+        })
       },
 
       proposeCourtesyCount(count) {
-        const s0 = get();
-        if (s0.charleston.pass !== "courtesy") return;
-        const clamped = Math.max(0, Math.min(3, count));
+        const s0 = get()
+        if (s0.charleston.pass !== "courtesy") return
+        const clamped = Math.max(0, Math.min(3, count))
         // Record the human's offer, then let every bot choose its own offer.
         set({
           charleston: {
             ...s0.charleston,
             courtesyOffers: { ...s0.charleston.courtesyOffers, east: clamped },
           },
-        });
-        get().runBotCharlestonForAll();
-        const s = get();
-        const westOffer = s.charleston.courtesyOffers.west;
-        const agreed = Math.min(clamped, westOffer);
+        })
+        get().runBotCharlestonForAll()
+        const s = get()
+        const westOffer = s.charleston.courtesyOffers.west
+        const agreed = Math.min(clamped, westOffer)
         if (clamped === 0) {
           // Human opts out entirely — East passes nothing; finish the courtesy.
           set({
@@ -569,9 +569,9 @@ export const useMahjStore = create<MahjState>()(
               courtesyStep: null,
               selections: { ...s.charleston.selections, east: [] },
             },
-          });
-          get().advanceCharleston();
-          return;
+          })
+          get().advanceCharleston()
+          return
         }
         if (westOffer < clamped) {
           // West can't match the human's offer — ask them to confirm/decline.
@@ -581,7 +581,7 @@ export const useMahjStore = create<MahjState>()(
               courtesyStep: "confirm",
               courtesyAgreedCount: agreed,
             },
-          });
+          })
         } else {
           set({
             charleston: {
@@ -590,13 +590,13 @@ export const useMahjStore = create<MahjState>()(
               courtesyAgreedCount: agreed,
               selections: { ...s.charleston.selections, east: [] },
             },
-          });
+          })
         }
       },
 
       confirmCourtesy(agree) {
-        const s = get();
-        if (s.charleston.pass !== "courtesy") return;
+        const s = get()
+        if (s.charleston.pass !== "courtesy") return
         if (agree && s.charleston.courtesyAgreedCount > 0) {
           set({
             charleston: {
@@ -604,8 +604,8 @@ export const useMahjStore = create<MahjState>()(
               courtesyStep: "select",
               selections: { ...s.charleston.selections, east: [] },
             },
-          });
-          return;
+          })
+          return
         }
         // Declined (or nothing to exchange) — East passes no tiles, then finish.
         set({
@@ -615,83 +615,83 @@ export const useMahjStore = create<MahjState>()(
             courtesyOffers: { ...s.charleston.courtesyOffers, east: 0 },
             selections: { ...s.charleston.selections, east: [] },
           },
-        });
-        get().advanceCharleston();
+        })
+        get().advanceCharleston()
       },
 
       finishSetup() {
-        set({ phase: "play", currentSeat: "east" });
+        set({ phase: "play", currentSeat: "east" })
       },
 
       humanDraw() {
-        const s = get();
-        if (s.phase !== "play" || s.currentSeat !== "east") return;
-        if (s.awaitingCall) return;
+        const s = get()
+        if (s.phase !== "play" || s.currentSeat !== "east") return
+        if (s.awaitingCall) return
         // Only draw when holding 13 tiles; a call leaves East with 14 already.
-        if (tileTotal(s.players.east) !== 13) return;
-        const { tile, wall } = drawFromWall(s.wall);
+        if (tileTotal(s.players.east) !== 13) return
+        const { tile, wall } = drawFromWall(s.wall)
         if (!tile) {
-          set({ phase: "ended", winner: null, winningHand: null });
-          return;
+          set({ phase: "ended", winner: null, winningHand: null })
+          return
         }
         const players: Record<Seat, PlayerState> = {
           ...s.players,
           east: { ...s.players.east, rack: [...s.players.east.rack, tile] },
-        };
+        }
         set({
           wall,
           players,
           lastAction: { kind: "draw", seat: "east", tileId: tile.id },
-        });
-        const s1 = get();
+        })
+        const s1 = get()
         const match = matchAgainstAll(
           s1.players.east.rack,
           s1.players.east.exposures,
           safeHands(s1.cardYear),
-        );
+        )
         if (match)
-          set({ phase: "ended", winner: "east", winningHand: match.hand });
+          set({ phase: "ended", winner: "east", winningHand: match.hand })
       },
 
       humanDiscard(tileId) {
-        const s = get();
-        if (s.phase !== "play" || s.currentSeat !== "east") return;
-        const rack = s.players.east.rack;
-        const tile = rack.find((t) => t.id === tileId);
-        if (!tile) return;
+        const s = get()
+        if (s.phase !== "play" || s.currentSeat !== "east") return
+        const rack = s.players.east.rack
+        const tile = rack.find((t) => t.id === tileId)
+        if (!tile) return
         const players: Record<Seat, PlayerState> = {
           ...s.players,
           east: { ...s.players.east, rack: removeTileById(rack, tileId) },
-        };
+        }
         const withDiscard: MahjState = {
           ...s,
           players,
           discards: [...s.discards, tile],
           lastAction: { kind: "discard", seat: "east", tileId },
-        };
-        set({ ...withDiscard, ...afterDiscard(withDiscard, "east") });
+        }
+        set({ ...withDiscard, ...afterDiscard(withDiscard, "east") })
       },
 
       passCall() {
-        const s = get();
-        if (!s.awaitingCall) return;
+        const s = get()
+        if (!s.awaitingCall) return
         const discarder =
-          s.lastAction?.kind === "discard" ? s.lastAction.seat : "east";
+          s.lastAction?.kind === "discard" ? s.lastAction.seat : "east"
         // Human passed — see if any bot still wants to call, then apply / pass.
-        set(resolveBotCalls(s, discarder));
+        set(resolveBotCalls(s, discarder))
       },
 
       callWithHuman(kind) {
-        const s = get();
-        if (!s.awaitingCall) return;
-        if (!s.awaitingCall.callableBy.includes("east")) return;
-        set(applyCall(s, "east", kind, s.awaitingCall.discardTile));
+        const s = get()
+        if (!s.awaitingCall) return
+        if (!s.awaitingCall.callableBy.includes("east")) return
+        set(applyCall(s, "east", kind, s.awaitingCall.discardTile))
       },
 
       openHumanCall() {
-        const s = get();
-        if (!s.awaitingCall) return;
-        if (!s.awaitingCall.callableBy.includes("east")) return;
+        const s = get()
+        if (!s.awaitingCall) return
+        if (!s.awaitingCall.callableBy.includes("east")) return
         // Human committed to deciding — pause the countdown (unlimited) and let
         // the UI show the specific claim options.
         set({
@@ -700,40 +700,40 @@ export const useMahjStore = create<MahjState>()(
             humanChoosing: true,
             deadline: null,
           },
-        });
+        })
       },
 
       offerJokerSwap(offer) {
-        const s = get();
-        const v = validateJokerSwap(s.players, offer);
-        if (!v.ok) return;
+        const s = get()
+        const v = validateJokerSwap(s.players, offer)
+        if (!v.ok) return
         set({
           players: applyJokerSwap(s.players, offer),
           lastAction: { kind: "jokerSwap", seat: offer.offeringSeat },
-        });
+        })
       },
 
       pauseGame() {
-        const s = get();
-        if (s.paused) return;
+        const s = get()
+        if (s.paused) return
         // Freeze a running call countdown by stashing the remaining time and
         // nulling the deadline (same trick as openHumanCall); restored on resume.
-        let awaitingCall = s.awaitingCall;
-        let pausedCallRemainingMs: number | null = null;
+        let awaitingCall = s.awaitingCall
+        let pausedCallRemainingMs: number | null = null
         if (awaitingCall?.deadline) {
           pausedCallRemainingMs = Math.max(
             0,
             awaitingCall.deadline - Date.now(),
-          );
-          awaitingCall = { ...awaitingCall, deadline: null };
+          )
+          awaitingCall = { ...awaitingCall, deadline: null }
         }
-        set({ paused: true, awaitingCall, pausedCallRemainingMs });
+        set({ paused: true, awaitingCall, pausedCallRemainingMs })
       },
 
       resumeGame() {
-        const s = get();
-        if (!s.paused) return;
-        let awaitingCall = s.awaitingCall;
+        const s = get()
+        if (!s.paused) return
+        let awaitingCall = s.awaitingCall
         if (
           awaitingCall &&
           !awaitingCall.humanChoosing &&
@@ -742,34 +742,34 @@ export const useMahjStore = create<MahjState>()(
           awaitingCall = {
             ...awaitingCall,
             deadline: Date.now() + s.pausedCallRemainingMs,
-          };
+          }
         }
-        set({ paused: false, awaitingCall, pausedCallRemainingMs: null });
+        set({ paused: false, awaitingCall, pausedCallRemainingMs: null })
       },
 
       runBotTurn(seat) {
-        const s0 = get();
-        if (s0.phase !== "play") return;
-        if (s0.currentSeat !== seat) return;
-        if (!s0.players[seat].isBot) return;
-        if (s0.awaitingCall) return;
+        const s0 = get()
+        if (s0.phase !== "play") return
+        if (s0.currentSeat !== seat) return
+        if (!s0.players[seat].isBot) return
+        if (s0.awaitingCall) return
 
-        const bot = botFor(s0.difficulty);
+        const bot = botFor(s0.difficulty)
 
         // Optional joker swap before drawing.
-        const swap = bot.wantsJokerSwap(buildBotCtx(s0, seat));
-        if (swap) get().offerJokerSwap(swap);
+        const swap = bot.wantsJokerSwap(buildBotCtx(s0, seat))
+        if (swap) get().offerJokerSwap(swap)
 
-        let s1 = get();
+        let s1 = get()
 
         // If the seat has 13 tiles total, they need to draw. If 14 (came from a
         // call), skip the draw and just discard.
-        const total = tileTotal(s1.players[seat]);
+        const total = tileTotal(s1.players[seat])
         if (total === 13) {
-          const { tile, wall } = drawFromWall(s1.wall);
+          const { tile, wall } = drawFromWall(s1.wall)
           if (!tile) {
-            set({ phase: "ended", winner: null, winningHand: null });
-            return;
+            set({ phase: "ended", winner: null, winningHand: null })
+            return
           }
           const players: Record<Seat, PlayerState> = {
             ...s1.players,
@@ -777,43 +777,43 @@ export const useMahjStore = create<MahjState>()(
               ...s1.players[seat],
               rack: [...s1.players[seat].rack, tile],
             },
-          };
+          }
           set({
             wall,
             players,
             lastAction: { kind: "draw", seat, tileId: tile.id },
-          });
-          s1 = get();
+          })
+          s1 = get()
           // Self-Mahjong?
           const match = matchAgainstAll(
             s1.players[seat].rack,
             s1.players[seat].exposures,
             safeHands(s1.cardYear),
-          );
+          )
           if (match) {
-            set({ phase: "ended", winner: seat, winningHand: match.hand });
-            return;
+            set({ phase: "ended", winner: seat, winningHand: match.hand })
+            return
           }
         }
 
         // Choose discard.
-        const ctx = buildBotCtx(get(), seat);
-        const discard = bot.chooseDiscard(ctx);
-        const s2 = get();
+        const ctx = buildBotCtx(get(), seat)
+        const discard = bot.chooseDiscard(ctx)
+        const s2 = get()
         const players2: Record<Seat, PlayerState> = {
           ...s2.players,
           [seat]: {
             ...s2.players[seat],
             rack: removeTileById(s2.players[seat].rack, discard.id),
           },
-        };
+        }
         const withDiscard: MahjState = {
           ...s2,
           players: players2,
           discards: [...s2.discards, discard],
           lastAction: { kind: "discard", seat, tileId: discard.id },
-        };
-        set({ ...withDiscard, ...afterDiscard(withDiscard, seat) });
+        }
+        set({ ...withDiscard, ...afterDiscard(withDiscard, seat) })
       },
     }),
     {
@@ -840,4 +840,4 @@ export const useMahjStore = create<MahjState>()(
       }),
     },
   ),
-);
+)

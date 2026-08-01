@@ -1,42 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 
 // Query matches only a phone held in portrait: a touch device (coarse pointer),
 // portrait orientation, and phone-width (<=540px in portrait excludes tablets).
-const PHONE_PORTRAIT = "(orientation: portrait) and (pointer: coarse) and (max-width: 540px)";
-const NUDGE_MS = 5000;
+const PHONE_PORTRAIT = "(orientation: portrait) and (pointer: coarse) and (max-width: 540px)"
+const NUDGE_MS = 5000
 
 // Transient overlay nudging phone users in portrait to rotate to landscape.
 // Auto-dismisses after ~5s; re-shows each time the user re-enters portrait.
 export function RotateNudge(): React.ReactElement | null {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia(PHONE_PORTRAIT);
-    let timer = 0;
+    if (typeof window === "undefined" || !window.matchMedia) return
+    const mq = window.matchMedia(PHONE_PORTRAIT)
+    let timer = 0
 
     const update = () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(timer)
       if (mq.matches) {
-        setShow(true);
-        timer = window.setTimeout(() => setShow(false), NUDGE_MS);
+        setShow(true)
+        timer = window.setTimeout(() => setShow(false), NUDGE_MS)
       } else {
-        setShow(false);
+        setShow(false)
       }
-    };
+    }
 
-    update();
+    update()
     // Modern browsers use addEventListener; older Safari uses addListener.
-    if (mq.addEventListener) mq.addEventListener("change", update);
-    else mq.addListener(update);
+    if (mq.addEventListener) mq.addEventListener("change", update)
+    else mq.addListener(update)
     return () => {
-      window.clearTimeout(timer);
-      if (mq.removeEventListener) mq.removeEventListener("change", update);
-      else mq.removeListener(update);
-    };
-  }, []);
+      window.clearTimeout(timer)
+      if (mq.removeEventListener) mq.removeEventListener("change", update)
+      else mq.removeListener(update)
+    }
+  }, [])
 
-  if (!show) return null;
+  if (!show) return null
 
   return (
     <div
@@ -119,5 +119,5 @@ export function RotateNudge(): React.ReactElement | null {
         Tap to dismiss
       </div>
     </div>
-  );
+  )
 }

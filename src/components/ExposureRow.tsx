@@ -1,7 +1,7 @@
-import type { Exposure, Seat } from "../game/types";
-import { TileView } from "./Tile";
-import { useMahjStore } from "../store";
-import { useJokerSwapUi } from "../store/jokerSwapUi";
+import type { Exposure, Seat } from "../game/types"
+import { TileView } from "./Tile"
+import { useMahjStore } from "../store"
+import { useJokerSwapUi } from "../store/jokerSwapUi"
 
 export function ExposureRow({
   exposures,
@@ -9,29 +9,29 @@ export function ExposureRow({
   flip = false,
   seat,
 }: {
-  exposures: Exposure[];
-  tileWidth?: number;
+  exposures: Exposure[]
+  tileWidth?: number
   // Rotate 180° so exposed tiles face the other players (table etiquette),
   // appearing upside-down from the owner's point of view.
-  flip?: boolean;
+  flip?: boolean
   // Whose exposures these are — used to target a joker swap.
-  seat: Seat;
+  seat: Seat
 }): React.ReactElement | null {
-  const phase = useMahjStore((s) => s.phase);
-  const currentSeat = useMahjStore((s) => s.currentSeat);
-  const east = useMahjStore((s) => s.players.east);
-  const source = useJokerSwapUi((s) => s.source);
-  const shakeIds = useJokerSwapUi((s) => s.shakeIds);
-  const hiddenIds = useJokerSwapUi((s) => s.hiddenIds);
-  const toggleJoker = useJokerSwapUi((s) => s.toggleJoker);
+  const phase = useMahjStore((s) => s.phase)
+  const currentSeat = useMahjStore((s) => s.currentSeat)
+  const east = useMahjStore((s) => s.players.east)
+  const source = useJokerSwapUi((s) => s.source)
+  const shakeIds = useJokerSwapUi((s) => s.shakeIds)
+  const hiddenIds = useJokerSwapUi((s) => s.hiddenIds)
+  const toggleJoker = useJokerSwapUi((s) => s.toggleJoker)
 
-  if (exposures.length === 0) return null;
+  if (exposures.length === 0) return null
 
   // A joker swap is a turn advantage the human takes after drawing.
   const eastTotal =
-    east.rack.length + east.exposures.reduce((n, e) => n + e.tiles.length, 0);
+    east.rack.length + east.exposures.reduce((n, e) => n + e.tiles.length, 0)
   const swapEnabled =
-    phase === "play" && currentSeat === "east" && eastTotal === 14;
+    phase === "play" && currentSeat === "east" && eastTotal === 14
 
   return (
     <div
@@ -49,8 +49,8 @@ export function ExposureRow({
         >
           <div style={{ display: "flex", gap: 4 }}>
             {ex.tiles.map((t) => {
-              const canClick = t.kind === "joker" && swapEnabled;
-              const isSource = source?.jokerId === t.id;
+              const canClick = t.kind === "joker" && swapEnabled
+              const isSource = source?.jokerId === t.id
               return (
                 <div
                   key={t.id}
@@ -58,12 +58,12 @@ export function ExposureRow({
                   onClick={
                     canClick
                       ? (e) => {
-                          e.stopPropagation();
+                          e.stopPropagation()
                           toggleJoker({
                             seat,
                             exposureIndex: i,
                             jokerId: t.id,
-                          });
+                          })
                         }
                       : undefined
                   }
@@ -82,11 +82,11 @@ export function ExposureRow({
                 >
                   <TileView tile={t} width={tileWidth} />
                 </div>
-              );
+              )
             })}
           </div>
         </div>
       ))}
     </div>
-  );
+  )
 }

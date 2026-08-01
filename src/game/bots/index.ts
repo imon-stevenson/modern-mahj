@@ -1,19 +1,19 @@
-import type { Difficulty } from '../types';
-import type { BotStrategy } from './base';
-import { beginnerBot } from './beginner';
-import { intermediateBot } from './intermediate';
-import { expertBot } from './expert';
+import type { Difficulty } from '../types'
+import type { BotStrategy } from './base'
+import { beginnerBot } from './beginner'
+import { intermediateBot } from './intermediate'
+import { expertBot } from './expert'
 
 export function botFor(difficulty: Difficulty): BotStrategy {
   switch (difficulty) {
     case 'beginner':
-      return beginnerBot;
+      return beginnerBot
     case 'intermediate':
-      return intermediateBot;
+      return intermediateBot
     case 'expert':
-      return expertBot;
+      return expertBot
   }
 }
 
-export { beginnerBot, intermediateBot, expertBot };
-export type { BotStrategy, BotCtx } from './base';
+export { beginnerBot, intermediateBot, expertBot }
+export type { BotStrategy, BotCtx } from './base'

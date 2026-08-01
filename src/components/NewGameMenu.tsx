@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useMahjStore } from "../store";
-import type { Difficulty } from "../game/types";
+import { useState } from "react"
+import { useMahjStore } from "../store"
+import type { Difficulty } from "../game/types"
 
 export function NewGameMenu(): React.ReactElement {
-  const currentDifficulty = useMahjStore((s) => s.difficulty);
-  const phase = useMahjStore((s) => s.phase);
-  const requestNewGame = useMahjStore((s) => s.requestNewGame);
-  const [difficulty, setDifficulty] = useState<Difficulty>(currentDifficulty);
+  const currentDifficulty = useMahjStore((s) => s.difficulty)
+  const phase = useMahjStore((s) => s.phase)
+  const requestNewGame = useMahjStore((s) => s.requestNewGame)
+  const [difficulty, setDifficulty] = useState<Difficulty>(currentDifficulty)
 
-  const isMidGame = phase === "charleston" || phase === "play";
+  const isMidGame = phase === "charleston" || phase === "play"
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -43,12 +43,12 @@ export function NewGameMenu(): React.ReactElement {
         type="button"
         className="btn btn-gold"
         onClick={() => {
-          if (isMidGame && !confirm("Abandon the in-progress game?")) return;
-          requestNewGame(difficulty);
+          if (isMidGame && !confirm("Abandon the in-progress game?")) return
+          requestNewGame(difficulty)
         }}
       >
         {isMidGame ? "New Game" : "Start Game"}
       </button>
     </div>
-  );
+  )
 }

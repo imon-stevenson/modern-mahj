@@ -1,26 +1,26 @@
-import type { Tile } from "../game/types";
-import { TileView } from "./Tile";
-import { useDiscardFlightStore } from "../store/discardFlight";
+import type { Tile } from "../game/types"
+import { TileView } from "./Tile"
+import { useDiscardFlightStore } from "../store/discardFlight"
 
 // Shrink the discard tiles as the pile grows so every tile stays visible without
 // the pile getting absurdly tall. Never smaller than a still-legible size.
 function discardTileWidth(count: number): number {
-  if (count <= 20) return 42;
-  if (count <= 36) return 36;
-  if (count <= 54) return 30;
-  if (count <= 75) return 26;
-  return 24;
+  if (count <= 20) return 42
+  if (count <= 36) return 36
+  if (count <= 54) return 30
+  if (count <= 75) return 26
+  return 24
 }
 
 export function DiscardPile({
   discards,
 }: {
-  discards: Tile[];
+  discards: Tile[]
 }): React.ReactElement {
   // While a discard is mid-air, keep its landing spot invisible so it isn't
   // shown in the pile and flying simultaneously; it "appears" as the clone lands.
-  const inFlightTileId = useDiscardFlightStore((s) => s.inFlightTileId);
-  const tileWidth = discardTileWidth(discards.length);
+  const inFlightTileId = useDiscardFlightStore((s) => s.inFlightTileId)
+  const tileWidth = discardTileWidth(discards.length)
   return (
     <div
       id="discard-pile"
@@ -76,5 +76,5 @@ export function DiscardPile({
         </div>
       )}
     </div>
-  );
+  )
 }

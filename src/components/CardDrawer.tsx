@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import { useMahjStore } from "../store";
+import { useEffect, useMemo, useState } from "react"
+import { useMahjStore } from "../store"
 
-const DRAWER_Z = 30;
+const DRAWER_Z = 30
 
 // "The Card" — a scannable reference of the NMJL hands. Shown as a right-side
 // drawer with a pull tab when closed. Its height is bounded to stop above the
@@ -12,48 +12,48 @@ export function CardDrawer({
   onOpen,
   onClose,
 }: {
-  open: boolean;
-  onOpen: () => void;
-  onClose: () => void;
+  open: boolean
+  onOpen: () => void
+  onClose: () => void
 }): React.ReactElement {
-  const load = useMahjStore((s) => s.loadHandsSafe);
-  const cardYear = useMahjStore((s) => s.cardYear);
-  const hands = useMemo(() => load(cardYear), [load, cardYear]);
+  const load = useMahjStore((s) => s.loadHandsSafe)
+  const cardYear = useMahjStore((s) => s.cardYear)
+  const hands = useMemo(() => load(cardYear), [load, cardYear])
 
   // Drawer top = just below the sticky header; bottom = just above the rack, so
   // the rack remains visible. Recomputed on scroll/resize while open.
-  const [bounds, setBounds] = useState<{ top: number; bottom: number }>({
+  const [bounds, setBounds] = useState<{ top: number, bottom: number }>({
     top: 76,
     bottom: 16,
-  });
+  })
 
   useEffect(() => {
-    if (!open) return;
-    let raf = 0;
+    if (!open) return
+    let raf = 0
     const measure = () => {
-      raf = 0;
-      const gap = 12;
-      const header = document.getElementById("app-header");
-      const rack = document.getElementById("seat-east");
-      const top = header ? header.getBoundingClientRect().bottom + gap : 72;
+      raf = 0
+      const gap = 12
+      const header = document.getElementById("app-header")
+      const rack = document.getElementById("seat-east")
+      const top = header ? header.getBoundingClientRect().bottom + gap : 72
       const rackTop = rack
         ? rack.getBoundingClientRect().top
-        : window.innerHeight;
-      const bottom = Math.max(gap, window.innerHeight - rackTop + gap);
-      setBounds({ top, bottom });
-    };
+        : window.innerHeight
+      const bottom = Math.max(gap, window.innerHeight - rackTop + gap)
+      setBounds({ top, bottom })
+    }
     const schedule = () => {
-      if (!raf) raf = requestAnimationFrame(measure);
-    };
-    measure();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+      if (!raf) raf = requestAnimationFrame(measure)
+    }
+    measure()
+    window.addEventListener("scroll", schedule, { passive: true })
+    window.addEventListener("resize", schedule)
     return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [open]);
+      if (raf) cancelAnimationFrame(raf)
+      window.removeEventListener("scroll", schedule)
+      window.removeEventListener("resize", schedule)
+    }
+  }, [open])
 
   if (!open) {
     return (
@@ -81,7 +81,7 @@ export function CardDrawer({
       >
         The Card
       </button>
-    );
+    )
   }
 
   return (
@@ -204,5 +204,5 @@ export function CardDrawer({
         ))}
       </ul>
     </div>
-  );
+  )
 }
