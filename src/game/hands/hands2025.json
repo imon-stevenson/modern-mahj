@@ -23,7 +23,7 @@
       "id": "2025-1b",
       "section": "2025",
       "line": 1,
-      "description": "FFFF 2025 222 222 (Any 3 Suits, Like Pungs 2s or 5s in Opp. Suits) — variant with pungs of 5s",
+      "description": "FFFF 2025 555 555 (Any 3 Suits, Like Pungs 2s or 5s in Opp. Suits) — variant with pungs of 5s",
       "closed": false,
       "value": 25,
       "groups": [
@@ -91,7 +91,7 @@
       "id": "2468-1a",
       "section": "2468",
       "line": 1,
-      "description": "222 4444 666 8888 -or- 222 4444 666 8888 (Any 1 or 2 Suits) — variant A: pungs of 2 & 6 in X, kongs of 4 & 8 in X",
+      "description": "222 4444 666 8888 (Any 1 or 2 Suits) — variant A: pungs of 2 & 6 in X, kongs of 4 & 8 in X",
       "closed": false,
       "value": 25,
       "groups": [
@@ -105,7 +105,7 @@
       "id": "2468-1b",
       "section": "2468",
       "line": 1,
-      "description": "222 4444 666 8888 -or- 222 4444 666 8888 (Any 1 or 2 Suits) — variant B: pungs & kongs split across two suits",
+      "description": "222 4444 666 8888 (Any 1 or 2 Suits) — variant B: pungs & kongs split across two suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -120,7 +120,7 @@
       "id": "2468-2a",
       "section": "2468",
       "line": 2,
-      "description": "FF 2222 + 4444 = 6666 -or- FF 2222 + 6666 = 8888 (Any 3 Suits) — variant with 2+4=6",
+      "description": "FF 2222 + 4444 = 6666 (Any 3 Suits) — variant with 2+4=6",
       "closed": false,
       "value": 25,
       "groups": [
@@ -135,7 +135,7 @@
       "id": "2468-2b",
       "section": "2468",
       "line": 2,
-      "description": "FF 2222 + 4444 = 6666 -or- FF 2222 + 6666 = 8888 (Any 3 Suits) — variant with 2+6=8",
+      "description": "FF 2222 + 6666 = 8888 (Any 3 Suits) — variant with 2+6=8",
       "closed": false,
       "value": 25,
       "groups": [
@@ -346,7 +346,7 @@
       "id": "consec-1a",
       "section": "Consecutive Run",
       "line": 1,
-      "description": "11 222 3333 444 55 -or- 55 666 7777 888 99 (Any 1 Suit, These Nos. Only) — variant 1-5",
+      "description": "11 222 3333 444 55 (Any 1 Suit, These Nos. Only) — variant 1-5",
       "closed": false,
       "value": 25,
       "groups": [
@@ -361,7 +361,7 @@
       "id": "consec-1b",
       "section": "Consecutive Run",
       "line": 1,
-      "description": "11 222 3333 444 55 -or- 55 666 7777 888 99 (Any 1 Suit, These Nos. Only) — variant 5-9",
+      "description": "55 666 7777 888 99 (Any 1 Suit, These Nos. Only) — variant 5-9",
       "closed": false,
       "value": 25,
       "groups": [
@@ -376,14 +376,14 @@
       "id": "consec-2a",
       "section": "Consecutive Run",
       "line": 2,
-      "description": "1111 2222 333 4444 -or- 111 2222 333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant one-suit K K P K",
+      "description": "111 2222 333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant one-suit P K P K",
       "closed": false,
       "value": 25,
       "groups": [
-        { "kind": "kong", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pung", "tile": { "kind": "number", "numVar": "N", "suitVar": "X" }, "jokersAllowed": true },
         { "kind": "kong", "tile": { "kind": "number", "numVar": "N+1", "suitVar": "X" }, "jokersAllowed": true },
         { "kind": "pung", "tile": { "kind": "number", "numVar": "N+2", "suitVar": "X" }, "jokersAllowed": true },
-        { "kind": "pung", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "X" }, "jokersAllowed": true }
+        { "kind": "kong", "tile": { "kind": "number", "numVar": "N+3", "suitVar": "X" }, "jokersAllowed": true }
       ],
       "numberConstraints": [{ "rule": "range", "var": "N", "min": 1, "max": 6 }]
     },
@@ -391,7 +391,7 @@
       "id": "consec-2b",
       "section": "Consecutive Run",
       "line": 2,
-      "description": "1111 2222 333 4444 -or- 111 2222 333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant two-suit split",
+      "description": "111 2222 333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant two-suit split",
       "closed": false,
       "value": 25,
       "groups": [
@@ -512,7 +512,7 @@
       "id": "13579-1a",
       "section": "13579",
       "line": 1,
-      "description": "11 333 5555 777 99 -or- 11 333 5555 777 99 (Any 1 or 3 Suits) — variant one-suit",
+      "description": "11 333 5555 777 99 (Any 1 or 3 Suits) — variant one-suit",
       "closed": false,
       "value": 25,
       "groups": [
@@ -527,7 +527,7 @@
       "id": "13579-1b",
       "section": "13579",
       "line": 1,
-      "description": "11 333 5555 777 99 -or- 11 333 5555 777 99 (Any 1 or 3 Suits) — variant three-suits",
+      "description": "11 333 5555 777 99 (Any 1 or 3 Suits) — variant three-suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -543,7 +543,7 @@
       "id": "13579-2a",
       "section": "13579",
       "line": 2,
-      "description": "111 333 3333 5555 -or- 555 7777 777 9999 (Any 2 Suits) — variant 1/3/3/5",
+      "description": "111 333 3333 5555 (Any 2 Suits) — variant 1/3/3/5",
       "closed": false,
       "value": 25,
       "groups": [
@@ -558,7 +558,7 @@
       "id": "13579-2b",
       "section": "13579",
       "line": 2,
-      "description": "111 333 3333 5555 -or- 555 7777 777 9999 (Any 2 Suits) — variant 5/7/7/9",
+      "description": "555 7777 777 9999 (Any 2 Suits) — variant 5/7/7/9",
       "closed": false,
       "value": 25,
       "groups": [
@@ -573,7 +573,7 @@
       "id": "13579-3a",
       "section": "13579",
       "line": 3,
-      "description": "1111 333 5555 DDD -or- 5555 777 9999 DDD (Any 1 Suit) — variant 1/3/5",
+      "description": "1111 333 5555 DDD (Any 1 Suit) — variant 1/3/5",
       "closed": false,
       "value": 25,
       "groups": [
@@ -587,7 +587,7 @@
       "id": "13579-3b",
       "section": "13579",
       "line": 3,
-      "description": "1111 333 5555 DDD -or- 5555 777 9999 DDD (Any 1 Suit) — variant 5/7/9",
+      "description": "5555 777 9999 DDD (Any 1 Suit) — variant 5/7/9",
       "closed": false,
       "value": 25,
       "groups": [
@@ -601,14 +601,14 @@
       "id": "13579-4",
       "section": "13579",
       "line": 4,
-      "description": "FFFF 1111 + 9999 = 10 (Any 2 Suits, These Nos. Only) — encoded as FFFF, kong 1s, pair of soaps (the '0' in '10'), kong 9s. VERIFY.",
+      "description": "FFFF 1111 + 9999 = 10 (Any 2 Suits, These Nos. Only) — FFFF, kong 1s, kong 9s, pair of soaps (the '0'/'10')",
       "closed": false,
       "value": 25,
       "groups": [
         { "kind": "kong", "tile": { "kind": "flower" }, "jokersAllowed": true },
         { "kind": "kong", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": true },
-        { "kind": "pair", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
-        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": true }
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false }
       ],
       "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y"] }]
     },
@@ -616,7 +616,7 @@
       "id": "13579-5a",
       "section": "13579",
       "line": 5,
-      "description": "FFF 135 7777 9999 -or- FFF 135 7777 9999 (Any 1 or 3 Suits) — variant one-suit",
+      "description": "FFF 135 7777 9999 (Any 1 or 3 Suits) — variant one-suit",
       "closed": false,
       "value": 25,
       "groups": [
@@ -632,7 +632,7 @@
       "id": "13579-5b",
       "section": "13579",
       "line": 5,
-      "description": "FFF 135 7777 9999 -or- FFF 135 7777 9999 (Any 1 or 3 Suits) — variant three-suits",
+      "description": "FFF 135 7777 9999 (Any 1 or 3 Suits) — variant three-suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -649,7 +649,7 @@
       "id": "13579-6a",
       "section": "13579",
       "line": 6,
-      "description": "111 333 5555 DD DD -or- 555 777 9999 DD DD (Any 3 Suits w Opp. Dragons) — variant 1/3/5",
+      "description": "111 333 5555 DD DD (Any 3 Suits w Opp. Dragons) — variant 1/3/5",
       "closed": false,
       "value": 25,
       "groups": [
@@ -665,7 +665,7 @@
       "id": "13579-6b",
       "section": "13579",
       "line": 6,
-      "description": "111 333 5555 DD DD -or- 555 777 9999 DD DD (Any 3 Suits w Opp. Dragons) — variant 5/7/9",
+      "description": "555 777 9999 DD DD (Any 3 Suits w Opp. Dragons) — variant 5/7/9",
       "closed": false,
       "value": 25,
       "groups": [
@@ -681,7 +681,7 @@
       "id": "13579-7a",
       "section": "13579",
       "line": 7,
-      "description": "11 333 NEWS 333 55 -or- 55 777 NEWS 777 99 (Any 2 Suits) — variant 1/3/5",
+      "description": "11 333 NEWS 333 55 (Any 2 Suits) — variant 1/3/5",
       "closed": false,
       "value": 30,
       "groups": [
@@ -700,7 +700,7 @@
       "id": "13579-7b",
       "section": "13579",
       "line": 7,
-      "description": "11 333 NEWS 333 55 -or- 55 777 NEWS 777 99 (Any 2 Suits) — variant 5/7/9",
+      "description": "55 777 NEWS 777 99 (Any 2 Suits) — variant 5/7/9",
       "closed": false,
       "value": 30,
       "groups": [
@@ -719,7 +719,7 @@
       "id": "13579-8",
       "section": "13579",
       "line": 8,
-      "description": "FF 11 33 111 333 55 -or- FF 55 77 555 777 99 (Any 3 Suits) — closed. VERIFY exact tile layout.",
+      "description": "FF 11 33 111 333 55 (Any 3 Suits) — closed. VERIFY exact tile layout.",
       "closed": true,
       "value": 30,
       "groups": [
@@ -738,7 +738,7 @@
       "id": "winds-dragons-1a",
       "section": "Winds - Dragons",
       "line": 1,
-      "description": "NNNN EEE WWW SSSS -or- NNN EEEE WWWW SSS — variant A (kongs on ends)",
+      "description": "NNNN EEE WWW SSSS — variant A (kongs on ends)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -752,7 +752,7 @@
       "id": "winds-dragons-1b",
       "section": "Winds - Dragons",
       "line": 1,
-      "description": "NNNN EEE WWW SSSS -or- NNN EEEE WWWW SSS — variant B (kongs in middle)",
+      "description": "NNN EEEE WWWW SSS — variant B (kongs in middle)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -851,7 +851,7 @@
       "id": "winds-dragons-7a",
       "section": "Winds - Dragons",
       "line": 7,
-      "description": "NN EEE WWW SS 2025 -or- NNN EE WW SSS 2025 (2025 Any 1 Suit) — variant A",
+      "description": "NN EEE WWW SS 2025 (2025 Any 1 Suit) — variant A",
       "closed": false,
       "value": 30,
       "groups": [
@@ -869,7 +869,7 @@
       "id": "winds-dragons-7b",
       "section": "Winds - Dragons",
       "line": 7,
-      "description": "NN EEE WWW SS 2025 -or- NNN EE WW SSS 2025 (2025 Any 1 Suit) — variant B",
+      "description": "NNN EE WW SSS 2025 (2025 Any 1 Suit) — variant B",
       "closed": false,
       "value": 30,
       "groups": [
@@ -903,7 +903,7 @@
       "id": "369-1a",
       "section": "369",
       "line": 1,
-      "description": "333 6666 666 9999 -or- 333 6666 666 9999 (Any 2 or 3 Suits) — variant A: 2 suits",
+      "description": "333 6666 666 9999 (Any 2 or 3 Suits) — variant A: 2 suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -918,7 +918,7 @@
       "id": "369-1b",
       "section": "369",
       "line": 1,
-      "description": "333 6666 666 9999 -or- 333 6666 666 9999 (Any 2 or 3 Suits) — variant B: 3 suits",
+      "description": "333 6666 666 9999 (Any 2 or 3 Suits) — variant B: 3 suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -933,7 +933,7 @@
       "id": "369-2a",
       "section": "369",
       "line": 2,
-      "description": "FF 3333 + 6666 = 9999 -or- FF 3333 + 6666 = 9999 (Any 1 or 3 Suits) — variant A: 1 suit",
+      "description": "FF 3333 + 6666 = 9999 (Any 1 or 3 Suits) — variant A: 1 suit",
       "closed": false,
       "value": 25,
       "groups": [
@@ -947,7 +947,7 @@
       "id": "369-2b",
       "section": "369",
       "line": 2,
-      "description": "FF 3333 + 6666 = 9999 -or- FF 3333 + 6666 = 9999 (Any 1 or 3 Suits) — variant B: 3 suits",
+      "description": "FF 3333 + 6666 = 9999 (Any 1 or 3 Suits) — variant B: 3 suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1149,6 +1149,7 @@
         { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Y" }, "jokersAllowed": false },
         { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": false },
         { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Z" }, "jokersAllowed": false },
+        { "kind": "single", "tile": { "kind": "dragon", "color": "white" }, "jokersAllowed": false },
         { "kind": "single", "tile": { "kind": "number", "rank": 2, "suitVar": "Z" }, "jokersAllowed": false },
         { "kind": "single", "tile": { "kind": "number", "rank": 5, "suitVar": "Z" }, "jokersAllowed": false }
       ],

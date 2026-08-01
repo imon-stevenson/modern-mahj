@@ -38,3 +38,20 @@ describe('runBotTurn — a bot win ends the game', () => {
     expect(after.winningHand?.id).toBe('winds-dragons-1a')
   })
 })
+
+describe('card hand highlighting', () => {
+  it('toggles a hand id on and off', () => {
+    useMahjStore.setState({ highlightedHands: [] })
+    const { toggleHandHighlight } = useMahjStore.getState()
+    toggleHandHighlight('2026-1')
+    expect(useMahjStore.getState().highlightedHands).toEqual(['2026-1'])
+    toggleHandHighlight('2026-1')
+    expect(useMahjStore.getState().highlightedHands).toEqual([])
+  })
+
+  it('clears highlights when a new game is dealt', () => {
+    useMahjStore.setState({ highlightedHands: ['2026-1', '2468-3'] })
+    useMahjStore.getState().startGameWithCard(2026)
+    expect(useMahjStore.getState().highlightedHands).toEqual([])
+  })
+})

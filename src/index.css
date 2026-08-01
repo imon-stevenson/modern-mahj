@@ -28,6 +28,8 @@
   --tile-new: oklch(0.8 0.13 195);
   /* Bright blue used to highlight a joker-swap selection (distinct from gold). */
   --swap-blue: oklch(0.68 0.18 250);
+  /* Sheer yellow wash for a card hand the human clicked to highlight. */
+  --hand-highlight: oklch(0.92 0.16 100 / 0.4);
 
   /* Felt table */
   --felt: oklch(0.22 0.05 255);

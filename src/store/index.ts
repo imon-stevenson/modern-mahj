@@ -80,6 +80,9 @@ export type MahjState = {
   // null means "use the default suit/number sort". Tiles not listed (e.g. a
   // freshly drawn tile) are appended after the listed ones.
   eastRackOrder: string[] | null
+  // Card hands the human has clicked to highlight (as reference targets). Reset
+  // at the start of every game.
+  highlightedHands: string[]
   // When true, bot turns are halted and any running call timer is frozen so the
   // human can step away without missing a call. Not persisted.
   paused: boolean
@@ -93,6 +96,7 @@ export type MahjState = {
   startGameWithCard: (cardYear: CardYear) => void
   reorderEastRack: (orderedIds: string[]) => void
   resetEastRackOrder: () => void
+  toggleHandHighlight: (id: string) => void
   toggleTileSelection: (tileId: string) => void
   clearSelection: (seat: Seat) => void
   submitCharlestonSelection: (seat: Seat, tileIds: string[]) => void
@@ -334,6 +338,7 @@ export const useMahjStore = create<MahjState>()(
       winningHand: null,
       lastAction: null,
       eastRackOrder: null,
+      highlightedHands: [],
       paused: false,
       pausedCallRemainingMs: null,
 
@@ -368,6 +373,7 @@ export const useMahjStore = create<MahjState>()(
           winningHand: null,
           lastAction: null,
           eastRackOrder: null,
+          highlightedHands: [],
           paused: false,
           pausedCallRemainingMs: null,
         })
@@ -379,6 +385,15 @@ export const useMahjStore = create<MahjState>()(
 
       resetEastRackOrder() {
         set({ eastRackOrder: null })
+      },
+
+      toggleHandHighlight(id) {
+        const cur = get().highlightedHands
+        set({
+          highlightedHands: cur.includes(id)
+            ? cur.filter((h) => h !== id)
+            : [...cur, id],
+        })
       },
 
       toggleTileSelection(tileId) {
@@ -845,6 +860,7 @@ export const useMahjStore = create<MahjState>()(
         winningHand: state.winningHand,
         lastAction: state.lastAction,
         eastRackOrder: state.eastRackOrder,
+        highlightedHands: state.highlightedHands,
       }),
     },
   ),

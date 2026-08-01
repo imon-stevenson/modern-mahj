@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useMemo, useState } from "react"
 import { useMahjStore } from "../store"
+import { HandPattern } from "./HandPattern"
 
 const DRAWER_Z = 30
 
@@ -18,7 +19,21 @@ export function CardDrawer({
 }): React.ReactElement {
   const load = useMahjStore((s) => s.loadHandsSafe)
   const cardYear = useMahjStore((s) => s.cardYear)
+  const highlightedHands = useMahjStore((s) => s.highlightedHands)
+  const toggleHandHighlight = useMahjStore((s) => s.toggleHandHighlight)
   const hands = useMemo(() => load(cardYear), [load, cardYear])
+
+  // Group consecutive hands by section (the card JSON is already section-ordered)
+  // so each section can get its own heading.
+  const sections = useMemo(() => {
+    const groups: { section: string; hands: typeof hands }[] = []
+    for (const h of hands) {
+      const last = groups[groups.length - 1]
+      if (last && last.section === h.section) last.hands.push(h)
+      else groups.push({ section: h.section, hands: [h] })
+    }
+    return groups
+  }, [hands])
 
   // Drawer top = just below the sticky header; bottom = just above the rack, so
   // the rack remains visible. Recomputed on scroll/resize while open.
@@ -155,52 +170,93 @@ export function CardDrawer({
           flex: 1,
         }}
       >
-        {hands.map((h) => (
-          <li
-            key={h.id}
-            style={{
-              padding: "12px 18px",
-              borderBottom: "1px solid var(--hairline)",
-            }}
-          >
-            <div
+        {sections.map((group) => (
+          <Fragment key={group.section}>
+            <li
+              role="presentation"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                font: "600 11px var(--font-ui)",
-                color: "var(--ink-faint)",
-                marginBottom: 4,
+                position: "sticky",
+                top: 0,
+                zIndex: 1,
+                padding: "10px 18px",
+                background: "var(--paper)",
+                borderBottom: "1px solid var(--hairline)",
+                textAlign: "center",
+                textTransform: "uppercase",
+                letterSpacing: "0.16em",
+                font: "800 13px var(--font-ui)",
+                color: "var(--tile-navy)",
               }}
             >
-              <span
-                style={{ textTransform: "uppercase", letterSpacing: "0.06em" }}
-              >
-                {h.section}
-              </span>
-              <span>· L{h.line}</span>
-              <span
-                style={{
-                  marginLeft: "auto",
-                  font: "700 10px var(--font-ui)",
-                  padding: "2px 6px",
-                  borderRadius: 6,
-                  background: h.closed
-                    ? "oklch(0.32 0.07 255 / 0.12)"
-                    : "oklch(0.5 0.14 150 / 0.14)",
-                  color: h.closed ? "var(--tile-navy)" : "var(--suit-green)",
-                }}
-                title={h.closed ? "Concealed hand" : "Exposed hand allowed"}
-              >
-                {h.closed ? "CONCEALED" : "EXPOSED"}
-              </span>
-            </div>
-            <div
-              style={{ font: "600 13px var(--font-ui)", color: "var(--ink)" }}
-            >
-              {h.description}
-            </div>
-          </li>
+              {group.section}
+            </li>
+            {group.hands.map((h) => {
+              const on = highlightedHands.includes(h.id)
+              const toggle = () => toggleHandHighlight(h.id)
+              return (
+                <li
+                  key={h.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={on}
+                  title="Click to highlight this hand"
+                  onClick={toggle}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      toggle()
+                    }
+                  }}
+                  style={{
+                    padding: "12px 18px",
+                    borderBottom: "1px solid var(--hairline)",
+                    cursor: "pointer",
+                    background: on ? "var(--hand-highlight)" : "transparent",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      font: "600 11px var(--font-ui)",
+                      color: "var(--ink-faint)",
+                      marginBottom: 4,
+                    }}
+                  >
+                    <span
+                      style={{
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      L{h.line}
+                    </span>
+                    <span
+                      style={{
+                        marginLeft: "auto",
+                        font: "700 10px var(--font-ui)",
+                        padding: "2px 6px",
+                        borderRadius: 6,
+                        background: h.closed
+                          ? "oklch(0.32 0.07 255 / 0.12)"
+                          : "oklch(0.5 0.14 150 / 0.14)",
+                        color: h.closed
+                          ? "var(--tile-navy)"
+                          : "var(--suit-green)",
+                      }}
+                      title={
+                        h.closed ? "Concealed hand" : "Exposed hand allowed"
+                      }
+                    >
+                      {h.closed ? "CONCEALED" : "EXPOSED"}
+                    </span>
+                  </div>
+                  <HandPattern hand={h} />
+                </li>
+              )
+            })}
+          </Fragment>
         ))}
       </ul>
     </div>

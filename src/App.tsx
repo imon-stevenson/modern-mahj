@@ -8,11 +8,14 @@ import { EmojiRain } from "./components/EmojiRain"
 import { PauseButton } from "./components/PauseButton"
 import { useBotTurns } from "./hooks/useBotTurns"
 import { useAutoHideHeader } from "./hooks/useAutoHideHeader"
+import { useIsDesktop } from "./hooks/useIsDesktop"
 
 export default function App(): React.ReactElement {
   useBotTurns()
   const [cardOpen, setCardOpen] = useState(false)
   const headerHidden = useAutoHideHeader()
+  const isDesktop = useIsDesktop()
+
   return (
     <div style={{ minHeight: "100vh", background: "var(--ivory)" }}>
       <header
@@ -54,6 +57,7 @@ export default function App(): React.ReactElement {
           display: "flex",
           flexDirection: "column",
           gap: 32,
+          paddingTop: `${isDesktop ? "64px" : "32px"}`,
         }}
       >
         <Board />
