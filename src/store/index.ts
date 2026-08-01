@@ -760,7 +760,7 @@ export const useMahjStore = create<MahjState>()(
         const swap = bot.wantsJokerSwap(buildBotCtx(s0, seat))
         if (swap) get().offerJokerSwap(swap)
 
-        let s1 = get()
+        const s1 = get()
 
         // If the seat has 13 tiles total, they need to draw. If 14 (came from a
         // call), skip the draw and just discard.
@@ -783,22 +783,30 @@ export const useMahjStore = create<MahjState>()(
             players,
             lastAction: { kind: "draw", seat, tileId: tile.id },
           })
-          s1 = get()
-          // Self-Mahjong?
-          const match = matchAgainstAll(
-            s1.players[seat].rack,
-            s1.players[seat].exposures,
-            safeHands(s1.cardYear),
-          )
-          if (match) {
-            set({ phase: "ended", winner: seat, winningHand: match.hand })
-            return
-          }
+        }
+
+        // Win check — runs whether the bot just drew or arrived with 14 tiles
+        // from a claim. Catches a self-drawn Mahjong AND any hand that became
+        // complete via an earlier call, so a bot win always ends the game
+        // (shows the banner) instead of falling through to an impossible
+        // discard and hanging on an infinite "thinking" loop.
+        const winState = get()
+        const winner = matchAgainstAll(
+          winState.players[seat].rack,
+          winState.players[seat].exposures,
+          safeHands(winState.cardYear),
+        )
+        if (winner) {
+          set({ phase: "ended", winner: seat, winningHand: winner.hand })
+          return
         }
 
         // Choose discard.
         const ctx = buildBotCtx(get(), seat)
         const discard = bot.chooseDiscard(ctx)
+        // Defensive: a bot with no tile to discard means an already-complete or
+        // corrupted hand; bail rather than throw on `discard.id`.
+        if (!discard) return
         const s2 = get()
         const players2: Record<Seat, PlayerState> = {
           ...s2.players,
