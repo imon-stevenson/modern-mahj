@@ -71,3 +71,10 @@ Notes:
 - Game logic under `src/game/` is pure and framework-free — do NOT import React there. All bot/game randomness goes through the seeded RNG in `src/game/rng.ts` so tests are deterministic.
 - TS uses project references — `tsc -b` builds both `tsconfig.app.json` and `tsconfig.node.json`.
 - React Compiler is **not** enabled.
+
+## Styling (Tailwind v4, hybrid)
+
+- Tailwind v4 is wired via `@tailwindcss/vite`; `src/index.css` imports **theme + utilities only (no Preflight)** — the app keeps its own reset in `@layer base`, so bare buttons/inputs aren't restyled. Don't add Preflight without auditing.
+- Design tokens live in the `@theme` block as `--color-*` / `--font-*` / `--radius-*`, so they're usable as utilities (`bg-tile-navy`, `text-suit-red`, `font-ui`, `rounded-md`). The short names (`var(--tile-navy)`, …) still resolve via back-compat aliases in `:root`.
+- New / static UI: use Tailwind utility classes (or the `@layer components` atoms `.btn*`, `.eyebrow`, `.mono`, `.card-surface`). Because Preflight is off, include `border-solid` whenever you use `border`.
+- **Runtime-computed styles stay inline** (`style={{}}`): tile sizing, flight-overlay/emoji CSS vars, drawer bounds, per-tile colors, animation strings. `@keyframes` and the board grid stay in `index.css`. Migrate existing inline styles to Tailwind only opportunistically, verifying no visual change.

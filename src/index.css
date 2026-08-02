@@ -1,45 +1,45 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* Tailwind v4 — theme + utilities only. Preflight (Tailwind's reset) is
+   intentionally NOT imported: the app has its own reset below and relies on some
+   browser defaults, so pulling Preflight in would restyle bare buttons/lists. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
 
 /* ============================================================
-   Design tokens — American Mahjong Design System
-   Palette + type scale ported from the style guide.
+   Design tokens — American Mahjong Design System.
+   Declared as Tailwind theme vars so they generate utilities
+   (bg-tile-navy, text-suit-red, font-ui, rounded-md, …) and are
+   emitted as :root CSS variables.
    ============================================================ */
-:root {
+@theme {
   /* Surface & ink */
-  --ivory: oklch(0.97 0.006 75);
-  --paper: oklch(0.99 0.003 90);
-  --ink: oklch(0.22 0.01 260);
-  --ink-soft: oklch(0.4 0.01 260);
-  --ink-faint: oklch(0.55 0.01 260);
-  --hairline: oklch(0.9 0.006 90);
+  --color-ivory: oklch(0.97 0.006 75);
+  --color-paper: oklch(0.99 0.003 90);
+  --color-ink: oklch(0.22 0.01 260);
+  --color-ink-soft: oklch(0.4 0.01 260);
+  --color-ink-faint: oklch(0.55 0.01 260);
+  --color-hairline: oklch(0.9 0.006 90);
 
   /* Brand / suits */
-  --tile-navy: oklch(0.32 0.07 255);
-  --gold: oklch(0.75 0.13 80);
-  --gold-ink: oklch(0.22 0.05 255);
-  --suit-green: oklch(0.5 0.14 150);
-  --suit-red: oklch(0.55 0.19 25);
-  --label-blue: oklch(0.55 0.1 255);
-  /* Highlight for a tile just added to the human's rack */
-  --tile-new: oklch(0.8 0.13 195);
-  /* Bright blue used to highlight a joker-swap selection (distinct from gold). */
-  --swap-blue: oklch(0.68 0.18 250);
-  /* Sheer yellow wash for a card hand the human clicked to highlight. */
-  --hand-highlight: oklch(0.92 0.16 100 / 0.4);
+  --color-tile-navy: oklch(0.32 0.07 255);
+  --color-gold: oklch(0.75 0.13 80);
+  --color-gold-ink: oklch(0.22 0.05 255);
+  --color-suit-green: oklch(0.5 0.14 150);
+  --color-suit-red: oklch(0.55 0.19 25);
+  --color-label-blue: oklch(0.55 0.1 255);
+  --color-tile-new: oklch(0.8 0.13 195);
+  --color-swap-blue: oklch(0.68 0.18 250);
+  --color-hand-highlight: oklch(0.92 0.16 100 / 0.4);
 
   /* Felt table */
-  --felt: oklch(0.22 0.05 255);
-  --felt-panel: oklch(0.27 0.055 255);
-  --felt-panel-2: oklch(0.24 0.05 258);
-  --felt-border: oklch(0.36 0.06 255);
-  --felt-divider: oklch(0.4 0.04 255);
-  --felt-ink: oklch(0.98 0.004 90);
-  --felt-ink-soft: oklch(0.8 0.02 255);
-  --felt-ink-mute: oklch(0.7 0.02 255);
+  --color-felt: oklch(0.22 0.05 255);
+  --color-felt-panel: oklch(0.27 0.055 255);
+  --color-felt-panel-2: oklch(0.24 0.05 258);
+  --color-felt-border: oklch(0.36 0.06 255);
+  --color-felt-divider: oklch(0.4 0.04 255);
+  --color-felt-ink: oklch(0.98 0.004 90);
+  --color-felt-ink-soft: oklch(0.8 0.02 255);
+  --color-felt-ink-mute: oklch(0.7 0.02 255);
 
   /* Type */
   --font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -48,103 +48,125 @@
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-sm: 8px;
+}
 
+/* Back-compat aliases: the app's inline styles and CSS reference the short token
+   names via var(--tile-navy) etc. Map them onto the Tailwind theme tokens so
+   nothing else has to change. (font/radius tokens keep the same name already.) */
+:root {
+  --ivory: var(--color-ivory);
+  --paper: var(--color-paper);
+  --ink: var(--color-ink);
+  --ink-soft: var(--color-ink-soft);
+  --ink-faint: var(--color-ink-faint);
+  --hairline: var(--color-hairline);
+  --tile-navy: var(--color-tile-navy);
+  --gold: var(--color-gold);
+  --gold-ink: var(--color-gold-ink);
+  --suit-green: var(--color-suit-green);
+  --suit-red: var(--color-suit-red);
+  --label-blue: var(--color-label-blue);
+  --tile-new: var(--color-tile-new);
+  --swap-blue: var(--color-swap-blue);
+  --hand-highlight: var(--color-hand-highlight);
+  --felt: var(--color-felt);
+  --felt-panel: var(--color-felt-panel);
+  --felt-panel-2: var(--color-felt-panel-2);
+  --felt-border: var(--color-felt-border);
+  --felt-divider: var(--color-felt-divider);
+  --felt-ink: var(--color-felt-ink);
+  --felt-ink-soft: var(--color-felt-ink-soft);
+  --felt-ink-mute: var(--color-felt-ink-mute);
   color-scheme: light;
 }
 
-body {
-  margin: 0;
-  font-family: var(--font-ui);
-  color: var(--ink);
-  background: var(--ivory);
-  -webkit-font-smoothing: antialiased;
+/* App reset (replaces Preflight) — in @layer base so component/utility classes win. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-ui);
+    color: var(--ink);
+    background: var(--ivory);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    font: inherit;
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+  }
 }
 
-button {
-  font: inherit;
-  cursor: pointer;
-}
-button:disabled {
-  cursor: default;
-}
+/* ---- Reusable atoms (Tailwind utilities via @apply; same class names) ---- */
+@layer components {
+  .eyebrow {
+    @apply font-ui text-[12px] font-bold uppercase tracking-[0.12em] text-label-blue;
+  }
 
-h1,
-h2,
-h3 {
-  margin: 0;
-}
+  .mono {
+    @apply font-mono font-semibold tracking-[-0.01em] tabular-nums;
+  }
 
-/* ---- Reusable atoms ---- */
+  .btn {
+    @apply rounded-sm border border-solid border-transparent whitespace-nowrap;
+    font: 700 13px var(--font-ui);
+    padding: 10px 18px;
+    transition: filter 120ms ease, background 120ms ease, transform 80ms ease;
+  }
+  .btn:active:not(:disabled) {
+    @apply translate-y-px;
+  }
+  .btn:disabled {
+    @apply opacity-45;
+  }
 
-.eyebrow {
-  font: 700 12px var(--font-ui);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--label-blue);
-}
+  .btn-ghost {
+    @apply bg-transparent text-felt-ink;
+    border-color: oklch(0.5 0.03 255);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: oklch(0.3 0.05 255);
+  }
 
-.mono {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
-}
+  .btn-outline {
+    @apply bg-paper text-ink border-hairline;
+  }
+  .btn-outline:hover:not(:disabled) {
+    filter: brightness(0.97);
+  }
 
-/* Buttons used across the game UI */
-.btn {
-  font: 700 13px var(--font-ui);
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
-  border: 1px solid transparent;
-  transition: filter 120ms ease, background 120ms ease, transform 80ms ease;
-  white-space: nowrap;
-}
-.btn:active:not(:disabled) {
-  transform: translateY(1px);
-}
-.btn:disabled {
-  opacity: 0.45;
-}
+  .btn-green {
+    @apply bg-suit-green;
+    color: oklch(0.98 0.01 150);
+  }
+  .btn-green:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--felt-ink);
-  border-color: oklch(0.5 0.03 255);
-}
-.btn-ghost:hover:not(:disabled) {
-  background: oklch(0.3 0.05 255);
-}
+  .btn-gold {
+    @apply bg-gold text-gold-ink font-extrabold;
+  }
+  .btn-gold:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
 
-.btn-outline {
-  background: var(--paper);
-  color: var(--ink);
-  border-color: var(--hairline);
-}
-.btn-outline:hover:not(:disabled) {
-  filter: brightness(0.97);
-}
-
-.btn-green {
-  background: var(--suit-green);
-  color: oklch(0.98 0.01 150);
-}
-.btn-green:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.btn-gold {
-  background: var(--gold);
-  color: var(--gold-ink);
-  font-weight: 800;
-}
-.btn-gold:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.card-surface {
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-md);
+  .card-surface {
+    @apply bg-paper border border-solid border-hairline rounded-md;
+  }
 }
 
 /* Charleston "tiles floating to a seat" animation. Each clone sets --fx/--fy

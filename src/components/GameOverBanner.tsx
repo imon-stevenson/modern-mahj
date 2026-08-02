@@ -41,31 +41,15 @@ export function GameOverBanner(): React.ReactElement | null {
 
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 16,
-        background: "var(--paper)",
-        border: `1px solid var(--hairline)`,
-        borderLeft: `6px solid ${accent}`,
-        borderRadius: "var(--radius-md)",
-        padding: "18px 22px",
-        marginBottom: 16,
-      }}
+      className="flex items-center gap-4 bg-paper border border-solid border-hairline rounded-md mb-4 px-[22px] py-[18px]"
+      // Left accent bar color is win/loss/wall dependent — dynamic, stays inline.
+      style={{ borderLeftWidth: 6, borderLeftColor: accent }}
     >
       <div>
-        <div
-          style={{ font: "800 22px var(--font-ui)", letterSpacing: "-0.01em" }}
-        >
+        <div className="font-ui text-[22px] font-extrabold tracking-[-0.01em]">
           {heading}
         </div>
-        <div
-          style={{
-            font: "500 14px var(--font-ui)",
-            color: "var(--ink-soft)",
-            marginTop: 2,
-          }}
-        >
+        <div className="font-ui text-[14px] font-medium text-ink-soft mt-0.5">
           {sub} Start a new game from the top bar to play again.
         </div>
       </div>
