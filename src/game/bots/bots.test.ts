@@ -106,9 +106,6 @@ describe('intermediate bot', () => {
       ctx({ rack, exposures: [kong2bam] }),
     )
     expect(t.id).toBe('toss')
-    // Expert shares the same exposure-aware behavior.
-    const te = expertBot.chooseDiscard(ctx({ rack, exposures: [kong2bam] }))
-    expect(te.id).toBe('toss')
   })
 
   it('calls kong toward a real target hand', () => {
@@ -224,6 +221,17 @@ describe('expert bot', () => {
         ['kong'],
       ),
     ).toBeNull()
+  })
+
+  it('discards toward its committed line too (exposure-aware, inherited logic)', () => {
+    const kong2bam = buildExposure(
+      'kong',
+      [n('bams', 2, 'e0'), n('bams', 2, 'e1'), n('bams', 2, 'e2'), n('bams', 2, 'e3')],
+      n('bams', 2, 't'),
+    )
+    const rack = [n('bams', 8, 'keep'), n('craks', 6, 'toss')]
+    const t = expertBot.chooseDiscard(ctx({ rack, exposures: [kong2bam] }))
+    expect(t.id).toBe('toss')
   })
 
   it('prefers not to discard tiles matching opponents\' exposures', () => {

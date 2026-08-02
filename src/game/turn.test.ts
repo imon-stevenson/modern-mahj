@@ -141,21 +141,21 @@ describe('tilesForCall', () => {
     ).toThrow()
   })
 
-  it('fills a quint (4 from rack) with jokers after naturals', () => {
-    const rack: Tile[] = [fiveBam('a'), joker('j0'), joker('j1'), joker('j2')]
-    const t = tilesForCall('quint', fiveBam('discard'), rack)
-    expect(t.fromRack.map((x) => x.id)).toEqual(['a', 'j0', 'j1', 'j2'])
-  })
-
-  it('fills a sextet (5 from rack) with jokers after naturals', () => {
-    const rack: Tile[] = [
+  it('sizes larger claims correctly (quint takes 4 from rack, sextet 5)', () => {
+    const quint = tilesForCall('quint', fiveBam('discard'), [
+      fiveBam('a'),
+      joker('j0'),
+      joker('j1'),
+      joker('j2'),
+    ])
+    expect(quint.fromRack.map((x) => x.id)).toEqual(['a', 'j0', 'j1', 'j2'])
+    const sextet = tilesForCall('sextet', fiveBam('discard'), [
       fiveBam('a'),
       fiveBam('b'),
       fiveBam('c'),
       joker('j0'),
       joker('j1'),
-    ]
-    const t = tilesForCall('sextet', fiveBam('discard'), rack)
-    expect(t.fromRack.map((x) => x.id)).toEqual(['a', 'b', 'c', 'j0', 'j1'])
+    ])
+    expect(sextet.fromRack.map((x) => x.id)).toEqual(['a', 'b', 'c', 'j0', 'j1'])
   })
 })
