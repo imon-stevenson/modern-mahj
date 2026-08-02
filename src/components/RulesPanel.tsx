@@ -9,14 +9,14 @@ const CARDS: Card[] = [
   {
     title: "The Charleston",
     steps: [
-      { n: 1, text: 'Right → Across ("Over") → Left (compulsory)' },
-      { n: 2, text: 'Left → Across ("Over") → Right (optional)' },
+      { n: 1, text: 'Right → Across ("Over") → Left (Compulsory)' },
+      { n: 2, text: 'Left → Across ("Over") → Right (Optional)' },
       { n: 3, text: "Courtesy pass between opposites" },
     ],
     note: "NOTE: All users must agree on the second Charleston and you may never pass jokers.",
   },
   {
-    title: "Calling a tile",
+    title: "Calling a Tile",
     bullets: [
       'Click the "Call" button (or press "c" on your keyboard) before the timer runs out',
       "Only allowed for a pung, kong, or quint—never for a single or pair",
@@ -45,54 +45,21 @@ const CARDS: Card[] = [
 export function RulesPanel(): React.ReactElement {
   return (
     <section>
-      <div className="eyebrow" style={{ marginTop: 12, marginBottom: 12 }}>
-        Rules &amp; Reference
-      </div>
+      <div className="eyebrow my-3">Rules &amp; Reference</div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-          gap: 16,
-        }}
-      >
+      <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
         {CARDS.map((card) => (
-          <div
-            key={card.title}
-            className="card-surface"
-            style={{ padding: 22 }}
-          >
-            <div style={{ font: "800 15px var(--font-ui)", marginBottom: 14 }}>
+          <div key={card.title} className="card-surface p-[22px]">
+            <div className="font-ui text-[15px] font-extrabold mb-[14px]">
               {card.title}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {card.steps?.map((s) => (
-                <div
-                  key={s.n}
-                  style={{ display: "flex", alignItems: "center", gap: 10 }}
-                >
-                  <span
-                    style={{
-                      flex: "0 0 auto",
-                      width: 20,
-                      height: 20,
-                      borderRadius: "50%",
-                      background: "var(--label-blue)",
-                      color: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      font: "700 11px var(--font-ui)",
-                    }}
-                  >
+                <div key={s.n} className="flex items-center gap-2.5">
+                  <span className="flex-none w-5 h-5 rounded-full bg-label-blue text-white flex items-center justify-center font-ui text-[11px] font-bold">
                     {s.n}
                   </span>
-                  <span
-                    style={{
-                      font: "600 13px var(--font-ui)",
-                      color: "oklch(0.35 0.01 260)",
-                    }}
-                  >
+                  <span className="font-ui text-[13px] font-semibold text-[oklch(0.35_0.01_260)]">
                     {s.text}
                   </span>
                 </div>
@@ -100,26 +67,15 @@ export function RulesPanel(): React.ReactElement {
               {card.bullets?.map((b, i) => (
                 <div
                   key={i}
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    font: "600 13px var(--font-ui)",
-                    color: "oklch(0.35 0.01 260)",
-                  }}
+                  className="flex gap-2 font-ui text-[13px] font-semibold text-[oklch(0.35_0.01_260)]"
                 >
-                  <span style={{ color: "var(--gold)" }}>•</span>
+                  <span className="text-gold">•</span>
                   <span>{b}</span>
                 </div>
               ))}
             </div>
             {card.note && (
-              <div
-                style={{
-                  font: "500 12px var(--font-ui)",
-                  color: "var(--ink-faint)",
-                  marginTop: 12,
-                }}
-              >
+              <div className="font-ui text-[12px] font-medium text-ink-faint mt-3">
                 {card.note}
               </div>
             )}

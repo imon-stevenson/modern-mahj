@@ -17,48 +17,27 @@ export default function App(): React.ReactElement {
   const isDesktop = useIsDesktop()
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--ivory)" }}>
+    <div className="min-h-screen bg-ivory">
       <header
         id="app-header"
+        className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-4 bg-paper border-b border-solid border-hairline py-2 px-[clamp(16px,4vw,40px)] transition-transform duration-[240ms] ease-[ease] will-change-transform"
+        // Auto-hide on scroll down, reveal on scroll up (always shown at top).
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-          background: "var(--paper)",
-          borderBottom: "1px solid var(--hairline)",
-          padding: "8px clamp(16px, 4vw, 40px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 16,
-          flexWrap: "wrap",
-          // Auto-hide on scroll down, reveal on scroll up (always shown at top).
           transform: headerHidden ? "translateY(-100%)" : "translateY(0)",
-          transition: "transform 240ms ease",
-          willChange: "transform",
         }}
       >
-        <div
-          style={{ font: "800 18px var(--font-ui)", letterSpacing: "-0.01em" }}
-        >
-          My <span style={{ color: "var(--label-blue)" }}>· Modern Mahj</span>
+        <div className="font-ui text-[18px] font-extrabold tracking-[-0.01em]">
+          My <span className="text-label-blue">· Modern Mahj</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="flex items-center gap-3">
           <PauseButton />
           <NewGameMenu />
         </div>
       </header>
 
       <main
-        style={{
-          maxWidth: 1240,
-          margin: "0 auto",
-          padding: "clamp(16px, 3vw, 32px)",
-          display: "flex",
-          flexDirection: "column",
-          gap: 32,
-          paddingTop: `${isDesktop ? "64px" : "32px"}`,
-        }}
+        className="max-w-[1240px] mx-auto flex flex-col gap-8 p-[clamp(16px,3vw,32px)]"
+        style={{ paddingTop: isDesktop ? 64 : 32 }}
       >
         <Board />
 
