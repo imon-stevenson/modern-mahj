@@ -1,11 +1,19 @@
-import type { CallKind, Exposure, Tile } from "../types"
+import type { CallKind, Exposure, ExposureKind, Tile } from "../types"
 import type { BotStrategy } from "./base"
 import type { JokerSwapOffer } from "../jokerSwap"
-import { matchAgainstAll } from "../hands/match"
+import {
+  bestExposureAwareCloseness,
+  matchAgainstAll,
+  targetHandNeeds,
+} from "../hands/match"
+import { buildExposure } from "../exposure"
+import { tilesForCall } from "../turn"
 import {
   computeUsefulness,
   handCloseness,
+  scoreTile,
   sortRackByUsefulnessAsc,
+  tileKey,
   topHands,
 } from "./scoring"
 import { exposureIdentity } from "../jokerSwap"
@@ -44,8 +52,22 @@ export const intermediateBot: BotStrategy = {
   },
   chooseDiscard(ctx) {
     const use = computeUsefulness(ctx.hands)
-    const sorted = sortRackByUsefulnessAsc(ctx.rack, use)
-    return sorted[0] ?? ctx.rack[0]!
+    // Tiles the best hand still reachable given our exposures actually wants —
+    // keep those, discard tiles that don't advance our committed line.
+    const needs = targetHandNeeds(ctx.rack, ctx.exposures, ctx.hands)
+    const ranked = [...ctx.rack].sort((a, b) => {
+      const ja = a.kind === "joker"
+      const jb = b.kind === "joker"
+      if (ja !== jb) return ja ? 1 : -1 // never discard a joker
+      const na = needs?.has(tileKey(a)) ?? false
+      const nb = needs?.has(tileKey(b)) ?? false
+      if (na !== nb) return na ? 1 : -1 // keep tiles the target hand needs
+      const ua = scoreTile(a, use)
+      const ub = scoreTile(b, use)
+      if (ua !== ub) return ua - ub // then least globally useful first
+      return a.id.localeCompare(b.id)
+    })
+    return ranked[0] ?? ctx.rack[0]!
   },
   decideCall(ctx, discard, available): CallKind | null {
     // Mahjong first.
@@ -54,19 +76,33 @@ export const intermediateBot: BotStrategy = {
 
     if (available.length === 0) return null
 
-    const [beforeBest] = topHands(ctx.rack, ctx.hands, 1)
-    const before = beforeBest ? handCloseness(ctx.rack, beforeBest) : 0
-    // If a pung/kong strictly improves our closeness on our best hand target,
-    // take it. Prefer kong when available (more tiles committed).
+    // Exposure-aware: a call is only worth making if, AFTER committing the new
+    // exposure, some real hand is still reachable given ALL our exposures, and
+    // it advances us. This stops bots from stacking mutually-incompatible pungs
+    // that no card line can use.
+    const before =
+      bestExposureAwareCloseness(ctx.rack, ctx.exposures, ctx.hands) ?? 0
     const rankChoice: CallKind[] = ["kong", "pung"]
     for (const kind of rankChoice) {
       if (!available.includes(kind)) continue
-      // Simulate taking N natural matches out of the rack; discard identity
-      // moves to an exposure (doesn't stay in rack). We approximate the effect
-      // on closeness by adding the discard back and re-scoring.
-      const [afterBest] = topHands(trialRack, ctx.hands, 1)
-      const after = afterBest ? handCloseness(trialRack, afterBest) : 0
-      if (after > before) return kind
+      const fromRack = tilesForCall(
+        kind as Exclude<CallKind, "mahjong">,
+        discard,
+        ctx.rack,
+      ).fromRack
+      const prospective: Exposure[] = [
+        ...ctx.exposures,
+        buildExposure(kind as ExposureKind, [discard, ...fromRack], discard),
+      ]
+      const usedIds = new Set(fromRack.map((t) => t.id))
+      const rackAfter = ctx.rack.filter((t) => !usedIds.has(t.id))
+      // null ⇒ the new exposure fits no reachable hand: never make it.
+      const after = bestExposureAwareCloseness(
+        rackAfter,
+        prospective,
+        ctx.hands,
+      )
+      if (after !== null && after > before) return kind
     }
     return null
   },

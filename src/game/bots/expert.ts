@@ -1,10 +1,12 @@
 import type { BotStrategy } from './base'
 import { intermediateBot } from './intermediate'
+import { targetHandNeeds } from '../hands/match'
 import {
   computeUsefulness,
   opponentExposureIdentities,
   scoreTile,
   sortRackByUsefulnessAsc,
+  tileKey,
   tileMatchesKey,
 } from './scoring'
 
@@ -20,21 +22,25 @@ export const expertBot: BotStrategy = {
   chooseDiscard(ctx) {
     const use = computeUsefulness(ctx.hands)
     const danger = opponentExposureIdentities(ctx.allExposures, ctx.seat)
+    // Tiles our best still-reachable hand (given our exposures) wants — keep them.
+    const needs = targetHandNeeds(ctx.rack, ctx.exposures, ctx.hands)
     const scored = ctx.rack.map((t) => ({
       tile: t,
+      joker: t.kind === 'joker',
+      needed: needs?.has(tileKey(t)) ?? false,
       base: scoreTile(t, use),
       dangerous: [...danger].some((k) => tileMatchesKey(t, k)),
     }))
-    // Sort: least useful first, and tiles matching opponent exposures LAST
-    // (we don't want to discard "into" them).
+    // Sort (kept tiles last): never a joker; keep what our committed line needs;
+    // avoid discarding "into" an opponent's exposure; else least useful first.
     scored.sort((a, b) => {
+      if (a.joker !== b.joker) return a.joker ? 1 : -1
+      if (a.needed !== b.needed) return a.needed ? 1 : -1
       if (a.dangerous !== b.dangerous) return a.dangerous ? 1 : -1
       if (a.base !== b.base) return a.base - b.base
       return a.tile.id.localeCompare(b.tile.id)
     })
-    // Never discard a joker.
-    const pick = scored.find((s) => s.tile.kind !== 'joker')
-    return pick?.tile ?? ctx.rack[0]!
+    return scored[0]?.tile ?? ctx.rack[0]!
   },
 
   chooseCharlestonPass(ctx) {

@@ -5,8 +5,8 @@ import type {
   Suit,
   Tile,
   Wind,
-} from '../types'
-import { tilesEqual } from '../tiles'
+} from "../types"
+import { tilesEqual } from "../tiles"
 import type {
   DragonVar,
   GroupKind,
@@ -16,7 +16,7 @@ import type {
   SuitVar,
   TilePattern,
   WindVar,
-} from './schema'
+} from "./schema"
 
 // A binding maps each variable used by a hand to a concrete value.
 type SuitBinding = Partial<Record<SuitVar, Suit>>
@@ -31,10 +31,10 @@ type Binding = {
 }
 
 type ConcreteTileIdentity =
-  | { kind: 'number'; suit: Suit; rank: number }
-  | { kind: 'wind'; wind: Wind }
-  | { kind: 'dragon'; color: DragonColor }
-  | { kind: 'flower' }
+  | { kind: "number"; suit: Suit; rank: number }
+  | { kind: "wind"; wind: Wind }
+  | { kind: "dragon"; color: DragonColor }
+  | { kind: "flower" }
 
 type ConcreteGroup = {
   kind: GroupKind
@@ -42,16 +42,16 @@ type ConcreteGroup = {
   jokersAllowed: boolean
 }
 
-const ALL_SUITS: readonly Suit[] = ['bams', 'craks', 'dots']
-const ALL_WINDS: readonly Wind[] = ['N', 'E', 'S', 'W']
-const ALL_DRAGONS: readonly DragonColor[] = ['red', 'green', 'white']
+const ALL_SUITS: readonly Suit[] = ["bams", "craks", "dots"]
+const ALL_WINDS: readonly Wind[] = ["N", "E", "S", "W"]
+const ALL_DRAGONS: readonly DragonColor[] = ["red", "green", "white"]
 
 // ---------- variable enumeration ----------
 
 function suitVarsIn(hand: NMJLHand): SuitVar[] {
   const set = new Set<SuitVar>()
   for (const g of hand.groups) {
-    if ('suitVar' in g.tile && g.tile.suitVar) set.add(g.tile.suitVar)
+    if ("suitVar" in g.tile && g.tile.suitVar) set.add(g.tile.suitVar)
   }
   for (const c of hand.suitConstraints ?? []) {
     for (const v of c.vars) set.add(v)
@@ -62,7 +62,7 @@ function suitVarsIn(hand: NMJLHand): SuitVar[] {
 function numberVarsIn(hand: NMJLHand): NumberVar[] {
   const set = new Set<NumberVar>()
   for (const g of hand.groups) {
-    if (g.tile.kind === 'number' && 'numVar' in g.tile) set.add(g.tile.numVar)
+    if (g.tile.kind === "number" && "numVar" in g.tile) set.add(g.tile.numVar)
   }
   for (const c of hand.numberConstraints ?? []) {
     set.add(c.var)
@@ -73,7 +73,7 @@ function numberVarsIn(hand: NMJLHand): NumberVar[] {
 function windVarsIn(hand: NMJLHand): WindVar[] {
   const set = new Set<WindVar>()
   for (const g of hand.groups) {
-    if (g.tile.kind === 'wind' && 'windVar' in g.tile) set.add(g.tile.windVar)
+    if (g.tile.kind === "wind" && "windVar" in g.tile) set.add(g.tile.windVar)
   }
   return [...set]
 }
@@ -81,7 +81,8 @@ function windVarsIn(hand: NMJLHand): WindVar[] {
 function dragonVarsIn(hand: NMJLHand): DragonVar[] {
   const set = new Set<DragonVar>()
   for (const g of hand.groups) {
-    if (g.tile.kind === 'dragon' && 'dragonVar' in g.tile) set.add(g.tile.dragonVar)
+    if (g.tile.kind === "dragon" && "dragonVar" in g.tile)
+      set.add(g.tile.dragonVar)
   }
   return [...set]
 }
@@ -141,7 +142,7 @@ function suitBindingSatisfies(binding: SuitBinding, hand: NMJLHand): boolean {
   for (const c of hand.suitConstraints ?? []) {
     const values = c.vars.map((v) => binding[v]).filter((x): x is Suit => !!x)
     if (values.length < c.vars.length) return true
-    if (c.rule === 'allDifferent') {
+    if (c.rule === "allDifferent") {
       if (new Set(values).size !== values.length) return false
     } else {
       if (new Set(values).size !== 1) return false
@@ -150,26 +151,32 @@ function suitBindingSatisfies(binding: SuitBinding, hand: NMJLHand): boolean {
   return true
 }
 
-type NumberBase = 'N' | 'M'
+type NumberBase = "N" | "M"
 
 function numberVarBase(v: NumberVar): NumberBase {
-  return v.startsWith('M') ? 'M' : 'N'
+  return v.startsWith("M") ? "M" : "N"
 }
 
 function numberVarOffset(v: NumberVar): number {
-  const plus = v.split('+')[1]
+  const plus = v.split("+")[1]
   return plus ? parseInt(plus, 10) : 0
 }
 
 // Candidate concrete values for one base (`N` or `M`), honouring its number
 // constraints and leaving room for the largest offset used by that base.
-function candidatesForBase(base: NumberBase, vars: NumberVar[], hand: NMJLHand): number[] {
+function candidatesForBase(
+  base: NumberBase,
+  vars: NumberVar[],
+  hand: NMJLHand,
+): number[] {
   let candidates = new Set<number>()
   for (let n = 1; n <= 9; n++) candidates.add(n)
   for (const c of hand.numberConstraints ?? []) {
     if (c.var !== base) continue
-    if (c.rule === 'range') {
-      candidates = new Set([...candidates].filter((n) => n >= c.min && n <= c.max))
+    if (c.rule === "range") {
+      candidates = new Set(
+        [...candidates].filter((n) => n >= c.min && n <= c.max),
+      )
     } else {
       candidates = new Set([...candidates].filter((n) => c.values.includes(n)))
     }
@@ -181,15 +188,18 @@ function candidatesForBase(base: NumberBase, vars: NumberVar[], hand: NMJLHand):
   return [...candidates].sort((a, b) => a - b)
 }
 
-function enumerateNumberBindings(vars: NumberVar[], hand: NMJLHand): NumberBinding[] {
+function enumerateNumberBindings(
+  vars: NumberVar[],
+  hand: NMJLHand,
+): NumberBinding[] {
   if (vars.length === 0) return [{}]
-  const usesN = vars.some((v) => numberVarBase(v) === 'N')
-  const usesM = vars.some((v) => numberVarBase(v) === 'M')
+  const usesN = vars.some((v) => numberVarBase(v) === "N")
+  const usesM = vars.some((v) => numberVarBase(v) === "M")
   const nCands: (number | undefined)[] = usesN
-    ? candidatesForBase('N', vars, hand)
+    ? candidatesForBase("N", vars, hand)
     : [undefined]
   const mCands: (number | undefined)[] = usesM
-    ? candidatesForBase('M', vars, hand)
+    ? candidatesForBase("M", vars, hand)
     : [undefined]
   const out: NumberBinding[] = []
   for (const n of nCands) {
@@ -205,9 +215,12 @@ function enumerateNumberBindings(vars: NumberVar[], hand: NMJLHand): NumberBindi
   return out
 }
 
-function resolveNumberVar(varName: NumberVar, binding: NumberBinding): number | null {
+function resolveNumberVar(
+  varName: NumberVar,
+  binding: NumberBinding,
+): number | null {
   const base = numberVarBase(varName)
-  const baseVal = base === 'M' ? binding.M : binding.N
+  const baseVal = base === "M" ? binding.M : binding.N
   if (baseVal == null) return null
   return baseVal + numberVarOffset(varName)
 }
@@ -216,53 +229,54 @@ function materializeIdentity(
   pattern: TilePattern,
   binding: Binding,
 ): ConcreteTileIdentity | null {
-  if (pattern.kind === 'wind') {
-    if ('wind' in pattern) return { kind: 'wind', wind: pattern.wind }
+  if (pattern.kind === "wind") {
+    if ("wind" in pattern) return { kind: "wind", wind: pattern.wind }
     const w = binding.winds[pattern.windVar]
     if (!w) return null
-    return { kind: 'wind', wind: w }
+    return { kind: "wind", wind: w }
   }
-  if (pattern.kind === 'flower') return { kind: 'flower' }
-  if (pattern.kind === 'dragon') {
-    if ('color' in pattern) return { kind: 'dragon', color: pattern.color }
-    if ('dragonVar' in pattern) {
+  if (pattern.kind === "flower") return { kind: "flower" }
+  if (pattern.kind === "dragon") {
+    if ("color" in pattern) return { kind: "dragon", color: pattern.color }
+    if ("dragonVar" in pattern) {
       const d = binding.dragons[pattern.dragonVar]
       if (!d) return null
-      return { kind: 'dragon', color: d }
+      return { kind: "dragon", color: d }
     }
     const suit = binding.suits[pattern.suitVar]
     if (!suit) return null
     const color: DragonColor =
-      suit === 'bams' ? 'green' : suit === 'craks' ? 'red' : 'white'
-    return { kind: 'dragon', color }
+      suit === "bams" ? "green" : suit === "craks" ? "red" : "white"
+    return { kind: "dragon", color }
   }
-  if ('suit' in pattern) {
-    if ('rank' in pattern) return { kind: 'number', suit: pattern.suit, rank: pattern.rank }
+  if ("suit" in pattern) {
+    if ("rank" in pattern)
+      return { kind: "number", suit: pattern.suit, rank: pattern.rank }
     return null
   }
   const suit = binding.suits[pattern.suitVar]
   if (!suit) return null
-  if ('rank' in pattern) return { kind: 'number', suit, rank: pattern.rank }
+  if ("rank" in pattern) return { kind: "number", suit, rank: pattern.rank }
   const n = resolveNumberVar(pattern.numVar, binding.numbers)
   if (n == null) return null
-  return { kind: 'number', suit, rank: n }
+  return { kind: "number", suit, rank: n }
 }
 
 function identityToTile(id: ConcreteTileIdentity): Tile {
   switch (id.kind) {
-    case 'number':
+    case "number":
       return {
-        id: '_tpl',
-        kind: 'number',
+        id: "_tpl",
+        kind: "number",
         suit: id.suit,
         rank: id.rank as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
       }
-    case 'wind':
-      return { id: '_tpl', kind: 'wind', wind: id.wind }
-    case 'dragon':
-      return { id: '_tpl', kind: 'dragon', color: id.color }
-    case 'flower':
-      return { id: '_tpl', kind: 'flower' }
+    case "wind":
+      return { id: "_tpl", kind: "wind", wind: id.wind }
+    case "dragon":
+      return { id: "_tpl", kind: "dragon", color: id.color }
+    case "flower":
+      return { id: "_tpl", kind: "flower" }
   }
 }
 
@@ -277,18 +291,21 @@ const GROUP_SIZE: Record<GroupKind, number> = {
 
 const EXPOSURE_KIND_FOR: Record<GroupKind, ExposureKind | null> = {
   single: null,
-  pair: 'pair',
-  pung: 'pung',
-  kong: 'kong',
-  quint: 'quint',
-  sextet: 'sextet',
+  pair: "pair",
+  pung: "pung",
+  kong: "kong",
+  quint: "quint",
+  sextet: "sextet",
 }
 
 function totalTiles(groups: GroupPattern[]): number {
   return groups.reduce((s, g) => s + GROUP_SIZE[g.kind], 0)
 }
 
-function materializeGroups(hand: NMJLHand, binding: Binding): ConcreteGroup[] | null {
+function materializeGroups(
+  hand: NMJLHand,
+  binding: Binding,
+): ConcreteGroup[] | null {
   const out: ConcreteGroup[] = []
   for (const g of hand.groups) {
     const id = materializeIdentity(g.tile, binding)
@@ -305,7 +322,7 @@ function exposureSatisfies(ex: Exposure, group: ConcreteGroup): boolean {
   const jokerCount = ex.jokerIds.length
   if (jokerCount > 0 && !group.jokersAllowed) return false
   for (const t of ex.tiles) {
-    if (t.kind === 'joker') continue
+    if (t.kind === "joker") continue
     if (!tilesEqual(t, template)) return false
   }
   return true
@@ -315,28 +332,28 @@ function exposureSatisfies(ex: Exposure, group: ConcreteGroup): boolean {
 // and compared by identity. Jokers have no identity (return null).
 function identityKey(id: ConcreteTileIdentity): string {
   switch (id.kind) {
-    case 'number':
+    case "number":
       return `n:${id.suit}:${id.rank}`
-    case 'wind':
+    case "wind":
       return `w:${id.wind}`
-    case 'dragon':
+    case "dragon":
       return `d:${id.color}`
-    case 'flower':
-      return 'f'
+    case "flower":
+      return "f"
   }
 }
 
 function tileIdentityKey(t: Tile): string | null {
   switch (t.kind) {
-    case 'number':
+    case "number":
       return `n:${t.suit}:${t.rank}`
-    case 'wind':
+    case "wind":
       return `w:${t.wind}`
-    case 'dragon':
+    case "dragon":
       return `d:${t.color}`
-    case 'flower':
-      return 'f'
-    case 'joker':
+    case "flower":
+      return "f"
+    case "joker":
       return null
   }
 }
@@ -395,7 +412,8 @@ function existsExposureAssignment(
   const rec = (ei: number): boolean => {
     if (ei === exposures.length) {
       const unused: ConcreteGroup[] = []
-      for (let i = 0; i < groups.length; i++) if (!used[i]) unused.push(groups[i]!)
+      for (let i = 0; i < groups.length; i++)
+        if (!used[i]) unused.push(groups[i]!)
       return pred(unused)
     }
     const ex = exposures[ei]!
@@ -435,13 +453,20 @@ export function matchHand(
     for (const n of numberBindings) {
       for (const w of windBindings) {
         for (const d of dragonBindings) {
-          const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
+          const binding: Binding = {
+            suits: s,
+            numbers: n,
+            winds: w,
+            dragons: d,
+          }
           const materialized = materializeGroups(hand, binding)
           if (!materialized) continue
           // Exact: some exposure→group assignment leaves groups the rack can
           // fill precisely (naturals + jokers, every tile used).
-          const ok = existsExposureAssignment(exposures, materialized, (unused) =>
-            rackSatisfiesGroups(rack, unused),
+          const ok = existsExposureAssignment(
+            exposures,
+            materialized,
+            (unused) => rackSatisfiesGroups(rack, unused),
           )
           if (ok) return { hand, binding }
         }
@@ -463,15 +488,152 @@ export function matchAgainstAll(
   return null
 }
 
+// Greedy count of how many tile slots of `groups` the rack's naturals can fill
+// (each natural used once). A partial-progress heuristic, not exact completion.
+function rackNaturalFill(rack: Tile[], groups: ConcreteGroup[]): number {
+  const naturals = new Map<string, number>()
+  for (const t of rack) {
+    const k = tileIdentityKey(t)
+    if (k !== null) naturals.set(k, (naturals.get(k) ?? 0) + 1)
+  }
+  let hits = 0
+  for (const g of groups) {
+    const k = identityKey(g.identity)
+    const have = naturals.get(k) ?? 0
+    const use = Math.min(GROUP_SIZE[g.kind], have)
+    if (use > 0) naturals.set(k, have - use)
+    hits += use
+  }
+  return hits
+}
+
+// How close `rack` + `exposures` are to completing `hand`, as a fraction of the
+// 14 slots, maximized over the variable bindings and exposure→group assignments
+// where the exposures fit. Returns null if the exposures cannot be assigned to
+// this hand under any binding — i.e. the hand is no longer reachable. Used by
+// bots to choose calls that stay on a real, still-completable line.
+export function exposureAwareCloseness(
+  rack: Tile[],
+  exposures: Exposure[],
+  hand: NMJLHand,
+): number | null {
+  if (totalTiles(hand.groups) !== 14) return null
+  if (hand.closed && exposures.length > 0) return null
+
+  const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
+    suitBindingSatisfies(b, hand),
+  )
+  const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand)
+  const windBindings = enumerateWindBindings(windVarsIn(hand))
+  const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand))
+
+  let best: number | null = null
+  for (const s of suitBindings) {
+    for (const n of numberBindings) {
+      for (const w of windBindings) {
+        for (const d of dragonBindings) {
+          const binding: Binding = {
+            suits: s,
+            numbers: n,
+            winds: w,
+            dragons: d,
+          }
+          const materialized = materializeGroups(hand, binding)
+          if (!materialized) continue
+          // Walk every exposure→group assignment (pred returns false so all are
+          // explored), scoring exposed slots + rack natural-fill of the rest.
+          existsExposureAssignment(exposures, materialized, (unused) => {
+            const unusedTiles = unused.reduce(
+              (sum, g) => sum + GROUP_SIZE[g.kind],
+              0,
+            )
+            const exposed = 14 - unusedTiles
+            const score = (exposed + rackNaturalFill(rack, unused)) / 14
+            if (best === null || score > best) best = score
+            return false
+          })
+        }
+      }
+    }
+  }
+  return best
+}
+
+// Best closeness over all hands, or null if the exposures fit none of them.
+export function bestExposureAwareCloseness(
+  rack: Tile[],
+  exposures: Exposure[],
+  hands: NMJLHand[],
+): number | null {
+  let best: number | null = null
+  for (const h of hands) {
+    const c = exposureAwareCloseness(rack, exposures, h)
+    if (c !== null && (best === null || c > best)) best = c
+  }
+  return best
+}
+
+// The tile identities the player's *best still-reachable* hand (given `rack` +
+// `exposures`) still wants — the identity keys (`n:suit:rank` / `w:wind` /
+// `d:color` / `f`) of that hand's unexposed groups under the closeness-maximizing
+// binding/assignment. Returns null if no hand is reachable. Used by bots to keep
+// tiles that advance their committed line instead of only globally-useful ones.
+export function targetHandNeeds(
+  rack: Tile[],
+  exposures: Exposure[],
+  hands: NMJLHand[],
+): Set<string> | null {
+  let bestScore: number | null = null
+  let bestNeeds: Set<string> | null = null
+  for (const hand of hands) {
+    if (totalTiles(hand.groups) !== 14) continue
+    if (hand.closed && exposures.length > 0) continue
+
+    const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
+      suitBindingSatisfies(b, hand),
+    )
+    const numberBindings = enumerateNumberBindings(numberVarsIn(hand), hand)
+    const windBindings = enumerateWindBindings(windVarsIn(hand))
+    const dragonBindings = enumerateDragonBindings(dragonVarsIn(hand))
+
+    for (const s of suitBindings) {
+      for (const n of numberBindings) {
+        for (const w of windBindings) {
+          for (const d of dragonBindings) {
+            const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
+            const materialized = materializeGroups(hand, binding)
+            if (!materialized) continue
+            existsExposureAssignment(exposures, materialized, (unused) => {
+              const unusedTiles = unused.reduce(
+                (sum, g) => sum + GROUP_SIZE[g.kind],
+                0,
+              )
+              const score =
+                (14 - unusedTiles + rackNaturalFill(rack, unused)) / 14
+              if (bestScore === null || score > bestScore) {
+                bestScore = score
+                bestNeeds = new Set(unused.map((g) => identityKey(g.identity)))
+              }
+              return false
+            })
+          }
+        }
+      }
+    }
+  }
+  return bestNeeds
+}
+
 // Would some hand — still viable given the player's current `exposures` — need a
-// quint/sextet of `tile`? Used to gate offering those claims: only when a target
-// hand actually calls for that grouping of the discarded tile (so the player
-// can't burn jokers exposing a group no reachable hand can use).
+// `kind` (pung/kong/quint/sextet) of `tile`? Used to gate offering a claim: only
+// when a target hand still reachable with the player's exposures actually calls
+// for that grouping of the discarded tile (so a player never exposes a group no
+// reachable hand can use — which would invalidate their hand).
 export function handsAllowGroupingForTile(
   exposures: Exposure[],
   hands: NMJLHand[],
   tile: Tile,
-  kind: 'quint' | 'sextet',
+  kind: "pung" | "kong" | "quint" | "sextet",
 ): boolean {
   for (const hand of hands) {
     const suitBindings = enumerateSuitBindings(suitVarsIn(hand)).filter((b) =>
@@ -485,7 +647,12 @@ export function handsAllowGroupingForTile(
       for (const n of numberBindings) {
         for (const w of windBindings) {
           for (const d of dragonBindings) {
-            const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
+            const binding: Binding = {
+              suits: s,
+              numbers: n,
+              winds: w,
+              dragons: d,
+            }
             const materialized = materializeGroups(hand, binding)
             if (!materialized) continue
             // Some valid exposure assignment must leave an unused group that is

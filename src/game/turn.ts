@@ -15,7 +15,10 @@ export function matchingInRack(rack: readonly Tile[], tile: Tile): number {
 
 // Non-mahjong calls available on a discard for this seat, given only their
 // rack (mahjong requires the hand-matching engine and is checked separately).
-export function possibleCallsForDiscard(rack: readonly Tile[], tile: Tile): CallKind[] {
+export function possibleCallsForDiscard(
+  rack: readonly Tile[],
+  tile: Tile,
+): ('pung' | 'kong')[] {
   const naturals = matchingInRack(rack, tile)
   const jokers = rack.filter((t) => t.kind === 'joker').length
   // Jokers can fill a pung/kong claim alongside the natural matches. A claim is
@@ -23,7 +26,7 @@ export function possibleCallsForDiscard(rack: readonly Tile[], tile: Tile): Call
   // needs 2, kong needs 3. Pung is suppressed once you already hold 3 naturals,
   // since a pure-natural kong is then strictly better.
   const fillers = naturals + jokers
-  const calls: CallKind[] = []
+  const calls: ('pung' | 'kong')[] = []
   if (fillers >= 2 && naturals < 3) calls.push('pung')
   if (fillers >= 3) calls.push('kong')
   return calls

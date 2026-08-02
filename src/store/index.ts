@@ -20,7 +20,7 @@ import type { BotCtx } from "../game/bots"
 import type { NMJLHand } from "../game/hands/schema"
 import { allHands } from "../game/hands/loader"
 import type { CardYear } from "../game/hands/loader"
-import { matchAgainstAll } from "../game/hands/match"
+import { handsAllowGroupingForTile, matchAgainstAll } from "../game/hands/match"
 import { buildExposure } from "../game/exposure"
 import {
   nextSeat,
@@ -163,12 +163,20 @@ function callableSeats(
 ): Seat[] {
   const out: Seat[] = []
   for (const seat of seatsExcept(discarder)) {
-    if (possibleCallsForDiscard(players[seat].rack, tile).length > 0) {
+    const rack = players[seat].rack
+    const exposures = players[seat].exposures
+    // A pung/kong only counts if some hand still reachable with this seat's
+    // exposures actually uses that grouping of the tile — otherwise claiming it
+    // would strand the hand (the bug where bots exposed unrelated pungs).
+    const canGroup = possibleCallsForDiscard(rack, tile).some((k) =>
+      handsAllowGroupingForTile(exposures, hands, tile, k),
+    )
+    if (canGroup) {
       out.push(seat)
       continue
     }
-    const trial = [...players[seat].rack, tile]
-    if (matchAgainstAll(trial, players[seat].exposures, hands)) out.push(seat)
+    const trial = [...rack, tile]
+    if (matchAgainstAll(trial, exposures, hands)) out.push(seat)
   }
   return out
 }

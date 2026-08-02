@@ -15,7 +15,7 @@ const ALL_SUITS: readonly Suit[] = ['bams', 'craks', 'dots']
 
 type TileKey = string
 
-function tileKey(tile: Tile): TileKey {
+export function tileKey(tile: Tile): TileKey {
   switch (tile.kind) {
     case 'number':
       return `n:${tile.suit}:${tile.rank}`

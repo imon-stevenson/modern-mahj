@@ -92,6 +92,54 @@ describe('intermediate bot', () => {
     expect(t.id).toBe('wasted')
   })
 
+  it('discards toward its committed line, keeping tiles that line needs', () => {
+    // Exposed a kong of 2-bams → committed to winsHand in bams. The 8-bam
+    // completes it (keep); the 6-craks is only useful to winsHand in a suit we
+    // can no longer take, so discard it even though global usefulness ties them.
+    const kong2bam = buildExposure(
+      'kong',
+      [n('bams', 2, 'e0'), n('bams', 2, 'e1'), n('bams', 2, 'e2'), n('bams', 2, 'e3')],
+      n('bams', 2, 't'),
+    )
+    const rack = [n('bams', 8, 'keep'), n('craks', 6, 'toss')]
+    const t = intermediateBot.chooseDiscard(
+      ctx({ rack, exposures: [kong2bam] }),
+    )
+    expect(t.id).toBe('toss')
+    // Expert shares the same exposure-aware behavior.
+    const te = expertBot.chooseDiscard(ctx({ rack, exposures: [kong2bam] }))
+    expect(te.id).toBe('toss')
+  })
+
+  it('calls kong toward a real target hand', () => {
+    // Three 2-bams + a discarded 2-bam completes winsHand's kong of 2s.
+    const rack = [n('bams', 2, 'a'), n('bams', 2, 'b'), n('bams', 2, 'c')]
+    const call = intermediateBot.decideCall(
+      ctx({ rack }),
+      n('bams', 2, 'discard'),
+      ['kong'],
+    )
+    expect(call).toBe('kong')
+  })
+
+  it('will not stack an exposure incompatible with its existing ones', () => {
+    // Already committed to a kong of 2-CRAKS (toward the one-suit winsHand in
+    // craks). A kong of 6-BAMS can share no hand with it, so it must decline —
+    // this is the "bots exposing unrelated pungs" bug.
+    const kong2crak = buildExposure(
+      'kong',
+      [n('craks', 2, 'e0'), n('craks', 2, 'e1'), n('craks', 2, 'e2'), n('craks', 2, 'e3')],
+      n('craks', 2, 't'),
+    )
+    const rack = [n('bams', 6, 'a'), n('bams', 6, 'b'), n('bams', 6, 'c')]
+    const call = intermediateBot.decideCall(
+      ctx({ rack, exposures: [kong2crak] }),
+      n('bams', 6, 'discard'),
+      ['kong'],
+    )
+    expect(call).toBeNull()
+  })
+
   it('picks Mahjong when it can', () => {
     const rack: Tile[] = [
       flower('f0'), flower('f1'),
@@ -160,6 +208,24 @@ describe('intermediate bot', () => {
 })
 
 describe('expert bot', () => {
+  it('inherits the exposure-aware call gate from intermediate', () => {
+    expect(expertBot.decideCall).toBe(intermediateBot.decideCall)
+    // ...and behaves accordingly: declines a kong incompatible with its exposure.
+    const kong2crak = buildExposure(
+      'kong',
+      [n('craks', 2, 'e0'), n('craks', 2, 'e1'), n('craks', 2, 'e2'), n('craks', 2, 'e3')],
+      n('craks', 2, 't'),
+    )
+    const rack = [n('bams', 6, 'a'), n('bams', 6, 'b'), n('bams', 6, 'c')]
+    expect(
+      expertBot.decideCall(
+        ctx({ rack, exposures: [kong2crak] }),
+        n('bams', 6, 'discard'),
+        ['kong'],
+      ),
+    ).toBeNull()
+  })
+
   it('prefers not to discard tiles matching opponents\' exposures', () => {
     const opponentPung = buildExposure(
       'pung',

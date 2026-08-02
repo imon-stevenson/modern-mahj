@@ -85,7 +85,7 @@ describe("2025 card normalization", () => {
 
   it("consec-2a is a valid 14-tile single variant", () => {
     const { pattern } = parseHandPattern(hand2025("consec-2a").description)
-    expect(pattern).toBe("1111 2222 333 444")
+    expect(pattern).toBe("111 2222 333 4444")
     expect(handTileColors(hand2025("consec-2a").groups)).toHaveLength(14)
   })
 

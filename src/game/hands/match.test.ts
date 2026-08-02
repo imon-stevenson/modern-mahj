@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { handsAllowGroupingForTile, matchHand } from './match'
+import {
+  exposureAwareCloseness,
+  handsAllowGroupingForTile,
+  matchHand,
+} from './match'
 import type { NMJLHand } from './schema'
 import { buildExposure } from '../exposure'
 import type { Tile } from '../types'
@@ -443,5 +447,33 @@ describe('handsAllowGroupingForTile', () => {
     expect(
       handsAllowGroupingForTile([ex], [greenQuintHand], dragon('green', 't'), 'quint'),
     ).toBe(false)
+  })
+})
+
+describe('exposureAwareCloseness', () => {
+  const kongOf = (t: Tile, id: string) =>
+    buildExposure('kong', [t, { ...t, id: id + '1' }, { ...t, id: id + '2' }, { ...t, id: id + '3' }], t)
+
+  it('is null when exposures cannot fit the hand together', () => {
+    // threeSuitsHand needs kong 2 (X) and kong 6 (Z) with X != Z. Two bam kongs
+    // force X == Z == bams, so no binding fits.
+    const exps = [kongOf(n('bams', 2, 'a'), 'a'), kongOf(n('bams', 6, 'b'), 'b')]
+    expect(exposureAwareCloseness([], exps, threeSuitsHand)).toBeNull()
+  })
+
+  it('is a positive fraction when the exposures fit', () => {
+    const exps = [kongOf(n('bams', 2, 'a'), 'a'), kongOf(n('dots', 6, 'b'), 'b')]
+    const c = exposureAwareCloseness([], exps, threeSuitsHand)
+    expect(c).not.toBeNull()
+    expect(c!).toBeGreaterThan(0)
+  })
+})
+
+describe('handsAllowGroupingForTile — pung/kong', () => {
+  it('allows only the grouping a reachable hand actually needs', () => {
+    // threeSuitsHand uses a KONG of 2s — not a pung, and not a kong of 5s.
+    expect(handsAllowGroupingForTile([], [threeSuitsHand], n('bams', 2, 't'), 'kong')).toBe(true)
+    expect(handsAllowGroupingForTile([], [threeSuitsHand], n('bams', 5, 't'), 'kong')).toBe(false)
+    expect(handsAllowGroupingForTile([], [threeSuitsHand], n('bams', 2, 't'), 'pung')).toBe(false)
   })
 })

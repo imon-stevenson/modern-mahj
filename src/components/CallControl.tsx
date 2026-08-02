@@ -43,7 +43,12 @@ export function CallControl(): React.ReactElement {
     if (!awaitingCall || !awaitingCall.callableBy.includes("east")) return []
     const tile = awaitingCall.discardTile
     const rack = eastPlayer.rack
-    const result: CallKind[] = [...possibleCallsForDiscard(rack, tile)]
+    // Only offer a pung/kong when a hand still reachable with East's exposures
+    // actually needs that grouping of the tile — same gate as quint/sextet below
+    // (so the human isn't invited to strand their hand on a dead exposure).
+    const result: CallKind[] = possibleCallsForDiscard(rack, tile).filter((k) =>
+      handsAllowGroupingForTile(eastPlayer.exposures, hands, tile, k),
+    )
     // Jokers count as fillers; quint/sextet are additionally gated to only when
     // a still-viable hand actually needs that grouping of this tile.
     const fillers =
