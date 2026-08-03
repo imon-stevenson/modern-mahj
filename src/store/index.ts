@@ -90,9 +90,11 @@ export type MahjState = {
 
   loadHandsSafe: (year?: CardYear) => NMJLHand[]
 
-  // Start a new game in two steps: choose difficulty (header), then pick the
-  // card on the mat before dealing.
-  requestNewGame: (difficulty: Difficulty) => void
+  // Start a new game in two steps: open the on-mat picker (difficulty + card),
+  // then deal with the chosen card.
+  requestNewGame: () => void
+  setDifficulty: (difficulty: Difficulty) => void
+  setCardYear: (cardYear: CardYear) => void
   startGameWithCard: (cardYear: CardYear) => void
   reorderEastRack: (orderedIds: string[]) => void
   resetEastRackOrder: () => void
@@ -352,13 +354,19 @@ export const useMahjStore = create<MahjState>()(
 
       loadHandsSafe: (year) => safeHands(year ?? get().cardYear),
 
-      // Step 1: record difficulty and show the card picker on the mat.
-      requestNewGame(difficulty) {
-        set({
-          difficulty,
-          callTimerMs: callTimerForDifficulty(difficulty),
-          phase: "chooseCard",
-        })
+      // Step 1: show the card + difficulty picker on the mat.
+      requestNewGame() {
+        set({ phase: "chooseCard" })
+      },
+
+      // Difficulty is chosen on the picker; keep the call timer in sync.
+      setDifficulty(difficulty) {
+        set({ difficulty, callTimerMs: callTimerForDifficulty(difficulty) })
+      },
+
+      // Select the card on the picker (persists as the default) without dealing.
+      setCardYear(cardYear) {
+        set({ cardYear })
       },
 
       // Step 2: deal the game with the chosen card (also becomes the next

@@ -13,6 +13,7 @@ import { useDiscardFlight } from "../hooks/useDiscardFlight"
 import { useIsDesktop } from "../hooks/useIsDesktop"
 import { attemptJokerSwap, useJokerSwapUi } from "../store/jokerSwapUi"
 import { CARD_YEARS } from "../game/hands/loader"
+import type { Difficulty } from "../game/types"
 
 export function Board(): React.ReactElement {
   useDiscardFlight()
@@ -33,6 +34,9 @@ export function Board(): React.ReactElement {
   const resumeGame = useMahjStore((s) => s.resumeGame)
   const cardYear = useMahjStore((s) => s.cardYear)
   const startGameWithCard = useMahjStore((s) => s.startGameWithCard)
+  const setCardYear = useMahjStore((s) => s.setCardYear)
+  const difficulty = useMahjStore((s) => s.difficulty)
+  const setDifficulty = useMahjStore((s) => s.setDifficulty)
 
   // Bumped whenever the human clicks somewhere on the board while they still
   // owe a draw — replays the "Draw tile" button's attention shake.
@@ -131,19 +135,58 @@ export function Board(): React.ReactElement {
             marginTop: 6,
           }}
         >
-          {CARD_YEARS.map((y) => (
+          {CARD_YEARS.map((year) => (
             <button
-              key={y}
+              key={year}
               type="button"
-              autoFocus={y === cardYear}
-              className={y === cardYear ? "btn btn-gold" : "btn btn-outline"}
+              className={year === cardYear ? "btn btn-gold" : "btn btn-outline"}
               style={{ padding: "12px 22px", font: "800 15px var(--font-ui)" }}
-              onClick={() => startGameWithCard(y)}
+              onClick={() => setCardYear(year)}
             >
-              {y}
+              {year}
             </button>
           ))}
         </div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 14,
+            marginTop: 6,
+          }}
+        >
+          {["Beginner", "Intermediate", "Expert"].map((level) => (
+            <button
+              key={level}
+              type="button"
+              className={
+                level.toLowerCase() === difficulty
+                  ? "btn btn-gold"
+                  : "btn btn-outline"
+              }
+              style={{ padding: "12px 14px", font: "800 15px var(--font-ui)" }}
+              onClick={() => setDifficulty(level.toLowerCase() as Difficulty)}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          autoFocus
+          className="btn btn-green"
+          style={{
+            marginTop: 6,
+            padding: "15px 52px",
+            font: "800 17px var(--font-ui)",
+            letterSpacing: "0.02em",
+            boxShadow: "0 8px 22px oklch(0.22 0.05 255 / 0.4)",
+          }}
+          onClick={() => startGameWithCard(cardYear)}
+        >
+          Begin →
+        </button>
       </div>
     )
   }
