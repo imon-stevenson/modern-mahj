@@ -238,9 +238,7 @@ function applyCall(
   }
   const t = tilesForCall(kind, tile, state.players[caller].rack)
   const removeIds = new Set(t.fromRack.map((x) => x.id))
-  const newRack = state.players[caller].rack.filter(
-    (x) => !removeIds.has(x.id),
-  )
+  const newRack = state.players[caller].rack.filter((x) => !removeIds.has(x.id))
   const exposure = buildExposure(kind, [tile, ...t.fromRack], tile)
   const nextPlayers: Record<Seat, PlayerState> = {
     ...state.players,
@@ -856,8 +854,26 @@ export const useMahjStore = create<MahjState>()(
       },
     }),
     {
-      name: "mahj-v1",
-      version: 1,
+      name: "mahj",
+      // Bump `version` whenever bot/hand/turn logic changes so a game dealt by an
+      // older build can't resurface with now-invalid state (e.g. bot exposures
+      // that predate the exposure-aware call gate). `migrate` keeps user prefs
+      // but drops the in-progress game, so old saves reload at phase "setup".
+      version: 2,
+      migrate: (persisted, fromVersion) => {
+        const p = (persisted ?? {}) as Partial<MahjState>
+        if (fromVersion >= 2) return p as unknown as MahjState
+        // Older save: keep only the (defined) preferences and drop the
+        // in-progress game, so it reloads at phase "setup". Undefined keys are
+        // omitted so they don't overwrite the initial-state defaults on merge.
+        const prefs: Partial<MahjState> = {}
+        if (p.difficulty !== undefined) prefs.difficulty = p.difficulty
+        if (p.cardYear !== undefined) prefs.cardYear = p.cardYear
+        if (p.botDelayMs !== undefined) prefs.botDelayMs = p.botDelayMs
+        if (p.callTimerMs !== undefined) prefs.callTimerMs = p.callTimerMs
+        if (p.rngSeed !== undefined) prefs.rngSeed = p.rngSeed
+        return prefs as unknown as MahjState
+      },
       // Only persist data fields, not the action closures.
       partialize: (state) => ({
         difficulty: state.difficulty,
