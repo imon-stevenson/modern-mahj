@@ -83,12 +83,22 @@ export function Board(): React.ReactElement {
           background: "var(--felt)",
           borderRadius: "var(--radius-lg)",
           padding: "64px 40px",
-          textAlign: "center",
-          color: "var(--felt-ink-soft)",
-          font: "500 16px var(--font-ui)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "48px",
         }}
       >
-        No game in progress. Start a new game to take your seat at the table.
+        <div
+          style={{
+            color: "var(--felt-ink-soft)",
+            font: "500 16px var(--font-ui)",
+            paddingTop: "24px",
+          }}
+        >
+          No game in progress. Start one from the top bar to take your seat at
+          the table.
+        </div>
       </div>
     )
   }
