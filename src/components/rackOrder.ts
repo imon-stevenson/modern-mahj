@@ -39,6 +39,25 @@ export function defaultRackSort(rack: readonly Tile[]): Tile[] {
   })
 }
 
+// Move `draggedId` to sit adjacent to `targetId` within `ids` (drag-to-reorder).
+// Dragging rightward drops after the target; leftward drops before it. Returns a
+// new array; the input is returned unchanged if either id is missing or equal.
+export function reorderIds(
+  ids: readonly string[],
+  draggedId: string,
+  targetId: string,
+): string[] {
+  if (draggedId === targetId) return [...ids]
+  const from = ids.indexOf(draggedId)
+  const to = ids.indexOf(targetId)
+  if (from < 0 || to < 0) return [...ids]
+  const next = [...ids]
+  next.splice(from, 1)
+  const insertAt = next.indexOf(targetId)
+  next.splice(from < to ? insertAt + 1 : insertAt, 0, draggedId)
+  return next
+}
+
 // Order the rack for display. When `order` is null the default sort is used.
 // Otherwise tiles are laid out following `order`; any tile not present in the
 // list (e.g. a tile just drawn from the wall) is appended, default-sorted,

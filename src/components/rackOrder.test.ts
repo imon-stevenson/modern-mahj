@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { Suit, Tile } from '../game/types'
-import { applyRackOrder, defaultRackSort } from './rackOrder'
+import { applyRackOrder, defaultRackSort, reorderIds } from './rackOrder'
 
 const n = (suit: Suit, rank: number, id: string): Tile =>
   ({ id, kind: 'number', suit, rank: rank as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 })
@@ -87,5 +87,23 @@ describe('applyRackOrder', () => {
       'b1',
       'b3',
     ])
+  })
+})
+
+describe('reorderIds', () => {
+  const ids = ['a', 'b', 'c', 'd']
+
+  it('drops after the target when dragging rightward', () => {
+    expect(reorderIds(ids, 'a', 'c')).toEqual(['b', 'c', 'a', 'd'])
+  })
+
+  it('drops before the target when dragging leftward', () => {
+    expect(reorderIds(ids, 'd', 'b')).toEqual(['a', 'd', 'b', 'c'])
+  })
+
+  it('returns an unchanged copy for same or missing ids', () => {
+    expect(reorderIds(ids, 'b', 'b')).toEqual(ids)
+    expect(reorderIds(ids, 'z', 'b')).toEqual(ids)
+    expect(reorderIds(ids, 'a', 'z')).toEqual(ids)
   })
 })

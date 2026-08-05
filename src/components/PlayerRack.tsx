@@ -1,15 +1,11 @@
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type DragEvent,
-  type ReactNode,
-} from "react"
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import type { PlayerState, Tile } from "../game/types"
 import { TileView } from "./Tile"
 import { ExposureRow } from "./ExposureRow"
-import { applyRackOrder } from "./rackOrder"
+import { applyRackOrder, reorderIds } from "./rackOrder"
+
+// Pointer must move this far before a press becomes a drag (vs a tap/click).
+const DRAG_THRESHOLD_PX = 8
 import { useJokerSwapUi } from "../store/jokerSwapUi"
 
 // Hold + fade duration for the "new tile" highlight — keep in sync with the
@@ -117,36 +113,83 @@ export function PlayerRack({
   const swapShakeIds = useJokerSwapUi((s) => s.shakeIds)
   const swapHiddenIds = useJokerSwapUi((s) => s.hiddenIds)
 
+  // Drag-to-reorder via Pointer Events (works with mouse AND touch, unlike the
+  // HTML5 drag API which never fires on phones). A press becomes a drag only
+  // after moving past a small threshold; otherwise it's a tap and falls through
+  // to the tile's onClick (discard/select).
   const [dragId, setDragId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
+  const [ghost, setGhost] = useState<{ tile: Tile; x: number; y: number } | null>(
+    null,
+  )
+  const dragStart = useRef<{
+    id: string
+    x: number
+    y: number
+    pointerId: number
+    el: HTMLElement
+  } | null>(null)
+  const justDragged = useRef(false)
 
-  const commitDrop = (draggedId: string, targetId: string) => {
-    if (!onReorder || draggedId === targetId) return
-    const ids = ordered.map((t) => t.id)
-    const from = ids.indexOf(draggedId)
-    const to = ids.indexOf(targetId)
-    if (from < 0 || to < 0) return
-    ids.splice(from, 1)
-    const insertAt = ids.indexOf(targetId)
-    ids.splice(from < to ? insertAt + 1 : insertAt, 0, draggedId)
-    onReorder(ids)
-  }
-
-  const onDragStart = (e: DragEvent, id: string) => {
-    setDragId(id)
-    e.dataTransfer.effectAllowed = "move"
-    try {
-      e.dataTransfer.setData("text/plain", id)
-    } catch {
-      /* some browsers restrict setData; dragId state covers us */
+  const onPointerDown = (e: React.PointerEvent, tile: Tile) => {
+    if (!onReorder) return
+    if (e.pointerType === "mouse" && e.button !== 0) return
+    dragStart.current = {
+      id: tile.id,
+      x: e.clientX,
+      y: e.clientY,
+      pointerId: e.pointerId,
+      el: e.currentTarget as HTMLElement,
     }
   }
-  const onDrop = (e: DragEvent, targetId: string) => {
+
+  const onPointerMove = (e: React.PointerEvent, tile: Tile) => {
+    const start = dragStart.current
+    if (!start || start.id !== tile.id) return
+    if (dragId === null) {
+      if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_THRESHOLD_PX)
+        return
+      setDragId(start.id)
+      try {
+        start.el.setPointerCapture(start.pointerId)
+      } catch {
+        /* capture is best-effort */
+      }
+    }
     e.preventDefault()
-    const dragged = e.dataTransfer.getData("text/plain") || dragId
-    if (dragged) commitDrop(dragged, targetId)
+    setGhost({ tile, x: e.clientX, y: e.clientY })
+    const overEl = document
+      .elementFromPoint(e.clientX, e.clientY)
+      ?.closest("[data-tile-id]")
+    const id = overEl?.getAttribute("data-tile-id") ?? null
+    setOverId(id && id !== start.id ? id : null)
+  }
+
+  const endDrag = (commit: boolean) => {
+    const start = dragStart.current
+    if (start && dragId !== null) {
+      if (commit && overId && onReorder) {
+        onReorder(reorderIds(ordered.map((t) => t.id), start.id, overId))
+      }
+      justDragged.current = true // swallow the click that follows a drag
+      try {
+        start.el.releasePointerCapture(start.pointerId)
+      } catch {
+        /* ignore */
+      }
+    }
+    dragStart.current = null
     setDragId(null)
     setOverId(null)
+    setGhost(null)
+  }
+
+  const onRackClickCapture = (e: React.MouseEvent) => {
+    if (justDragged.current) {
+      justDragged.current = false
+      e.stopPropagation()
+      e.preventDefault()
+    }
   }
 
   return (
@@ -248,6 +291,7 @@ export function PlayerRack({
         }}
       >
         <div
+          onClickCapture={onRackClickCapture}
           style={{
             display: "flex",
             gap: 4,
@@ -259,20 +303,10 @@ export function PlayerRack({
             <div
               key={t.id}
               data-tile-id={t.id}
-              draggable
-              onDragStart={(e) => onDragStart(e, t.id)}
-              onDragEnd={() => {
-                setDragId(null)
-                setOverId(null)
-              }}
-              onDragOver={(e) => {
-                e.preventDefault()
-                if (dragId && overId !== t.id) setOverId(t.id)
-              }}
-              onDragLeave={() =>
-                setOverId((cur) => (cur === t.id ? null : cur))
-              }
-              onDrop={(e) => onDrop(e, t.id)}
+              onPointerDown={(e) => onPointerDown(e, t)}
+              onPointerMove={(e) => onPointerMove(e, t)}
+              onPointerUp={() => endDrag(true)}
+              onPointerCancel={() => endDrag(false)}
               style={{
                 cursor: "grab",
                 borderRadius: 9,
@@ -308,6 +342,25 @@ export function PlayerRack({
       </div>
 
       {actionSlot && <div style={{ marginTop: 18 }}>{actionSlot}</div>}
+
+      {/* Floating clone that follows the pointer while dragging a tile — the key
+          affordance on touch, where the finger otherwise covers the tile. */}
+      {ghost && (
+        <div
+          style={{
+            position: "fixed",
+            left: ghost.x,
+            top: ghost.y,
+            transform: "translate(-50%, -120%) rotate(-4deg)",
+            pointerEvents: "none",
+            zIndex: 300,
+            opacity: 0.95,
+            filter: "drop-shadow(0 8px 16px oklch(0.22 0.05 255 / 0.5))",
+          }}
+        >
+          <TileView tile={ghost.tile} width={52} />
+        </div>
+      )}
     </div>
   )
 }
