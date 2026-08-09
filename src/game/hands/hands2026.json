@@ -208,7 +208,7 @@
       "section": "2468",
       "line": 8,
       "description": "FF 246 888 246 888 (Any 2 Suits) — pair flowers, singles 246 + pung 8s (X), singles 246 + pung 8s (Y)",
-      "closed": false,
+      "closed": true,
       "value": 30,
       "groups": [
         { "kind": "pair", "tile": { "kind": "flower" }, "jokersAllowed": false },
