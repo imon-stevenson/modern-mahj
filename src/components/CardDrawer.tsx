@@ -4,7 +4,7 @@ import { HandPattern } from "./HandPattern"
 
 const DRAWER_Z = 30
 
-// "The Card" — a scannable reference of the NMJL hands. Shown as a right-side
+// "The Card"—a scannable reference of the NMJL hands. Shown as a right-side
 // drawer with a pull tab when closed. Its height is bounded to stop above the
 // human's rack (measured from `#seat-east`) so the rack stays visible while the
 // card is open. Per product decision we show the pattern only, never points.

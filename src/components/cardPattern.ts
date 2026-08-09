@@ -30,7 +30,11 @@ export function tileColor(tile: TilePattern): string {
     case "dragon":
       if ("suitVar" in tile) return suitVarColor(tile.suitVar)
       if ("color" in tile)
-        return tile.color === "green" ? GREEN : tile.color === "red" ? RED : NAVY
+        return tile.color === "green"
+          ? GREEN
+          : tile.color === "red"
+            ? RED
+            : NAVY
       return NAVY // any-dragon (dragonVar)
     case "number":
       if ("suitVar" in tile) return suitVarColor(tile.suitVar)
@@ -38,7 +42,7 @@ export function tileColor(tile: TilePattern): string {
   }
 }
 
-// Flatten the hand's groups into one color per tile, in order — this lines up
+// Flatten the hand's groups into one color per tile, in order—this lines up
 // 1:1 with the non-space characters of the tile pattern.
 export function handTileColors(groups: GroupPattern[]): string[] {
   const colors: string[] = []
@@ -55,7 +59,10 @@ export type ColorRun = { text: string; color: string | null }
 // (null), "+"/"=" are navy separators (they don't consume a suit color), and
 // every other character is a tile that consumes the next color from `colors`.
 // Consecutive same-color characters are merged into one run.
-export function patternColorRuns(pattern: string, colors: string[]): ColorRun[] {
+export function patternColorRuns(
+  pattern: string,
+  colors: string[],
+): ColorRun[] {
   const runs: ColorRun[] = []
   let ti = 0
   const push = (ch: string, color: string | null) => {
@@ -72,12 +79,12 @@ export function patternColorRuns(pattern: string, colors: string[]): ColorRun[] 
 }
 
 // Split a description into the tile pattern and its "(… suits)" note, dropping
-// the " — …" explanation half (kept in the JSON, but not shown here).
+// the "—…" explanation half (kept in the JSON, but not shown here).
 export function parseHandPattern(description: string): {
   pattern: string
   note: string
 } {
-  const head = description.split(" — ")[0]!
+  const head = description.split("—")[0]!
   const parenIdx = head.indexOf(" (")
   if (parenIdx < 0) return { pattern: head.trim(), note: "" }
   return {

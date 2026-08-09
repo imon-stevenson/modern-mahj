@@ -108,7 +108,7 @@ export const intermediateBot: BotStrategy = {
   },
   wantsJokerSwap(ctx): JokerSwapOffer | null {
     // Look through every exposure for a joker whose identity we hold as a
-    // natural tile. Take the first one — greedy but reasonable.
+    // natural tile. Take the first one—greedy but reasonable.
     for (const seat of Object.keys(
       ctx.allExposures,
     ) as (keyof typeof ctx.allExposures)[]) {

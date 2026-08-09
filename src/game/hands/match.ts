@@ -359,7 +359,7 @@ function tileIdentityKey(t: Tile): string | null {
 }
 
 // Exact test: can the concealed `rack` (naturals + jokers) exactly fill every
-// group in `groups` — using each rack tile once, no tile left over? This avoids
+// group in `groups`—using each rack tile once, no tile left over? This avoids
 // the old order-dependent greedy fill by allocating per identity:
 //   - naturals of an identity can only serve groups needing that identity,
 //   - each natural must be used (surplus ⇒ leftover ⇒ not a completed hand),
@@ -510,7 +510,7 @@ function rackNaturalFill(rack: Tile[], groups: ConcreteGroup[]): number {
 // How close `rack` + `exposures` are to completing `hand`, as a fraction of the
 // 14 slots, maximized over the variable bindings and exposure→group assignments
 // where the exposures fit. Returns null if the exposures cannot be assigned to
-// this hand under any binding — i.e. the hand is no longer reachable. Used by
+// this hand under any binding—i.e. the hand is no longer reachable. Used by
 // bots to choose calls that stay on a real, still-completable line.
 export function exposureAwareCloseness(
   rack: Tile[],
@@ -574,7 +574,7 @@ export function bestExposureAwareCloseness(
 }
 
 // The tile identities the player's *best still-reachable* hand (given `rack` +
-// `exposures`) still wants — the identity keys (`n:suit:rank` / `w:wind` /
+// `exposures`) still wants—the identity keys (`n:suit:rank` / `w:wind` /
 // `d:color` / `f`) of that hand's unexposed groups under the closeness-maximizing
 // binding/assignment. Returns null if no hand is reachable. Used by bots to keep
 // tiles that advance their committed line instead of only globally-useful ones.
@@ -600,7 +600,12 @@ export function targetHandNeeds(
       for (const n of numberBindings) {
         for (const w of windBindings) {
           for (const d of dragonBindings) {
-            const binding: Binding = { suits: s, numbers: n, winds: w, dragons: d }
+            const binding: Binding = {
+              suits: s,
+              numbers: n,
+              winds: w,
+              dragons: d,
+            }
             const materialized = materializeGroups(hand, binding)
             if (!materialized) continue
             existsExposureAssignment(exposures, materialized, (unused) => {
@@ -624,11 +629,11 @@ export function targetHandNeeds(
   return bestNeeds
 }
 
-// Would some hand — still viable given the player's current `exposures` — need a
+// Would some hand—still viable given the player's current `exposures`—need a
 // `kind` (pung/kong/quint/sextet) of `tile`? Used to gate offering a claim: only
 // when a target hand still reachable with the player's exposures actually calls
 // for that grouping of the discarded tile (so a player never exposes a group no
-// reachable hand can use — which would invalidate their hand).
+// reachable hand can use—which would invalidate their hand).
 export function handsAllowGroupingForTile(
   exposures: Exposure[],
   hands: NMJLHand[],

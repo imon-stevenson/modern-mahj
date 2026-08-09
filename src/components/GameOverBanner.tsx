@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useMahjStore } from "../store"
 
-// Per product decision, the game surfaces only win / loss — never a score or
+// Per product decision, the game surfaces only win / loss—never a score or
 // the specific winning hand.
 export function GameOverBanner(): React.ReactElement | null {
   const phase = useMahjStore((s) => s.phase)
@@ -42,7 +42,7 @@ export function GameOverBanner(): React.ReactElement | null {
   return (
     <div
       className="flex items-center gap-4 bg-paper border border-solid border-hairline rounded-md mb-4 px-[22px] py-[18px]"
-      // Left accent bar color is win/loss/wall dependent — dynamic, stays inline.
+      // Left accent bar color is win/loss/wall dependent—dynamic, stays inline.
       style={{ borderLeftWidth: 6, borderLeftColor: accent }}
     >
       <div>

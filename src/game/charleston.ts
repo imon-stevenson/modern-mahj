@@ -1,29 +1,29 @@
-import type { CharlestonPass, PlayerState, Seat, Tile } from './types'
-import { SEATS } from './types'
+import type { CharlestonPass, PlayerState, Seat, Tile } from "./types"
+import { SEATS } from "./types"
 
 // Seating & turn order per American Mahjong: East → North → West → South
 // (counterclockwise). "Right" during Charleston means the next player in
 // that turn order.
 
 const RIGHT_OF: Record<Seat, Seat> = {
-  east: 'north',
-  north: 'west',
-  west: 'south',
-  south: 'east',
+  east: "north",
+  north: "west",
+  west: "south",
+  south: "east",
 }
 
 const LEFT_OF: Record<Seat, Seat> = {
-  east: 'south',
-  south: 'west',
-  west: 'north',
-  north: 'east',
+  east: "south",
+  south: "west",
+  west: "north",
+  north: "east",
 }
 
 const ACROSS_OF: Record<Seat, Seat> = {
-  east: 'west',
-  west: 'east',
-  north: 'south',
-  south: 'north',
+  east: "west",
+  west: "east",
+  north: "south",
+  south: "north",
 }
 
 export function rightOf(seat: Seat): Seat {
@@ -36,16 +36,16 @@ export function acrossFrom(seat: Seat): Seat {
   return ACROSS_OF[seat]
 }
 
-export type Direction = 'right' | 'across' | 'left'
+export type Direction = "right" | "across" | "left"
 
 const PASS_DIRECTION: Record<CharlestonPass, Direction> = {
-  firstRight: 'right',
-  firstAcross: 'across',
-  firstLeft: 'left',
-  secondLeft: 'left',
-  secondAcross: 'across',
-  secondRight: 'right',
-  courtesy: 'across',
+  firstRight: "right",
+  firstAcross: "across",
+  firstLeft: "left",
+  secondLeft: "left",
+  secondAcross: "across",
+  secondRight: "right",
+  courtesy: "across",
 }
 
 export function passDirection(pass: CharlestonPass): Direction {
@@ -54,19 +54,19 @@ export function passDirection(pass: CharlestonPass): Direction {
 
 export function passTarget(seat: Seat, pass: CharlestonPass): Seat {
   const dir = passDirection(pass)
-  if (dir === 'right') return rightOf(seat)
-  if (dir === 'left') return leftOf(seat)
+  if (dir === "right") return rightOf(seat)
+  if (dir === "left") return leftOf(seat)
   return acrossFrom(seat)
 }
 
 export const CHARLESTON_ORDER: readonly CharlestonPass[] = [
-  'firstRight',
-  'firstAcross',
-  'firstLeft',
-  'secondLeft',
-  'secondAcross',
-  'secondRight',
-  'courtesy',
+  "firstRight",
+  "firstAcross",
+  "firstLeft",
+  "secondLeft",
+  "secondAcross",
+  "secondRight",
+  "courtesy",
 ] as const
 
 export function nextPass(pass: CharlestonPass): CharlestonPass | null {
@@ -77,13 +77,13 @@ export function nextPass(pass: CharlestonPass): CharlestonPass | null {
 
 // Given every seat's selection of tiles, produce updated racks. Selections
 // are validated to have the expected size (3 for non-courtesy; each seat may
-// pass 0..3 for courtesy — the pair's agreed count is enforced upstream).
+// pass 0..3 for courtesy—the pair's agreed count is enforced upstream).
 export function applyPass(
   players: Record<Seat, PlayerState>,
   pass: CharlestonPass,
   selections: Record<Seat, Tile[]>,
 ): Record<Seat, PlayerState> {
-  const expected = pass === 'courtesy' ? null : 3
+  const expected = pass === "courtesy" ? null : 3
   if (expected !== null) {
     for (const seat of SEATS) {
       if (selections[seat].length !== expected) {
@@ -99,7 +99,9 @@ export function applyPass(
     const rackIds = new Set(players[seat].rack.map((t) => t.id))
     for (const t of selections[seat]) {
       if (!rackIds.has(t.id)) {
-        throw new Error(`charleston ${pass}: ${seat} does not hold tile ${t.id}`)
+        throw new Error(
+          `charleston ${pass}: ${seat} does not hold tile ${t.id}`,
+        )
       }
     }
   }

@@ -5,7 +5,7 @@
       "id": "2026-1",
       "section": "2026",
       "line": 1,
-      "description": "222 000 2222 6666 (Any 2 Suits) — pung 2s (X), pung soaps, kong 2s (Y), kong 6s (Y)",
+      "description": "222 000 2222 6666 (Any 2 Suits)—pung 2s (X), pung soaps, kong 2s (Y), kong 6s (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -20,7 +20,7 @@
       "id": "2026-2",
       "section": "2026",
       "line": 2,
-      "description": "2026 DDD 2222 DDD (Any 2 Suits w Matching Dragons, Kong 2s or 6s) — singles 2026 (X), pung dragon matching X, kong 2s-or-6s (Y), pung dragon matching Y",
+      "description": "2026 DDD 2222 DDD (Any 2 Suits w Matching Dragons, Kong 2s or 6s)—singles 2026 (X), pung dragon matching X, kong 2s-or-6s (Y), pung dragon matching Y",
       "closed": false,
       "value": 25,
       "groups": [
@@ -39,7 +39,7 @@
       "id": "2026-3",
       "section": "2026",
       "line": 3,
-      "description": "FFF 2026 222 6666 (Any 3 Suits) — pung flowers, singles 2026 (X), pung 2s (Y), kong 6s (Z)",
+      "description": "FFF 2026 222 6666 (Any 3 Suits)—pung flowers, singles 2026 (X), pung 2s (Y), kong 6s (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -57,7 +57,7 @@
       "id": "2026-4",
       "section": "2026",
       "line": 4,
-      "description": "22 00 222 666 NEWS (Any 2 Suits) — pair 2s (X), pair soaps, pung 2s (Y), pung 6s (Y), singles NEWS",
+      "description": "22 00 222 666 NEWS (Any 2 Suits)—pair 2s (X), pair soaps, pung 2s (Y), pung 6s (Y), singles NEWS",
       "closed": false,
       "value": 30,
       "groups": [
@@ -77,7 +77,7 @@
       "id": "2468-1a",
       "section": "2468",
       "line": 1,
-      "description": "222 444 6666 8888 (Any 1 or 2 Suits) — variant A: all one suit (X)",
+      "description": "222 444 6666 8888 (Any 1 or 2 Suits)—variant A: all one suit (X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -91,7 +91,7 @@
       "id": "2468-1b",
       "section": "2468",
       "line": 1,
-      "description": "222 444 6666 8888 (Any 1 or 2 Suits) — variant B: 2s & 4s (X), 6s & 8s (Y)",
+      "description": "222 444 6666 8888 (Any 1 or 2 Suits)—variant B: 2s & 4s (X), 6s & 8s (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -106,7 +106,7 @@
       "id": "2468-2",
       "section": "2468",
       "line": 2,
-      "description": "FF 2222 44 66 8888 (Any 2 Suits) — pair flowers, kong 2s (X), pair 4s (Y), pair 6s (Y), kong 8s (X)",
+      "description": "FF 2222 44 66 8888 (Any 2 Suits)—pair flowers, kong 2s (X), pair 4s (Y), pair 6s (Y), kong 8s (X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -122,7 +122,7 @@
       "id": "2468-3",
       "section": "2468",
       "line": 3,
-      "description": "EE 22 444 666 88 WW (Any 1 Suit, East and West Only) — pair East, pair 2s (X), pung 4s (X), pung 6s (X), pair 8s (X), pair West",
+      "description": "EE 22 444 666 88 WW (Any 1 Suit, East and West Only)—pair East, pair 2s (X), pung 4s (X), pung 6s (X), pair 8s (X), pair West",
       "closed": false,
       "value": 30,
       "groups": [
@@ -138,7 +138,7 @@
       "id": "2468-4",
       "section": "2468",
       "line": 4,
-      "description": "2222 DDD 8888 DDD (Any 2 Suits w Matching Dragons, These Nos. Only) — kong 2s (X), pung dragon matching X, kong 8s (Y), pung dragon matching Y",
+      "description": "2222 DDD 8888 DDD (Any 2 Suits w Matching Dragons, These Nos. Only)—kong 2s (X), pung dragon matching X, kong 8s (Y), pung dragon matching Y",
       "closed": false,
       "value": 30,
       "groups": [
@@ -153,7 +153,7 @@
       "id": "2468-5",
       "section": "2468",
       "line": 5,
-      "description": "FFF 22 44 666 8888 (Any 1 Suit) — pung flowers, pair 2s (X), pair 4s (X), pung 6s (X), kong 8s (X)",
+      "description": "FFF 22 44 666 8888 (Any 1 Suit)—pung flowers, pair 2s (X), pair 4s (X), pung 6s (X), kong 8s (X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -168,7 +168,7 @@
       "id": "2468-6",
       "section": "2468",
       "line": 6,
-      "description": "2468 2222 D 2222 D (Any 3 Suits, Like Kongs 2/4/6/8 w Matching Dragon) — singles 2468 (X), kong N (Y), dragon matching Y, kong N (Z), dragon matching Z",
+      "description": "2468 2222 D 2222 D (Any 3 Suits, Like Kongs 2/4/6/8 w Matching Dragon)—singles 2468 (X), kong N (Y), dragon matching Y, kong N (Z), dragon matching Z",
       "closed": false,
       "value": 25,
       "groups": [
@@ -188,7 +188,7 @@
       "id": "2468-7",
       "section": "2468",
       "line": 7,
-      "description": "FFF 2468 FFF 2222 (Any 2 Suits, Kong 2/4/6/8) — pung flowers, singles 2468 (X), pung flowers, kong N (Y)",
+      "description": "FFF 2468 FFF 2222 (Any 2 Suits, Kong 2/4/6/8)—pung flowers, singles 2468 (X), pung flowers, kong N (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -207,7 +207,7 @@
       "id": "2468-8",
       "section": "2468",
       "line": 8,
-      "description": "FF 246 888 246 888 (Any 2 Suits) — pair flowers, singles 246 + pung 8s (X), singles 246 + pung 8s (Y)",
+      "description": "FF 246 888 246 888 (Any 2 Suits)—pair flowers, singles 246 + pung 8s (X), singles 246 + pung 8s (Y)",
       "closed": true,
       "value": 30,
       "groups": [
@@ -228,7 +228,7 @@
       "id": "any-like-1",
       "section": "Any Like Numbers",
       "line": 1,
-      "description": "1111 FFFFFF 1111 (Any 2 Suits, Any Like No.) — kong N (X), sextet flowers, kong N (Y); same number, different suits",
+      "description": "1111 FFFFFF 1111 (Any 2 Suits, Any Like No.)—kong N (X), sextet flowers, kong N (Y); same number, different suits",
       "closed": false,
       "value": 30,
       "groups": [
@@ -243,7 +243,7 @@
       "id": "any-like-2",
       "section": "Any Like Numbers",
       "line": 2,
-      "description": "1111 D 111 D 1111 D (Any 3 Suits w Matching Dragons, Any Like No.) — kong N (X)+D(X), pung N (Y)+D(Y), kong N (Z)+D(Z); same number",
+      "description": "1111 D 111 D 1111 D (Any 3 Suits w Matching Dragons, Any Like No.)—kong N (X)+D(X), pung N (Y)+D(Y), kong N (Z)+D(Z); same number",
       "closed": false,
       "value": 25,
       "groups": [
@@ -261,7 +261,7 @@
       "id": "any-like-3",
       "section": "Any Like Numbers",
       "line": 3,
-      "description": "FF 1111 11 1111 DD (Any 3 Suits w Any Dragon, Any Like No.) — pair flowers, kong N (X), pair N (Y), kong N (Z), pair dragon matching X; same number across 3 suits",
+      "description": "FF 1111 11 1111 DD (Any 3 Suits w Any Dragon, Any Like No.)—pair flowers, kong N (X), pair N (Y), kong N (Z), pair dragon matching X; same number across 3 suits",
       "closed": false,
       "value": 25,
       "groups": [
@@ -279,7 +279,7 @@
       "id": "quints-1",
       "section": "Quints",
       "line": 1,
-      "description": "11111 1111 11111 (Any 3 Suits, Any Like Nos.) — quint N (X), kong N (Y), quint N (Z); same number, different suits",
+      "description": "11111 1111 11111 (Any 3 Suits, Any Like Nos.)—quint N (X), kong N (Y), quint N (Z); same number, different suits",
       "closed": false,
       "value": 40,
       "groups": [
@@ -294,7 +294,7 @@
       "id": "quints-2",
       "section": "Quints",
       "line": 2,
-      "description": "FF 11111 22 33333 (Any 1 Suit, Any 3 Consec. Nos.) — pair flowers, quint N (X), pair N+1 (X), quint N+2 (X)",
+      "description": "FF 11111 22 33333 (Any 1 Suit, Any 3 Consec. Nos.)—pair flowers, quint N (X), pair N+1 (X), quint N+2 (X)",
       "closed": false,
       "value": 45,
       "groups": [
@@ -309,7 +309,7 @@
       "id": "quints-3",
       "section": "Quints",
       "line": 3,
-      "description": "11111 44444 DDDD (Any 2 Nos. in Any 2 Suits) — quint N (X), quint M (X) two different numbers same suit, kong dragon matching Y (X≠Y)",
+      "description": "11111 44444 DDDD (Any 2 Nos. in Any 2 Suits)—quint N (X), quint M (X) two different numbers same suit, kong dragon matching Y (X≠Y)",
       "closed": false,
       "value": 40,
       "groups": [
@@ -324,7 +324,7 @@
       "id": "consec-1a",
       "section": "Consecutive Run",
       "line": 1,
-      "description": "11 222 33 444 5555 (Any 1 Suit, These Nos. Only) — variant 1-5: pair 1, pung 2, pair 3, pung 4, kong 5",
+      "description": "11 222 33 444 5555 (Any 1 Suit, These Nos. Only)—variant 1-5: pair 1, pung 2, pair 3, pung 4, kong 5",
       "closed": false,
       "value": 25,
       "groups": [
@@ -339,7 +339,7 @@
       "id": "consec-1b",
       "section": "Consecutive Run",
       "line": 1,
-      "description": "55 666 77 888 9999 (Any 1 Suit, These Nos. Only) — variant 5-9: pair 5, pung 6, pair 7, pung 8, kong 9",
+      "description": "55 666 77 888 9999 (Any 1 Suit, These Nos. Only)—variant 5-9: pair 5, pung 6, pair 7, pung 8, kong 9",
       "closed": false,
       "value": 25,
       "groups": [
@@ -354,7 +354,7 @@
       "id": "consec-2a",
       "section": "Consecutive Run",
       "line": 2,
-      "description": "FFF 1111 234 5555 (Any 1 or 2 Suits, Any 5 Consec. Nos.) — variant 1 suit: pung flowers, kong N, singles N+1/N+2/N+3, kong N+4 (all X)",
+      "description": "FFF 1111 234 5555 (Any 1 or 2 Suits, Any 5 Consec. Nos.)—variant 1 suit: pung flowers, kong N, singles N+1/N+2/N+3, kong N+4 (all X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -371,7 +371,7 @@
       "id": "consec-2b",
       "section": "Consecutive Run",
       "line": 2,
-      "description": "FFF 1111 234 5555 (Any 1 or 2 Suits, Any 5 Consec. Nos.) — variant 2 suits: kongs N & N+4 (X), run N+1/N+2/N+3 (Y)",
+      "description": "FFF 1111 234 5555 (Any 1 or 2 Suits, Any 5 Consec. Nos.)—variant 2 suits: kongs N & N+4 (X), run N+1/N+2/N+3 (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -389,7 +389,7 @@
       "id": "consec-3",
       "section": "Consecutive Run",
       "line": 3,
-      "description": "11 22 111 222 3333 (Any 3 Suits, Any 3 Consec. Nos.) — pairs N & N+1 (X), pungs N & N+1 (Y), kong N+2 (Z)",
+      "description": "11 22 111 222 3333 (Any 3 Suits, Any 3 Consec. Nos.)—pairs N & N+1 (X), pungs N & N+1 (Y), kong N+2 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -406,7 +406,7 @@
       "id": "consec-4a",
       "section": "Consecutive Run",
       "line": 4,
-      "description": "111 222 3333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant 1 suit: pung N, pung N+1, kong N+2, kong N+3 (all X)",
+      "description": "111 222 3333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.)—variant 1 suit: pung N, pung N+1, kong N+2, kong N+3 (all X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -421,7 +421,7 @@
       "id": "consec-4b",
       "section": "Consecutive Run",
       "line": 4,
-      "description": "111 222 3333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.) — variant 2 suits: pungs N & N+1 (X), kongs N+2 & N+3 (Y)",
+      "description": "111 222 3333 4444 (Any 1 or 2 Suits, Any 4 Consec. Nos.)—variant 2 suits: pungs N & N+1 (X), kongs N+2 & N+3 (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -437,7 +437,7 @@
       "id": "consec-5a",
       "section": "Consecutive Run",
       "line": 5,
-      "description": "FFF 11 22 333 DDDD (Any 1 or 2 Suits, Any Run, Ds Match Middle No.) — variant 1 suit: pung flowers, pair N, pair N+1, pung N+2, kong dragon matching X",
+      "description": "FFF 11 22 333 DDDD (Any 1 or 2 Suits, Any Run, Ds Match Middle No.)—variant 1 suit: pung flowers, pair N, pair N+1, pung N+2, kong dragon matching X",
       "closed": false,
       "value": 25,
       "groups": [
@@ -453,7 +453,7 @@
       "id": "consec-5b",
       "section": "Consecutive Run",
       "line": 5,
-      "description": "FFF 11 22 333 DDDD (Any 1 or 2 Suits, Any Run, Ds Match Middle No.) — variant 2 suits: pair N (X), pair N+1 (Y), pung N+2 (X), kong dragon matching Y (the middle number)",
+      "description": "FFF 11 22 333 DDDD (Any 1 or 2 Suits, Any Run, Ds Match Middle No.)—variant 2 suits: pair N (X), pair N+1 (Y), pung N+2 (X), kong dragon matching Y (the middle number)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -470,7 +470,7 @@
       "id": "consec-6",
       "section": "Consecutive Run",
       "line": 6,
-      "description": "1111 FFFFFF 2222 (Any 1 Suit, Any 2 Consec. Nos.) — kong N, sextet flowers, kong N+1 (all X)",
+      "description": "1111 FFFFFF 2222 (Any 1 Suit, Any 2 Consec. Nos.)—kong N, sextet flowers, kong N+1 (all X)",
       "closed": false,
       "value": 30,
       "groups": [
@@ -484,7 +484,7 @@
       "id": "consec-7a",
       "section": "Consecutive Run",
       "line": 7,
-      "description": "FF 1111 2222 3333 (Any 1 or 3 Suits, Any 3 Consec. Nos.) — variant 1 suit: pair flowers, kong N, kong N+1, kong N+2 (all X)",
+      "description": "FF 1111 2222 3333 (Any 1 or 3 Suits, Any 3 Consec. Nos.)—variant 1 suit: pair flowers, kong N, kong N+1, kong N+2 (all X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -499,7 +499,7 @@
       "id": "consec-7b",
       "section": "Consecutive Run",
       "line": 7,
-      "description": "FF 1111 2222 3333 (Any 1 or 3 Suits, Any 3 Consec. Nos.) — variant 3 suits: kong N (X), kong N+1 (Y), kong N+2 (Z)",
+      "description": "FF 1111 2222 3333 (Any 1 or 3 Suits, Any 3 Consec. Nos.)—variant 3 suits: kong N (X), kong N+1 (Y), kong N+2 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -515,7 +515,7 @@
       "id": "consec-8",
       "section": "Consecutive Run",
       "line": 8,
-      "description": "1 22 333 1 22 333 44 (Any 3 Suits, Any 4 Consec. Nos.) — closed. single N/pair N+1/pung N+2 (X), same (Y), pair N+3 (Z)",
+      "description": "1 22 333 1 22 333 44 (Any 3 Suits, Any 4 Consec. Nos.)—closed. single N/pair N+1/pung N+2 (X), same (Y), pair N+3 (Z)",
       "closed": true,
       "value": 35,
       "groups": [
@@ -535,7 +535,7 @@
       "id": "13579-1a",
       "section": "13579",
       "line": 1,
-      "description": "11 333 55 777 9999 (Any 1 or 3 Suits) — variant 1 suit: pair 1, pung 3, pair 5, pung 7, kong 9 (all X)",
+      "description": "11 333 55 777 9999 (Any 1 or 3 Suits)—variant 1 suit: pair 1, pung 3, pair 5, pung 7, kong 9 (all X)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -550,7 +550,7 @@
       "id": "13579-1b",
       "section": "13579",
       "line": 1,
-      "description": "11 333 55 777 9999 (Any 1 or 3 Suits) — variant 3 suits: 1s & 9s (X), 3s (Y), 5s & 7s (Z)",
+      "description": "11 333 55 777 9999 (Any 1 or 3 Suits)—variant 3 suits: 1s & 9s (X), 3s (Y), 5s & 7s (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -566,7 +566,7 @@
       "id": "13579-2a",
       "section": "13579",
       "line": 2,
-      "description": "111 333 3333 5555 (Any 2 Suits) — pung 1, pung 3 (X), kong 3, kong 5 (Y)",
+      "description": "111 333 3333 5555 (Any 2 Suits)—pung 1, pung 3 (X), kong 3, kong 5 (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -581,7 +581,7 @@
       "id": "13579-2b",
       "section": "13579",
       "line": 2,
-      "description": "555 777 7777 9999 (Any 2 Suits) — pung 5, pung 7 (X), kong 7, kong 9 (Y)",
+      "description": "555 777 7777 9999 (Any 2 Suits)—pung 5, pung 7 (X), kong 7, kong 9 (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -596,7 +596,7 @@
       "id": "13579-3a",
       "section": "13579",
       "line": 3,
-      "description": "NN 1111 33 5555 SS (Any 1 Suit, North and South Only) — pair North, kong 1, pair 3, kong 5 (X), pair South",
+      "description": "NN 1111 33 5555 SS (Any 1 Suit, North and South Only)—pair North, kong 1, pair 3, kong 5 (X), pair South",
       "closed": false,
       "value": 30,
       "groups": [
@@ -611,7 +611,7 @@
       "id": "13579-3b",
       "section": "13579",
       "line": 3,
-      "description": "NN 5555 77 9999 SS (Any 1 Suit, North and South Only) — pair North, kong 5, pair 7, kong 9 (X), pair South",
+      "description": "NN 5555 77 9999 SS (Any 1 Suit, North and South Only)—pair North, kong 5, pair 7, kong 9 (X), pair South",
       "closed": false,
       "value": 30,
       "groups": [
@@ -626,7 +626,7 @@
       "id": "13579-4a",
       "section": "13579",
       "line": 4,
-      "description": "11 3 5 7 9 1111 1111 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair) — featured odd 1: pair 1 + singles 3/5/7/9 (X), kong 1 (Y), kong 1 (Z)",
+      "description": "11 3 5 7 9 1111 1111 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair)—featured odd 1: pair 1 + singles 3/5/7/9 (X), kong 1 (Y), kong 1 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -644,7 +644,7 @@
       "id": "13579-4b",
       "section": "13579",
       "line": 4,
-      "description": "1 33 5 7 9 3333 3333 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair) — featured odd 3: pair 3 + singles 1/5/7/9 (X), kong 3 (Y), kong 3 (Z)",
+      "description": "1 33 5 7 9 3333 3333 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair)—featured odd 3: pair 3 + singles 1/5/7/9 (X), kong 3 (Y), kong 3 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -662,7 +662,7 @@
       "id": "13579-4c",
       "section": "13579",
       "line": 4,
-      "description": "1 3 55 7 9 5555 5555 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair) — featured odd 5: pair 5 + singles 1/3/7/9 (X), kong 5 (Y), kong 5 (Z)",
+      "description": "1 3 55 7 9 5555 5555 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair)—featured odd 5: pair 5 + singles 1/3/7/9 (X), kong 5 (Y), kong 5 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -680,7 +680,7 @@
       "id": "13579-4d",
       "section": "13579",
       "line": 4,
-      "description": "1 3 5 77 9 7777 7777 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair) — featured odd 7: pair 7 + singles 1/3/5/9 (X), kong 7 (Y), kong 7 (Z)",
+      "description": "1 3 5 77 9 7777 7777 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair)—featured odd 7: pair 7 + singles 1/3/5/9 (X), kong 7 (Y), kong 7 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -698,7 +698,7 @@
       "id": "13579-4e",
       "section": "13579",
       "line": 4,
-      "description": "1 3 5 7 99 9999 9999 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair) — featured odd 9: pair 9 + singles 1/3/5/7 (X), kong 9 (Y), kong 9 (Z)",
+      "description": "1 3 5 7 99 9999 9999 (Any 3 Suits, Pair Any Odd No., Kongs Match Pair)—featured odd 9: pair 9 + singles 1/3/5/7 (X), kong 9 (Y), kong 9 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -716,7 +716,7 @@
       "id": "13579-5a",
       "section": "13579",
       "line": 5,
-      "description": "FFF 11 33 555 DDDD (Any 1 Suit w Matching Dragon) — pung flowers, pair 1, pair 3, pung 5 (X), kong dragon matching X",
+      "description": "FFF 11 33 555 DDDD (Any 1 Suit w Matching Dragon)—pung flowers, pair 1, pair 3, pung 5 (X), kong dragon matching X",
       "closed": false,
       "value": 25,
       "groups": [
@@ -731,7 +731,7 @@
       "id": "13579-5b",
       "section": "13579",
       "line": 5,
-      "description": "FFF 55 77 999 DDDD (Any 1 Suit w Matching Dragon) — pung flowers, pair 5, pair 7, pung 9 (X), kong dragon matching X",
+      "description": "FFF 55 77 999 DDDD (Any 1 Suit w Matching Dragon)—pung flowers, pair 5, pair 7, pung 9 (X), kong dragon matching X",
       "closed": false,
       "value": 25,
       "groups": [
@@ -746,7 +746,7 @@
       "id": "13579-6a",
       "section": "13579",
       "line": 6,
-      "description": "11 33 111 333 5555 (Any 3 Suits) — pairs 1 & 3 (X), pungs 1 & 3 (Y), kong 5 (Z)",
+      "description": "11 33 111 333 5555 (Any 3 Suits)—pairs 1 & 3 (X), pungs 1 & 3 (Y), kong 5 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -762,7 +762,7 @@
       "id": "13579-6b",
       "section": "13579",
       "line": 6,
-      "description": "55 77 555 777 9999 (Any 3 Suits) — pairs 5 & 7 (X), pungs 5 & 7 (Y), kong 9 (Z)",
+      "description": "55 77 555 777 9999 (Any 3 Suits)—pairs 5 & 7 (X), pungs 5 & 7 (Y), kong 9 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -778,7 +778,7 @@
       "id": "13579-7a",
       "section": "13579",
       "line": 7,
-      "description": "1111 33 55 77 9999 (Any 1 or 2 Suits) — variant 1 suit: kong 1, pair 3, pair 5, pair 7, kong 9 (all X)",
+      "description": "1111 33 55 77 9999 (Any 1 or 2 Suits)—variant 1 suit: kong 1, pair 3, pair 5, pair 7, kong 9 (all X)",
       "closed": false,
       "value": 30,
       "groups": [
@@ -793,7 +793,7 @@
       "id": "13579-7b",
       "section": "13579",
       "line": 7,
-      "description": "1111 33 55 77 9999 (Any 1 or 2 Suits) — variant 2 suits: kongs 1 & 9 (X), pairs 3/5/7 (Y)",
+      "description": "1111 33 55 77 9999 (Any 1 or 2 Suits)—variant 2 suits: kongs 1 & 9 (X), pairs 3/5/7 (Y)",
       "closed": false,
       "value": 30,
       "groups": [
@@ -809,7 +809,7 @@
       "id": "13579-8a",
       "section": "13579",
       "line": 8,
-      "description": "FF 11 33 55 111 111 (Any 3 Suits, These Nos. Only) — closed. pairs 1/3/5 (X), pung 1 (Y), pung 1 (Z)",
+      "description": "FF 11 33 55 111 111 (Any 3 Suits, These Nos. Only)—closed. pairs 1/3/5 (X), pung 1 (Y), pung 1 (Z)",
       "closed": true,
       "value": 35,
       "groups": [
@@ -826,7 +826,7 @@
       "id": "13579-8b",
       "section": "13579",
       "line": 8,
-      "description": "FF 55 77 99 555 555 (Any 3 Suits, These Nos. Only) — closed. pairs 5/7/9 (X), pung 5 (Y), pung 5 (Z)",
+      "description": "FF 55 77 99 555 555 (Any 3 Suits, These Nos. Only)—closed. pairs 5/7/9 (X), pung 5 (Y), pung 5 (Z)",
       "closed": true,
       "value": 35,
       "groups": [
@@ -843,7 +843,7 @@
       "id": "13579-9",
       "section": "13579",
       "line": 9,
-      "description": "FF 135 777 999 DDD (Any 1 Suit w Opp. Dragon) — closed. pair flowers, singles 1/3/5, pung 7, pung 9 (X), pung dragon opposite (matches Y, X≠Y)",
+      "description": "FF 135 777 999 DDD (Any 1 Suit w Opp. Dragon)—closed. pair flowers, singles 1/3/5, pung 7, pung 9 (X), pung dragon opposite (matches Y, X≠Y)",
       "closed": true,
       "value": 30,
       "groups": [
@@ -862,7 +862,7 @@
       "id": "winds-dragons-1a",
       "section": "Winds - Dragons",
       "line": 1,
-      "description": "NNNN EEE WWW SSSS — variant A: kong N, pung E, pung W, kong S",
+      "description": "NNNN EEE WWW SSSS—variant A: kong N, pung E, pung W, kong S",
       "closed": false,
       "value": 25,
       "groups": [
@@ -876,7 +876,7 @@
       "id": "winds-dragons-1b",
       "section": "Winds - Dragons",
       "line": 1,
-      "description": "NNN EEEE WWWW SSS — variant B: pung N, kong E, kong W, pung S",
+      "description": "NNN EEEE WWWW SSS—variant B: pung N, kong E, kong W, pung S",
       "closed": false,
       "value": 25,
       "groups": [
@@ -890,7 +890,7 @@
       "id": "winds-dragons-2",
       "section": "Winds - Dragons",
       "line": 2,
-      "description": "1234 DDD DDD DDDD (Any 4 Consec. Nos. in Any 1 Suit, Any 3 Dragons) — singles N..N+3 (X), pung green, pung red, kong white",
+      "description": "1234 DDD DDD DDDD (Any 4 Consec. Nos. in Any 1 Suit, Any 3 Dragons)—singles N..N+3 (X), pung green, pung red, kong white",
       "closed": false,
       "value": 25,
       "groups": [
@@ -908,7 +908,7 @@
       "id": "winds-dragons-3",
       "section": "Winds - Dragons",
       "line": 3,
-      "description": "NNN 1111 1111 SSS (Any Like Odd Nos. in Any 2 Suits) — pung N-wind, kong M (X), kong M (Y), pung S-wind; same odd number",
+      "description": "NNN 1111 1111 SSS (Any Like Odd Nos. in Any 2 Suits)—pung N-wind, kong M (X), kong M (Y), pung S-wind; same odd number",
       "closed": false,
       "value": 25,
       "groups": [
@@ -924,7 +924,7 @@
       "id": "winds-dragons-4",
       "section": "Winds - Dragons",
       "line": 4,
-      "description": "EEE 2222 2222 WWW (Any Like Even Nos. in Any 2 Suits) — pung E-wind, kong M (X), kong M (Y), pung W-wind; same even number",
+      "description": "EEE 2222 2222 WWW (Any Like Even Nos. in Any 2 Suits)—pung E-wind, kong M (X), kong M (Y), pung W-wind; same even number",
       "closed": false,
       "value": 25,
       "groups": [
@@ -940,7 +940,7 @@
       "id": "winds-dragons-5",
       "section": "Winds - Dragons",
       "line": 5,
-      "description": "FFF NNNN FFF DDDD (Any Wind, Any Dragon) — pung flowers, kong any wind, pung flowers, kong any dragon",
+      "description": "FFF NNNN FFF DDDD (Any Wind, Any Dragon)—pung flowers, kong any wind, pung flowers, kong any dragon",
       "closed": false,
       "value": 25,
       "groups": [
@@ -954,7 +954,7 @@
       "id": "winds-dragons-6",
       "section": "Winds - Dragons",
       "line": 6,
-      "description": "1 N 2 EE 3 WWW 4 SSSS (Any 1 Suit, These Nos. Only) — single 1 (X), single N-wind, single 2 (X), pair E-wind, single 3 (X), pung W-wind, single 4 (X), kong S-wind",
+      "description": "1 N 2 EE 3 WWW 4 SSSS (Any 1 Suit, These Nos. Only)—single 1 (X), single N-wind, single 2 (X), pair E-wind, single 3 (X), pung W-wind, single 4 (X), kong S-wind",
       "closed": false,
       "value": 25,
       "groups": [
@@ -972,7 +972,7 @@
       "id": "winds-dragons-7a",
       "section": "Winds - Dragons",
       "line": 7,
-      "description": "FF NNNN SSSS DD DD (Any 2 Dragons) — pair flowers, kong N-wind, kong S-wind, pair dragon (X), pair dragon (Y); two different dragons",
+      "description": "FF NNNN SSSS DD DD (Any 2 Dragons)—pair flowers, kong N-wind, kong S-wind, pair dragon (X), pair dragon (Y); two different dragons",
       "closed": false,
       "value": 25,
       "groups": [
@@ -988,7 +988,7 @@
       "id": "winds-dragons-7b",
       "section": "Winds - Dragons",
       "line": 7,
-      "description": "FF EEEE WWWW DD DD (Any 2 Dragons) — pair flowers, kong E-wind, kong W-wind, pair dragon (X), pair dragon (Y); two different dragons",
+      "description": "FF EEEE WWWW DD DD (Any 2 Dragons)—pair flowers, kong E-wind, kong W-wind, pair dragon (X), pair dragon (Y); two different dragons",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1004,7 +1004,7 @@
       "id": "winds-dragons-8",
       "section": "Winds - Dragons",
       "line": 8,
-      "description": "NN EEE 2026 WWW SS (2026 Any 1 Suit) — closed. pair N-wind, pung E-wind, singles 2/soap/2/6 (X), pung W-wind, pair S-wind",
+      "description": "NN EEE 2026 WWW SS (2026 Any 1 Suit)—closed. pair N-wind, pung E-wind, singles 2/soap/2/6 (X), pung W-wind, pair S-wind",
       "closed": true,
       "value": 30,
       "groups": [
@@ -1023,7 +1023,7 @@
       "id": "369-1a",
       "section": "369",
       "line": 1,
-      "description": "333 666 6666 9999 (Any 2 or 3 Suits) — variant 2 suits: pung 3, pung 6 (X), kong 6, kong 9 (Y)",
+      "description": "333 666 6666 9999 (Any 2 or 3 Suits)—variant 2 suits: pung 3, pung 6 (X), kong 6, kong 9 (Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1038,7 +1038,7 @@
       "id": "369-1b",
       "section": "369",
       "line": 1,
-      "description": "333 666 6666 9999 (Any 2 or 3 Suits) — variant 3 suits: pung 3, pung 6 (X), kong 6 (Y), kong 9 (Z)",
+      "description": "333 666 6666 9999 (Any 2 or 3 Suits)—variant 3 suits: pung 3, pung 6 (X), kong 6 (Y), kong 9 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1053,7 +1053,7 @@
       "id": "369-2",
       "section": "369",
       "line": 2,
-      "description": "33 66 333 666 9999 (Any 3 Suits) — pairs 3 & 6 (X), pungs 3 & 6 (Y), kong 9 (Z)",
+      "description": "33 66 333 666 9999 (Any 3 Suits)—pairs 3 & 6 (X), pungs 3 & 6 (Y), kong 9 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1069,7 +1069,7 @@
       "id": "369-3a",
       "section": "369",
       "line": 3,
-      "description": "FFF 33 666 99 DDDD (Any 1 Suit w Matching Dragon) — pung flowers, pair 3, pung 6, pair 9 (X), kong dragon matching X",
+      "description": "FFF 33 666 99 DDDD (Any 1 Suit w Matching Dragon)—pung flowers, pair 3, pung 6, pair 9 (X), kong dragon matching X",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1084,7 +1084,7 @@
       "id": "369-3b",
       "section": "369",
       "line": 3,
-      "description": "FFF 33 666 99 DDDD (Any 1 Suit w Opp. Dragon) — pung flowers, pair 3, pung 6, pair 9 (X), kong dragon opposite (matches Y, X≠Y)",
+      "description": "FFF 33 666 99 DDDD (Any 1 Suit w Opp. Dragon)—pung flowers, pair 3, pung 6, pair 9 (X), kong dragon opposite (matches Y, X≠Y)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1100,7 +1100,7 @@
       "id": "369-4",
       "section": "369",
       "line": 4,
-      "description": "33 66 666 999 NEWS (Any 2 Suits) — pairs 3 & 6 (X), pungs 6 & 9 (Y), singles NEWS",
+      "description": "33 66 666 999 NEWS (Any 2 Suits)—pairs 3 & 6 (X), pungs 6 & 9 (Y), singles NEWS",
       "closed": false,
       "value": 30,
       "groups": [
@@ -1119,7 +1119,7 @@
       "id": "369-5a",
       "section": "369",
       "line": 5,
-      "description": "FF 33 6 9 3333 3333 (Any 3 Suits, Pair 3/6/9, Kongs Match Pair) — featured 3: pair 3 + singles 6/9 (X), kong 3 (Y), kong 3 (Z)",
+      "description": "FF 33 6 9 3333 3333 (Any 3 Suits, Pair 3/6/9, Kongs Match Pair)—featured 3: pair 3 + singles 6/9 (X), kong 3 (Y), kong 3 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1136,7 +1136,7 @@
       "id": "369-5b",
       "section": "369",
       "line": 5,
-      "description": "FF 3 66 9 6666 6666 (Any 3 Suits, Pair 3/6/9, Kongs Match Pair) — featured 6: pair 6 + singles 3/9 (X), kong 6 (Y), kong 6 (Z)",
+      "description": "FF 3 66 9 6666 6666 (Any 3 Suits, Pair 3/6/9, Kongs Match Pair)—featured 6: pair 6 + singles 3/9 (X), kong 6 (Y), kong 6 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1153,7 +1153,7 @@
       "id": "369-5c",
       "section": "369",
       "line": 5,
-      "description": "FF 3 6 99 9999 9999 (Any 3 Suits, Pair 3/6/9, Kongs Match Pair) — featured 9: pair 9 + singles 3/6 (X), kong 9 (Y), kong 9 (Z)",
+      "description": "FF 3 6 99 9999 9999 (Any 3 Suits, Pair 3/6/9, Kongs Match Pair)—featured 9: pair 9 + singles 3/6 (X), kong 9 (Y), kong 9 (Z)",
       "closed": false,
       "value": 25,
       "groups": [
@@ -1170,7 +1170,7 @@
       "id": "369-6",
       "section": "369",
       "line": 6,
-      "description": "FF 333 666 999 369 (Any 2 Suits) — closed. pair flowers, pungs 3/6/9 (X), singles 3/6/9 (Y)",
+      "description": "FF 333 666 999 369 (Any 2 Suits)—closed. pair flowers, pungs 3/6/9 (X), singles 3/6/9 (Y)",
       "closed": true,
       "value": 30,
       "groups": [
@@ -1189,7 +1189,7 @@
       "id": "singles-pairs-1",
       "section": "Singles and Pairs",
       "line": 1,
-      "description": "NN EE WW SS 1D 1D 1D (Any 3 Suits, Any Like No. w Matching Dragon) — closed. pairs NEWS, single M + matching dragon in each of X/Y/Z",
+      "description": "NN EE WW SS 1D 1D 1D (Any 3 Suits, Any Like No. w Matching Dragon)—closed. pairs NEWS, single M + matching dragon in each of X/Y/Z",
       "closed": true,
       "value": 50,
       "groups": [
@@ -1211,7 +1211,7 @@
       "id": "singles-pairs-2",
       "section": "Singles and Pairs",
       "line": 2,
-      "description": "2 4 66 88 2 4 66 88 88 (Any 3 Suits, These Nos. Only) — closed. single 2/4 + pair 6/8 (X), single 2/4 + pair 6/8 (Y), pair 8 (Z)",
+      "description": "2 4 66 88 2 4 66 88 88 (Any 3 Suits, These Nos. Only)—closed. single 2/4 + pair 6/8 (X), single 2/4 + pair 6/8 (Y), pair 8 (Z)",
       "closed": true,
       "value": 50,
       "groups": [
@@ -1231,7 +1231,7 @@
       "id": "singles-pairs-3",
       "section": "Singles and Pairs",
       "line": 3,
-      "description": "FF 3369 3669 3699 (Any 3 Suits) — closed. pair 3 + singles 6/9 (X), single 3 + pair 6 + single 9 (Y), singles 3/6 + pair 9 (Z)",
+      "description": "FF 3369 3669 3699 (Any 3 Suits)—closed. pair 3 + singles 6/9 (X), single 3 + pair 6 + single 9 (Y), singles 3/6 + pair 9 (Z)",
       "closed": true,
       "value": 50,
       "groups": [
@@ -1252,7 +1252,7 @@
       "id": "singles-pairs-4",
       "section": "Singles and Pairs",
       "line": 4,
-      "description": "11 22 33 44 55 66 77 (Any 1 Suit, Any 7 Consec. Nos.) — closed. seven consecutive pairs N..N+6 (all X)",
+      "description": "11 22 33 44 55 66 77 (Any 1 Suit, Any 7 Consec. Nos.)—closed. seven consecutive pairs N..N+6 (all X)",
       "closed": true,
       "value": 50,
       "groups": [
@@ -1270,7 +1270,7 @@
       "id": "singles-pairs-5",
       "section": "Singles and Pairs",
       "line": 5,
-      "description": "11 357 99 11 357 99 (Any 2 Suits) — closed. pair 1 + singles 3/5/7 + pair 9 (X), same (Y)",
+      "description": "11 357 99 11 357 99 (Any 2 Suits)—closed. pair 1 + singles 3/5/7 + pair 9 (X), same (Y)",
       "closed": true,
       "value": 50,
       "groups": [
@@ -1291,7 +1291,7 @@
       "id": "singles-pairs-6",
       "section": "Singles and Pairs",
       "line": 6,
-      "description": "FF 2026 2026 2026 (Any 3 Suits) — closed. pair flowers, then 2026 (singles 2/soap/2/6) in each of X/Y/Z",
+      "description": "FF 2026 2026 2026 (Any 3 Suits)—closed. pair flowers, then 2026 (singles 2/soap/2/6) in each of X/Y/Z",
       "closed": true,
       "value": 75,
       "groups": [

@@ -47,7 +47,7 @@ export function CharlestonUI(): React.ReactElement {
   const selectedTiles = () => eastRack.filter((t) => selections.includes(t.id))
 
   if (charleston.pass === null && charleston.secondCharlestonAgreed === null) {
-    // Between first and second — bots agreed, waiting on the human.
+    // Between first and second—bots agreed, waiting on the human.
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={eyebrowStyle}>Charleston</div>
@@ -75,7 +75,7 @@ export function CharlestonUI(): React.ReactElement {
   }
   if (charleston.pass === null && charleston.secondCharlestonAgreed === false) {
     // A computer player declined the optional second Charleston. Per the rules
-    // it only takes one decline to skip it — make that clear to the human.
+    // it only takes one decline to skip it—make that clear to the human.
     const decliners = charleston.secondDecliners ?? []
     const names = decliners.map(
       (seat) => seat[0]!.toUpperCase() + seat.slice(1),

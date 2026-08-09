@@ -1,9 +1,9 @@
-import type { Tile } from '../game/types'
+import type { Tile } from "../game/types"
 
 // Default left-to-right ordering for the human's rack:
 //   jokers first, then number tiles grouped by suit in numerical order,
 //   then winds (N, E, W, S), then dragons, then flowers.
-const KIND_RANK: Record<Tile['kind'], number> = {
+const KIND_RANK: Record<Tile["kind"], number> = {
   joker: 0,
   number: 1,
   wind: 2,
@@ -16,11 +16,11 @@ const DRAGON_RANK: Record<string, number> = { red: 0, green: 1, white: 2 }
 
 function subRank(t: Tile): number {
   switch (t.kind) {
-    case 'number':
+    case "number":
       return (SUIT_RANK[t.suit] ?? 0) * 10 + t.rank
-    case 'wind':
+    case "wind":
       return WIND_RANK[t.wind] ?? 0
-    case 'dragon':
+    case "dragon":
       return DRAGON_RANK[t.color] ?? 0
     default:
       return 0
@@ -62,7 +62,7 @@ export function reorderIds(
 // Otherwise tiles are laid out following `order`; any tile not present in the
 // list (e.g. a tile just drawn from the wall) is appended, default-sorted,
 // after the explicitly ordered tiles.
-// `pinnedTileId`, when given, forces that tile to the far-right position — used
+// `pinnedTileId`, when given, forces that tile to the far-right position—used
 // so a freshly drawn tile sits apart on the right until the player racks it
 // (by dragging, which records it in `order`) or their turn ends.
 export function applyRackOrder(

@@ -43,9 +43,9 @@ type CharlestonState = {
   // Populated when the second Charleston is skipped so the UI can explain why.
   secondDecliners: Seat[]
   // Courtesy pass negotiation (East ↔ West involves the human):
-  //   'choose'  — human proposes how many tiles (0–3) to exchange
-  //   'confirm' — West offered fewer than the human wanted; confirm/decline
-  //   'select'  — human picks the agreed number of tiles to pass
+  //   'choose' —human proposes how many tiles (0–3) to exchange
+  //   'confirm'—West offered fewer than the human wanted; confirm/decline
+  //   'select' —human picks the agreed number of tiles to pass
   courtesyStep: "choose" | "confirm" | "select" | null
   // The finalized East↔West exchange count (min of both offers).
   courtesyAgreedCount: number
@@ -168,7 +168,7 @@ function callableSeats(
     const rack = players[seat].rack
     const exposures = players[seat].exposures
     // A pung/kong only counts if some hand still reachable with this seat's
-    // exposures actually uses that grouping of the tile — otherwise claiming it
+    // exposures actually uses that grouping of the tile—otherwise claiming it
     // would strand the hand (the bug where bots exposed unrelated pungs).
     const canGroup = possibleCallsForDiscard(rack, tile).some((k) =>
       handsAllowGroupingForTile(exposures, hands, tile, k),
@@ -309,7 +309,7 @@ function afterDiscard(state: MahjState, discarder: Seat): Partial<MahjState> {
   }
   const withAwaiting: MahjState = { ...state, awaitingCall: awaiting }
   if (!humanCanCall) {
-    // No human input needed — decide bot calls now.
+    // No human input needed—decide bot calls now.
     return {
       awaitingCall: awaiting,
       ...resolveBotCalls(withAwaiting, discarder),
@@ -457,7 +457,7 @@ export const useMahjStore = create<MahjState>()(
           if (isCourtesy) {
             // Each bot decides how many tiles (0–3) it will offer. The pair's
             // actual count is the min of the two offers (see advanceCharleston),
-            // so we must record the bot's own offer — not leave it at 0.
+            // so we must record the bot's own offer—not leave it at 0.
             const count = bot.chooseCourtesyCount(ctx)
             const picks = bot.chooseCourtesyPass(ctx, count)
             nextSelections[seat] = picks.map((t) => t.id)
@@ -512,7 +512,7 @@ export const useMahjStore = create<MahjState>()(
         if (nextPassId === "secondLeft") {
           const bots = SEATS.filter((seat) => nextPlayers[seat].isBot)
           const bot = botFor(s.difficulty)
-          // A second Charleston needs unanimous consent — record any bot that
+          // A second Charleston needs unanimous consent—record any bot that
           // declines so the human is told who (and that it's being skipped).
           const decliners = bots.filter(
             (seat) =>
@@ -591,7 +591,7 @@ export const useMahjStore = create<MahjState>()(
         const westOffer = s.charleston.courtesyOffers.west
         const agreed = Math.min(clamped, westOffer)
         if (clamped === 0) {
-          // Human opts out entirely — East passes nothing; finish the courtesy.
+          // Human opts out entirely—East passes nothing; finish the courtesy.
           set({
             charleston: {
               ...s.charleston,
@@ -603,7 +603,7 @@ export const useMahjStore = create<MahjState>()(
           return
         }
         if (westOffer < clamped) {
-          // West can't match the human's offer — ask them to confirm/decline.
+          // West can't match the human's offer—ask them to confirm/decline.
           set({
             charleston: {
               ...s.charleston,
@@ -636,7 +636,7 @@ export const useMahjStore = create<MahjState>()(
           })
           return
         }
-        // Declined (or nothing to exchange) — East passes no tiles, then finish.
+        // Declined (or nothing to exchange)—East passes no tiles, then finish.
         set({
           charleston: {
             ...s.charleston,
@@ -706,7 +706,7 @@ export const useMahjStore = create<MahjState>()(
         if (!s.awaitingCall) return
         const discarder =
           s.lastAction?.kind === "discard" ? s.lastAction.seat : "east"
-        // Human passed — see if any bot still wants to call, then apply / pass.
+        // Human passed—see if any bot still wants to call, then apply / pass.
         set(resolveBotCalls(s, discarder))
       },
 
@@ -721,7 +721,7 @@ export const useMahjStore = create<MahjState>()(
         const s = get()
         if (!s.awaitingCall) return
         if (!s.awaitingCall.callableBy.includes("east")) return
-        // Human committed to deciding — pause the countdown (unlimited) and let
+        // Human committed to deciding—pause the countdown (unlimited) and let
         // the UI show the specific claim options.
         set({
           awaitingCall: {
@@ -814,7 +814,7 @@ export const useMahjStore = create<MahjState>()(
           })
         }
 
-        // Win check — runs whether the bot just drew or arrived with 14 tiles
+        // Win check—runs whether the bot just drew or arrived with 14 tiles
         // from a claim. Catches a self-drawn Mahjong AND any hand that became
         // complete via an earlier call, so a bot win always ends the game
         // (shows the banner) instead of falling through to an impossible

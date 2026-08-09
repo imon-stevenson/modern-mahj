@@ -1,6 +1,6 @@
-import type { Exposure, Suit, Tile } from '../types'
-import type { NMJLHand, NumberVar, SuitVar } from '../hands/schema'
-import { tilesEqual } from '../tiles'
+import type { Exposure, Suit, Tile } from "../types"
+import type { NMJLHand, NumberVar, SuitVar } from "../hands/schema"
+import { tilesEqual } from "../tiles"
 
 // A simple "tile usefulness" heuristic for intermediate/expert bots.
 //
@@ -11,43 +11,51 @@ import { tilesEqual } from '../tiles'
 // This makes bots discard the tile that fits into the fewest possible hands
 // and keep tiles that fit into many, without any deep planning.
 
-const ALL_SUITS: readonly Suit[] = ['bams', 'craks', 'dots']
+const ALL_SUITS: readonly Suit[] = ["bams", "craks", "dots"]
 
 type TileKey = string
 
 export function tileKey(tile: Tile): TileKey {
   switch (tile.kind) {
-    case 'number':
+    case "number":
       return `n:${tile.suit}:${tile.rank}`
-    case 'wind':
+    case "wind":
       return `w:${tile.wind}`
-    case 'dragon':
+    case "dragon":
       return `d:${tile.color}`
-    case 'flower':
-      return 'f'
-    case 'joker':
-      return 'j'
+    case "flower":
+      return "f"
+    case "joker":
+      return "j"
   }
 }
 
 function tileFromKey(k: TileKey): Tile | null {
-  const [kind, a, b] = k.split(':')
-  if (kind === 'n' && a && b) {
+  const [kind, a, b] = k.split(":")
+  if (kind === "n" && a && b) {
     return {
-      id: '_score',
-      kind: 'number',
+      id: "_score",
+      kind: "number",
       suit: a as Suit,
-      rank: Number(b) as 1|2|3|4|5|6|7|8|9,
+      rank: Number(b) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
     }
   }
-  if (kind === 'w' && a) return { id: '_score', kind: 'wind', wind: a as 'N'|'E'|'S'|'W' }
-  if (kind === 'd' && a) return { id: '_score', kind: 'dragon', color: a as 'red'|'green'|'white' }
-  if (kind === 'f') return { id: '_score', kind: 'flower' }
-  if (kind === 'j') return { id: '_score', kind: 'joker' }
+  if (kind === "w" && a)
+    return { id: "_score", kind: "wind", wind: a as "N" | "E" | "S" | "W" }
+  if (kind === "d" && a)
+    return {
+      id: "_score",
+      kind: "dragon",
+      color: a as "red" | "green" | "white",
+    }
+  if (kind === "f") return { id: "_score", kind: "flower" }
+  if (kind === "j") return { id: "_score", kind: "joker" }
   return null
 }
 
-function enumerateSuitBindings(vars: SuitVar[]): Partial<Record<SuitVar, Suit>>[] {
+function enumerateSuitBindings(
+  vars: SuitVar[],
+): Partial<Record<SuitVar, Suit>>[] {
   if (vars.length === 0) return [{}]
   const out: Partial<Record<SuitVar, Suit>>[] = []
   const walk = (i: number, cur: Partial<Record<SuitVar, Suit>>) => {
@@ -71,7 +79,7 @@ function suitBindingSatisfies(
   for (const c of hand.suitConstraints ?? []) {
     const values = c.vars.map((v) => binding[v]).filter((x): x is Suit => !!x)
     if (values.length < c.vars.length) return true
-    if (c.rule === 'allDifferent') {
+    if (c.rule === "allDifferent") {
       if (new Set(values).size !== values.length) return false
     } else {
       if (new Set(values).size !== 1) return false
@@ -84,9 +92,11 @@ function nValuesFor(hand: NMJLHand): number[] {
   let candidates = new Set<number>()
   for (let n = 1; n <= 9; n++) candidates.add(n)
   for (const c of hand.numberConstraints ?? []) {
-    if (c.var !== 'N') continue
-    if (c.rule === 'range') {
-      candidates = new Set([...candidates].filter((n) => n >= c.min && n <= c.max))
+    if (c.var !== "N") continue
+    if (c.rule === "range") {
+      candidates = new Set(
+        [...candidates].filter((n) => n >= c.min && n <= c.max),
+      )
     } else {
       candidates = new Set([...candidates].filter((n) => c.values.includes(n)))
     }
@@ -96,14 +106,16 @@ function nValuesFor(hand: NMJLHand): number[] {
 
 function suitVarsIn(hand: NMJLHand): SuitVar[] {
   const s = new Set<SuitVar>()
-  for (const g of hand.groups) if ('suitVar' in g.tile && g.tile.suitVar) s.add(g.tile.suitVar)
+  for (const g of hand.groups)
+    if ("suitVar" in g.tile && g.tile.suitVar) s.add(g.tile.suitVar)
   for (const c of hand.suitConstraints ?? []) for (const v of c.vars) s.add(v)
   return [...s]
 }
 
 function numberVarsIn(hand: NMJLHand): NumberVar[] {
   const s = new Set<NumberVar>()
-  for (const g of hand.groups) if (g.tile.kind === 'number' && 'numVar' in g.tile) s.add(g.tile.numVar)
+  for (const g of hand.groups)
+    if (g.tile.kind === "number" && "numVar" in g.tile) s.add(g.tile.numVar)
   for (const c of hand.numberConstraints ?? []) s.add(c.var)
   return [...s]
 }
@@ -126,46 +138,64 @@ export function computeUsefulness(hands: NMJLHand[]): Usefulness {
       for (const nv of nValues) {
         for (const g of hand.groups) {
           const t = g.tile
-          if (t.kind === 'wind') {
-            if ('wind' in t) {
-              bump(tileKey({ id: '_x', kind: 'wind', wind: t.wind }))
+          if (t.kind === "wind") {
+            if ("wind" in t) {
+              bump(tileKey({ id: "_x", kind: "wind", wind: t.wind }))
             } else {
-              // windVar: any wind could satisfy — bump all four.
-              for (const w of ['N', 'E', 'S', 'W'] as const) {
-                bump(tileKey({ id: '_x', kind: 'wind', wind: w }))
+              // windVar: any wind could satisfy—bump all four.
+              for (const w of ["N", "E", "S", "W"] as const) {
+                bump(tileKey({ id: "_x", kind: "wind", wind: w }))
               }
             }
-          } else if (t.kind === 'flower') {
-            bump('f')
-          } else if (t.kind === 'dragon') {
-            if ('color' in t) {
-              bump(tileKey({ id: '_x', kind: 'dragon', color: t.color }))
-            } else if ('dragonVar' in t) {
-              for (const c of ['red', 'green', 'white'] as const) {
-                bump(tileKey({ id: '_x', kind: 'dragon', color: c }))
+          } else if (t.kind === "flower") {
+            bump("f")
+          } else if (t.kind === "dragon") {
+            if ("color" in t) {
+              bump(tileKey({ id: "_x", kind: "dragon", color: t.color }))
+            } else if ("dragonVar" in t) {
+              for (const c of ["red", "green", "white"] as const) {
+                bump(tileKey({ id: "_x", kind: "dragon", color: c }))
               }
             } else {
               const s = sb[t.suitVar]
               if (!s) continue
-              const color = s === 'bams' ? 'green' : s === 'craks' ? 'red' : 'white'
-              bump(tileKey({ id: '_x', kind: 'dragon', color }))
+              const color =
+                s === "bams" ? "green" : s === "craks" ? "red" : "white"
+              bump(tileKey({ id: "_x", kind: "dragon", color }))
             }
-          } else if (t.kind === 'number') {
-            if ('suit' in t) {
-              bump(tileKey({ id: '_x', kind: 'number', suit: t.suit, rank: t.rank as 1|2|3|4|5|6|7|8|9 }))
+          } else if (t.kind === "number") {
+            if ("suit" in t) {
+              bump(
+                tileKey({
+                  id: "_x",
+                  kind: "number",
+                  suit: t.suit,
+                  rank: t.rank as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
+                }),
+              )
               continue
             }
             const s = sb[t.suitVar]
             if (!s) continue
             let rank: number
-            if ('rank' in t) rank = t.rank
+            if ("rank" in t) rank = t.rank
             else {
               if (nv == null) continue
-              const off = t.numVar === 'N' ? 0 : parseInt(t.numVar.split('+')[1] ?? '0', 10)
+              const off =
+                t.numVar === "N"
+                  ? 0
+                  : parseInt(t.numVar.split("+")[1] ?? "0", 10)
               rank = nv + off
             }
             if (rank < 1 || rank > 9) continue
-            bump(tileKey({ id: '_x', kind: 'number', suit: s, rank: rank as 1|2|3|4|5|6|7|8|9 }))
+            bump(
+              tileKey({
+                id: "_x",
+                kind: "number",
+                suit: s,
+                rank: rank as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
+              }),
+            )
           }
         }
       }
@@ -175,12 +205,15 @@ export function computeUsefulness(hands: NMJLHand[]): Usefulness {
 }
 
 export function scoreTile(tile: Tile, use: Usefulness): number {
-  if (tile.kind === 'joker') return Number.POSITIVE_INFINITY // never discard a joker
+  if (tile.kind === "joker") return Number.POSITIVE_INFINITY // never discard a joker
   return use.get(tileKey(tile)) ?? 0
 }
 
 // Rank tiles from LEAST useful to most useful. Ties broken by id for stability.
-export function sortRackByUsefulnessAsc(rack: readonly Tile[], use: Usefulness): Tile[] {
+export function sortRackByUsefulnessAsc(
+  rack: readonly Tile[],
+  use: Usefulness,
+): Tile[] {
   return [...rack].sort((a, b) => {
     const sa = scoreTile(a, use)
     const sb = scoreTile(b, use)
@@ -216,7 +249,9 @@ export function handCloseness(rack: readonly Tile[], hand: NMJLHand): number {
       for (const id of identities) {
         const tpl = tileFromKey(id)
         if (!tpl) continue
-        const idx = remaining.findIndex((t) => t.kind !== 'joker' && tilesEqual(t, tpl))
+        const idx = remaining.findIndex(
+          (t) => t.kind !== "joker" && tilesEqual(t, tpl),
+        )
         if (idx >= 0) {
           remaining.splice(idx, 1)
           hit++
@@ -228,37 +263,38 @@ export function handCloseness(rack: readonly Tile[], hand: NMJLHand): number {
   return best / totalSlots
 }
 
-function slotCount(kind: NMJLHand['groups'][number]['kind']): number {
+function slotCount(kind: NMJLHand["groups"][number]["kind"]): number {
   return { single: 1, pair: 2, pung: 3, kong: 4, quint: 5, sextet: 6 }[kind]
 }
 
 function identityFor(
-  tile: NMJLHand['groups'][number]['tile'],
+  tile: NMJLHand["groups"][number]["tile"],
   sb: Partial<Record<SuitVar, Suit>>,
   nv: number | null,
 ): TileKey | null {
-  if (tile.kind === 'wind') {
-    if ('wind' in tile) return `w:${tile.wind}`
+  if (tile.kind === "wind") {
+    if ("wind" in tile) return `w:${tile.wind}`
     // windVar: pick an arbitrary wind for closeness scoring (any works).
     return `w:E`
   }
-  if (tile.kind === 'flower') return 'f'
-  if (tile.kind === 'dragon') {
-    if ('color' in tile) return `d:${tile.color}`
-    if ('dragonVar' in tile) return `d:red`
+  if (tile.kind === "flower") return "f"
+  if (tile.kind === "dragon") {
+    if ("color" in tile) return `d:${tile.color}`
+    if ("dragonVar" in tile) return `d:red`
     const s = sb[tile.suitVar]
     if (!s) return null
-    const color = s === 'bams' ? 'green' : s === 'craks' ? 'red' : 'white'
+    const color = s === "bams" ? "green" : s === "craks" ? "red" : "white"
     return `d:${color}`
   }
-  if ('suit' in tile) return `n:${tile.suit}:${tile.rank}`
+  if ("suit" in tile) return `n:${tile.suit}:${tile.rank}`
   const s = sb[tile.suitVar]
   if (!s) return null
   let rank: number
-  if ('rank' in tile) rank = tile.rank
+  if ("rank" in tile) rank = tile.rank
   else {
     if (nv == null) return null
-    const off = tile.numVar === 'N' ? 0 : parseInt(tile.numVar.split('+')[1] ?? '0', 10)
+    const off =
+      tile.numVar === "N" ? 0 : parseInt(tile.numVar.split("+")[1] ?? "0", 10)
     rank = nv + off
   }
   if (rank < 1 || rank > 9) return null
@@ -278,7 +314,7 @@ export function topHands(
     .map((x) => x.h)
 }
 
-// Which tile identities appear in any opponent's exposures — expert bots use
+// Which tile identities appear in any opponent's exposures—expert bots use
 // this to avoid discarding into obvious pungs/kongs.
 export function opponentExposureIdentities(
   allExposures: Record<string, Exposure[]>,
@@ -289,7 +325,7 @@ export function opponentExposureIdentities(
     if (seat === selfSeat) continue
     for (const ex of list) {
       for (const t of ex.tiles) {
-        if (t.kind !== 'joker') out.add(tileKey(t))
+        if (t.kind !== "joker") out.add(tileKey(t))
       }
     }
   }

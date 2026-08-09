@@ -63,7 +63,7 @@ export type CapturedFlight = {
 
 // Read the current screen positions of the given tiles (by `data-tile-id`) and
 // the center of the target seat's panel (by `id="seat-<seat>"`). MUST be called
-// while the tiles are still on screen — i.e. before the pass mutates the rack.
+// while the tiles are still on screen—i.e. before the pass mutates the rack.
 export function captureCharlestonFlight(
   tiles: Tile[],
   targetSeat: Seat,

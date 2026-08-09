@@ -14,7 +14,7 @@ export function ExposureRow({
   // Rotate 180° so exposed tiles face the other players (table etiquette),
   // appearing upside-down from the owner's point of view.
   flip?: boolean
-  // Whose exposures these are — used to target a joker swap.
+  // Whose exposures these are—used to target a joker swap.
   seat: Seat
 }): React.ReactElement | null {
   const phase = useMahjStore((s) => s.phase)

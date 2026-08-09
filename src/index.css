@@ -1,4 +1,4 @@
-/* Tailwind v4 — theme + utilities only. Preflight (Tailwind's reset) is
+/* Tailwind v4—theme + utilities only. Preflight (Tailwind's reset) is
    intentionally NOT imported: the app has its own reset below and relies on some
    browser defaults, so pulling Preflight in would restyle bare buttons/lists. */
 @layer theme, base, components, utilities;
@@ -6,7 +6,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 /* ============================================================
-   Design tokens — American Mahjong Design System.
+   Design tokens—American Mahjong Design System.
    Declared as Tailwind theme vars so they generate utilities
    (bg-tile-navy, text-suit-red, font-ui, rounded-md, …) and are
    emitted as :root CSS variables.
@@ -80,7 +80,7 @@
   color-scheme: light;
 }
 
-/* App reset (replaces Preflight) — in @layer base so component/utility classes win. */
+/* App reset (replaces Preflight)—in @layer base so component/utility classes win. */
 @layer base {
   *,
   *::before,
@@ -308,7 +308,7 @@
   }
 }
 
-/* Human Mahjong celebration — emojis raining down the screen for ~6s.
+/* Human Mahjong celebration—emojis raining down the screen for ~6s.
    Per-piece horizontal drift and spin come from the --drift / --rot vars. */
 @keyframes emoji-rain-fall {
   0% {

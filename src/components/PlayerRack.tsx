@@ -8,7 +8,7 @@ import { applyRackOrder, reorderIds } from "./rackOrder"
 const DRAG_THRESHOLD_PX = 8
 import { useJokerSwapUi } from "../store/jokerSwapUi"
 
-// Hold + fade duration for the "new tile" highlight — keep in sync with the
+// Hold + fade duration for the "new tile" highlight—keep in sync with the
 // `tile-highlight` keyframe in index.css (5s hold + 1s fade).
 const HIGHLIGHT_MS = 6000
 
@@ -73,6 +73,10 @@ type Props = {
   onResetOrder?: () => void
   // Id of the tile pinned to the far right of the rack (the freshly drawn tile).
   pinnedTileId?: string | null
+  // Id of a tile to shake once (e.g. an illegal Charleston joker tap), and an
+  // optional warning message to show beneath the rack while it's set.
+  shakeTileId?: string | null
+  notice?: string | null
 }
 
 export function PlayerRack({
@@ -86,6 +90,8 @@ export function PlayerRack({
   onReorder,
   onResetOrder,
   pinnedTileId,
+  shakeTileId,
+  notice,
 }: Props): React.ReactElement {
   // Once the player explicitly sorts, stop pinning the drawn tile right so it
   // merges into the sorted hand. Re-arms automatically on the next draw (new id).
@@ -93,9 +99,7 @@ export function PlayerRack({
     string | null
   >(null)
   const activePinnedTileId =
-    pinnedTileId && pinnedTileId !== dismissedPinnedTileId
-      ? pinnedTileId
-      : null
+    pinnedTileId && pinnedTileId !== dismissedPinnedTileId ? pinnedTileId : null
 
   const ordered = useMemo(
     () => applyRackOrder(player.rack, rackOrder, activePinnedTileId),
@@ -119,9 +123,11 @@ export function PlayerRack({
   // to the tile's onClick (discard/select).
   const [dragId, setDragId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
-  const [ghost, setGhost] = useState<{ tile: Tile; x: number; y: number } | null>(
-    null,
-  )
+  const [ghost, setGhost] = useState<{
+    tile: Tile
+    x: number
+    y: number
+  } | null>(null)
   const dragStart = useRef<{
     id: string
     x: number
@@ -147,7 +153,9 @@ export function PlayerRack({
     const start = dragStart.current
     if (!start || start.id !== tile.id) return
     if (dragId === null) {
-      if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_THRESHOLD_PX)
+      if (
+        Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_THRESHOLD_PX
+      )
         return
       setDragId(start.id)
       try {
@@ -169,7 +177,13 @@ export function PlayerRack({
     const start = dragStart.current
     if (start && dragId !== null) {
       if (commit && overId && onReorder) {
-        onReorder(reorderIds(ordered.map((t) => t.id), start.id, overId))
+        onReorder(
+          reorderIds(
+            ordered.map((t) => t.id),
+            start.id,
+            overId,
+          ),
+        )
       }
       justDragged.current = true // swallow the click that follows a drag
       try {
@@ -242,6 +256,21 @@ export function PlayerRack({
             </span>
           )}
         </div>
+        {notice && (
+          <div
+            role="alert"
+            style={{
+              textAlign: "center",
+              font: "700 13px var(--font-ui)",
+              color: "var(--gold-ink)",
+              background: "var(--gold)",
+              borderRadius: "var(--radius-sm)",
+              padding: "4px 16px",
+            }}
+          >
+            {notice}
+          </div>
+        )}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {onResetOrder && (
             <button
@@ -322,11 +351,12 @@ export function PlayerRack({
                 touchAction: "none",
                 // Joker-swap shake takes priority; else freshly drawn/received
                 // tiles glow, then fade (~6s).
-                animation: swapShakeIds.includes(t.id)
-                  ? "tile-shake 450ms ease"
-                  : highlighted.has(t.id)
-                    ? `tile-highlight ${HIGHLIGHT_MS}ms ease`
-                    : undefined,
+                animation:
+                  swapShakeIds.includes(t.id) || shakeTileId === t.id
+                    ? "tile-shake 450ms ease"
+                    : highlighted.has(t.id)
+                      ? `tile-highlight ${HIGHLIGHT_MS}ms ease`
+                      : undefined,
               }}
             >
               <TileView
@@ -343,7 +373,7 @@ export function PlayerRack({
 
       {actionSlot && <div style={{ marginTop: 18 }}>{actionSlot}</div>}
 
-      {/* Floating clone that follows the pointer while dragging a tile — the key
+      {/* Floating clone that follows the pointer while dragging a tile—the key
           affordance on touch, where the finger otherwise covers the tile. */}
       {ghost && (
         <div

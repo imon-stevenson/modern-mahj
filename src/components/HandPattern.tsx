@@ -1,8 +1,12 @@
 import type { NMJLHand } from "../game/hands/schema"
-import { handTileColors, parseHandPattern, patternColorRuns } from "./cardPattern"
+import {
+  handTileColors,
+  parseHandPattern,
+  patternColorRuns,
+} from "./cardPattern"
 
 // Render a hand's tile pattern with each tile colored by its suit, followed by
-// the muted "(… suits)" note. The " — …" explanation is not shown.
+// the muted "(… suits)" note. The "—…" explanation is not shown.
 export function HandPattern({ hand }: { hand: NMJLHand }): React.ReactElement {
   const { pattern, note } = parseHandPattern(hand.description)
   const runs = patternColorRuns(pattern, handTileColors(hand.groups))

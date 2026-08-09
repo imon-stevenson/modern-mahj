@@ -39,8 +39,26 @@ export function Board(): React.ReactElement {
   const setDifficulty = useMahjStore((s) => s.setDifficulty)
 
   // Bumped whenever the human clicks somewhere on the board while they still
-  // owe a draw — replays the "Draw tile" button's attention shake.
+  // owe a draw—replays the "Draw tile" button's attention shake.
   const [drawNudge, setDrawNudge] = useState(0)
+
+  // Transient rejection when the human taps a joker during the Charleston
+  const [jokerReject, setJokerReject] = useState<{ id: string } | null>(null)
+  const jokerRejectTimer = useRef<number | null>(null)
+  const rejectJoker = (id: string) => {
+    if (jokerRejectTimer.current) window.clearTimeout(jokerRejectTimer.current)
+    setJokerReject({ id })
+    jokerRejectTimer.current = window.setTimeout(
+      () => setJokerReject(null),
+      2000,
+    )
+  }
+  useEffect(() => {
+    return () => {
+      if (jokerRejectTimer.current)
+        window.clearTimeout(jokerRejectTimer.current)
+    }
+  }, [])
 
   // The tile the human just drew stays pinned to the far right of their rack
   // until they discard (turn ends) or drag it into place.
@@ -214,8 +232,15 @@ export function Board(): React.ReactElement {
   const onEastTile = (tileId: string) => {
     // If a joker swap is in progress, this rack tile is the offered tile.
     if (attemptJokerSwap(tileId)) return
-    if (isCharleston) toggle(tileId)
-    else if (eastIsCurrent && !needsDraw) humanDiscard(tileId)
+    if (isCharleston) {
+      // Jokers may never be passed in the Charleston—reject the tap.
+      const tile = players.east.rack.find((t) => t.id === tileId)
+      if (tile?.kind === "joker") {
+        rejectJoker(tileId)
+        return
+      }
+      toggle(tileId)
+    } else if (eastIsCurrent && !needsDraw) humanDiscard(tileId)
     // When a draw is owed, clicking a tile does nothing here; the board-level
     // handler below nudges the Draw button instead.
   }
@@ -267,7 +292,7 @@ export function Board(): React.ReactElement {
         }}
       >
         {paused && (
-          // Opaque overlay covering only the mat — the header, Card drawer, and
+          // Opaque overlay covering only the mat—the header, Card drawer, and
           // Rules panel (outside the board) stay visible and usable.
           <div
             onClick={(e) => e.stopPropagation()}
@@ -375,6 +400,12 @@ export function Board(): React.ReactElement {
             onReorder={reorderEastRack}
             onResetOrder={resetEastRackOrder}
             pinnedTileId={drawnTileId}
+            shakeTileId={jokerReject?.id ?? null}
+            notice={
+              jokerReject
+                ? "You can't pass jokers during the Charleston."
+                : null
+            }
           />
         </div>
       </div>

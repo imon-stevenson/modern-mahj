@@ -1,10 +1,7 @@
 import { useEffect, useMemo } from "react"
 import { useMahjStore } from "../store"
 import { matchingInRack, possibleCallsForDiscard } from "../game/turn"
-import {
-  handsAllowGroupingForTile,
-  matchAgainstAll,
-} from "../game/hands/match"
+import { handsAllowGroupingForTile, matchAgainstAll } from "../game/hands/match"
 import { useCallTimer } from "../hooks/useCallTimer"
 import { useIsDesktop } from "../hooks/useIsDesktop"
 import { TileView } from "./Tile"
@@ -25,7 +22,7 @@ const CALL_LABEL: Record<CallKind, string> = {
 export function CallControl(): React.ReactElement {
   const awaitingCall = useMahjStore((s) => s.awaitingCall)
   const eastPlayer = useMahjStore((s) => s.players.east)
-  // Load once — hands are static per session; calling the loader inside a
+  // Load once—hands are static per session; calling the loader inside a
   // selector returns a fresh reference on failure paths and can loop.
   const loadHands = useMahjStore((s) => s.loadHandsSafe)
   const cardYear = useMahjStore((s) => s.cardYear)
@@ -38,13 +35,13 @@ export function CallControl(): React.ReactElement {
   const secondsLeft = useCallTimer()
 
   // Memoized so it doesn't recompute the (moderately expensive) hand analysis on
-  // every 200ms countdown tick — only when the discard, rack, or hands change.
+  // every 200ms countdown tick—only when the discard, rack, or hands change.
   const options = useMemo<CallKind[]>(() => {
     if (!awaitingCall || !awaitingCall.callableBy.includes("east")) return []
     const tile = awaitingCall.discardTile
     const rack = eastPlayer.rack
     // Only offer a pung/kong when a hand still reachable with East's exposures
-    // actually needs that grouping of the tile — same gate as quint/sextet below
+    // actually needs that grouping of the tile—same gate as quint/sextet below
     // (so the human isn't invited to strand their hand on a dead exposure).
     const result: CallKind[] = possibleCallsForDiscard(rack, tile).filter((k) =>
       handsAllowGroupingForTile(eastPlayer.exposures, hands, tile, k),
@@ -52,8 +49,7 @@ export function CallControl(): React.ReactElement {
     // Jokers count as fillers; quint/sextet are additionally gated to only when
     // a still-viable hand actually needs that grouping of this tile.
     const fillers =
-      matchingInRack(rack, tile) +
-      rack.filter((t) => t.kind === "joker").length
+      matchingInRack(rack, tile) + rack.filter((t) => t.kind === "joker").length
     if (
       fillers >= 4 &&
       handsAllowGroupingForTile(eastPlayer.exposures, hands, tile, "quint")

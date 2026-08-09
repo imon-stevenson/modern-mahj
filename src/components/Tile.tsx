@@ -34,7 +34,7 @@ const WIND_CHARS: Record<string, string> = {
   N: "北",
 }
 
-// 1-indexed CSS grid positions (row, col, color) on a 3x3 grid — canonical dot layouts.
+// 1-indexed CSS grid positions (row, col, color) on a 3x3 grid—canonical dot layouts.
 const DOT_LAYOUTS: Record<number, [number, number, "g" | "r"][]> = {
   1: [[2, 2, "r"]],
   2: [
@@ -149,11 +149,11 @@ export function TileView({
   const outer: CSSProperties = {
     // inline-block so the non-interactive <span> variant still respects
     // width/height. Without this it collapses to near-zero (showing only the
-    // face marks as "dots") whenever a tile isn't a direct flex child — e.g.
+    // face marks as "dots") whenever a tile isn't a direct flex child—e.g.
     // inside the drag wrapper, discard pile, or a flight overlay.
     display: "inline-block",
     // Align to the top of the line box so the inline-block leaves no baseline
-    // descender gap — keeps wrappers (e.g. the rack's highlight ring) hugging
+    // descender gap—keeps wrappers (e.g. the rack's highlight ring) hugging
     // the tile exactly.
     verticalAlign: "top",
     position: "relative",
@@ -219,13 +219,21 @@ export function TileView({
       const s = Math.max(11, px(18))
       compactContent = (
         <div
-          style={{ width: s, height: s, border: `2px solid ${INK_BLACK}`, borderRadius: 2 }}
+          style={{
+            width: s,
+            height: s,
+            border: `2px solid ${INK_BLACK}`,
+            borderRadius: 2,
+          }}
         />
       )
     } else if (category === "dragon") {
       compactContent = (
         <span
-          style={{ font: bigFont, color: dragon === "green" ? INK_GREEN : INK_RED }}
+          style={{
+            font: bigFont,
+            color: dragon === "green" ? INK_GREEN : INK_RED,
+          }}
         >
           {dragon === "green" ? "G" : "R"}
         </span>
@@ -233,7 +241,10 @@ export function TileView({
     } else if (category === "flower") {
       compactContent = (
         <span
-          style={{ font: `800 ${Math.max(11, px(18))}px var(--font-ui)`, color: INK_GREEN }}
+          style={{
+            font: `800 ${Math.max(11, px(18))}px var(--font-ui)`,
+            color: INK_GREEN,
+          }}
         >
           F
         </span>
@@ -241,7 +252,10 @@ export function TileView({
     } else {
       compactContent = (
         <span
-          style={{ font: `800 ${Math.max(9, px(15))}px var(--font-ui)`, color: INK_RED }}
+          style={{
+            font: `800 ${Math.max(9, px(15))}px var(--font-ui)`,
+            color: INK_RED,
+          }}
         >
           J
         </span>
@@ -329,157 +343,157 @@ export function TileView({
           compactContent
         ) : (
           <>
-        {category === "dot" && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gridTemplateRows: "repeat(3, 1fr)",
-              width: px(30),
-              height: px(30),
-              padding: px(2),
-            }}
-          >
-            {(DOT_LAYOUTS[num] || []).map(([row, col, c], i) => (
+            {category === "dot" && (
               <div
-                key={i}
                 style={{
-                  gridRow: row,
-                  gridColumn: col,
-                  alignSelf: "center",
-                  justifySelf: "center",
-                  width: px(9),
-                  height: px(9),
-                  borderRadius: "50%",
-                  background: c === "g" ? INK_GREEN : INK_RED,
-                  boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.08)",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gridTemplateRows: "repeat(3, 1fr)",
+                  width: px(30),
+                  height: px(30),
+                  padding: px(2),
                 }}
-              />
-            ))}
-          </div>
-        )}
+              >
+                {(DOT_LAYOUTS[num] || []).map(([row, col, c], i) => (
+                  <div
+                    key={i}
+                    style={{
+                      gridRow: row,
+                      gridColumn: col,
+                      alignSelf: "center",
+                      justifySelf: "center",
+                      width: px(9),
+                      height: px(9),
+                      borderRadius: "50%",
+                      background: c === "g" ? INK_GREEN : INK_RED,
+                      boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.08)",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
 
-        {category === "bam" && num === 1 && <BamBird scale={scale} />}
+            {category === "bam" && num === 1 && <BamBird scale={scale} />}
 
-        {category === "bam" && num !== 1 && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${num <= 3 ? num : 3}, 1fr)`,
-              gap: px(3),
-              padding: px(4),
-            }}
-          >
-            {Array.from({ length: num }).map((_, i) => (
+            {category === "bam" && num !== 1 && (
               <div
-                key={i}
                 style={{
-                  width: px(8),
-                  height: px(16),
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${num <= 3 ? num : 3}, 1fr)`,
+                  gap: px(3),
+                  padding: px(4),
+                }}
+              >
+                {Array.from({ length: num }).map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: px(8),
+                      height: px(16),
+                      borderRadius: 3,
+                      background: INK_GREEN,
+                      boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.08), inset 0 ${Math.max(3, px(5))}px 0 -1px rgba(0,0,0,0.22), inset 0 -${Math.max(3, px(5))}px 0 -1px rgba(0,0,0,0.22)`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {category === "crak" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <div
+                  style={{
+                    font: `700 ${px(15)}px var(--font-ui)`,
+                    color: INK_RED,
+                    lineHeight: 1,
+                  }}
+                >
+                  {CRAK_CHARS[num]}
+                </div>
+                <div
+                  style={{
+                    font: `400 ${cjkSize}px 'Noto Sans SC', var(--font-ui)`,
+                    color: INK_BLACK,
+                    lineHeight: 1,
+                  }}
+                >
+                  萬
+                </div>
+              </div>
+            )}
+
+            {category === "wind" && (
+              <div
+                style={{
+                  font: `400 ${cjkSize}px 'Noto Sans SC', var(--font-ui)`,
+                  color: INK_BLACK,
+                  lineHeight: 1,
+                }}
+              >
+                {WIND_CHARS[dir] || dir}
+              </div>
+            )}
+
+            {category === "dragon" && dragon !== "soap" && (
+              <div
+                style={{
+                  font: `400 ${cjkSize}px 'Noto Sans SC', var(--font-ui)`,
+                  color: dragon === "green" ? INK_GREEN : INK_RED,
+                  lineHeight: 1,
+                }}
+              >
+                {dragon === "green" ? "發" : "中"}
+              </div>
+            )}
+
+            {category === "dragon" && dragon === "soap" && (
+              <div
+                style={{
+                  width: px(20),
+                  height: px(20),
+                  border: `${Math.max(1, px(2))}px solid ${INK_BLACK}`,
                   borderRadius: 3,
-                  background: INK_GREEN,
-                  boxShadow: `inset 0 0 0 1px rgba(0,0,0,0.08), inset 0 ${Math.max(3, px(5))}px 0 -1px rgba(0,0,0,0.22), inset 0 -${Math.max(3, px(5))}px 0 -1px rgba(0,0,0,0.22)`,
                 }}
               />
-            ))}
-          </div>
-        )}
+            )}
 
-        {category === "crak" && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <div
-              style={{
-                font: `700 ${px(15)}px var(--font-ui)`,
-                color: INK_RED,
-                lineHeight: 1,
-              }}
-            >
-              {CRAK_CHARS[num]}
-            </div>
-            <div
-              style={{
-                font: `400 ${cjkSize}px 'Noto Sans SC', var(--font-ui)`,
-                color: INK_BLACK,
-                lineHeight: 1,
-              }}
-            >
-              萬
-            </div>
-          </div>
-        )}
+            {category === "flower" && <Flower scale={scale} />}
 
-        {category === "wind" && (
-          <div
-            style={{
-              font: `400 ${cjkSize}px 'Noto Sans SC', var(--font-ui)`,
-              color: INK_BLACK,
-              lineHeight: 1,
-            }}
-          >
-            {WIND_CHARS[dir] || dir}
-          </div>
-        )}
-
-        {category === "dragon" && dragon !== "soap" && (
-          <div
-            style={{
-              font: `400 ${cjkSize}px 'Noto Sans SC', var(--font-ui)`,
-              color: dragon === "green" ? INK_GREEN : INK_RED,
-              lineHeight: 1,
-            }}
-          >
-            {dragon === "green" ? "發" : "中"}
-          </div>
-        )}
-
-        {category === "dragon" && dragon === "soap" && (
-          <div
-            style={{
-              width: px(20),
-              height: px(20),
-              border: `${Math.max(1, px(2))}px solid ${INK_BLACK}`,
-              borderRadius: 3,
-            }}
-          />
-        )}
-
-        {category === "flower" && <Flower scale={scale} />}
-
-        {category === "joker" && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <div
-              style={{
-                width: px(22),
-                height: 3,
-                borderRadius: 2,
-                background: INK_GREEN,
-              }}
-            />
-            <div
-              style={{
-                font: `800 ${Math.max(7, px(8.5))}px var(--font-ui)`,
-                color: INK_RED,
-                letterSpacing: "0.02em",
-              }}
-            >
-              JOKER
-            </div>
-          </div>
-        )}
+            {category === "joker" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
+                <div
+                  style={{
+                    width: px(22),
+                    height: 3,
+                    borderRadius: 2,
+                    background: INK_GREEN,
+                  }}
+                />
+                <div
+                  style={{
+                    font: `800 ${Math.max(7, px(8.5))}px var(--font-ui)`,
+                    color: INK_RED,
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  JOKER
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

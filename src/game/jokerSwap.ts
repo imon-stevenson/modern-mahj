@@ -1,10 +1,10 @@
-import type { Exposure, PlayerState, Seat, Tile } from './types'
-import { tilesEqual } from './tiles'
+import type { Exposure, PlayerState, Seat, Tile } from "./types"
+import { tilesEqual } from "./tiles"
 
 // Return the natural (non-joker) tile identity an exposure represents, or
 // null if the exposure is somehow all jokers (shouldn't happen in play).
 export function exposureIdentity(exposure: Exposure): Tile | null {
-  return exposure.tiles.find((t) => t.kind !== 'joker') ?? null
+  return exposure.tiles.find((t) => t.kind !== "joker") ?? null
 }
 
 export type JokerSwapOffer = {
@@ -23,19 +23,23 @@ export function validateJokerSwap(
 ): SwapValidation {
   const offering = players[offer.offeringSeat]
   const tile = offering.rack.find((t) => t.id === offer.offeredTileId)
-  if (!tile) return { ok: false, reason: 'offered tile not in rack' }
-  if (tile.kind === 'joker') return { ok: false, reason: 'cannot offer a joker' }
+  if (!tile) return { ok: false, reason: "offered tile not in rack" }
+  if (tile.kind === "joker")
+    return { ok: false, reason: "cannot offer a joker" }
 
   const target = players[offer.targetSeat]
   const exposure = target.exposures[offer.exposureIndex]
-  if (!exposure) return { ok: false, reason: 'no such exposure' }
+  if (!exposure) return { ok: false, reason: "no such exposure" }
   if (!exposure.jokerIds.includes(offer.jokerId)) {
-    return { ok: false, reason: 'joker id not in exposure' }
+    return { ok: false, reason: "joker id not in exposure" }
   }
   const identity = exposureIdentity(exposure)
-  if (!identity) return { ok: false, reason: 'exposure has no identity' }
+  if (!identity) return { ok: false, reason: "exposure has no identity" }
   if (!tilesEqual(tile, identity)) {
-    return { ok: false, reason: 'offered tile does not match exposure identity' }
+    return {
+      ok: false,
+      reason: "offered tile does not match exposure identity",
+    }
   }
   return { ok: true }
 }
@@ -69,10 +73,13 @@ export function applyJokerSwap(
 
   next[offer.offeringSeat] = {
     ...offering,
-    rack: [...offering.rack.filter((t) => t.id !== offer.offeredTileId), jokerTile],
+    rack: [
+      ...offering.rack.filter((t) => t.id !== offer.offeredTileId),
+      jokerTile,
+    ],
   }
 
-  // If offering === target we need to update the same player carefully — the
+  // If offering === target we need to update the same player carefully—the
   // exposure list belongs to `target`, which is now the version stored above.
   const currentTarget =
     offer.offeringSeat === offer.targetSeat ? next[offer.targetSeat] : target

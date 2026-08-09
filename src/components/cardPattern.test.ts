@@ -25,8 +25,10 @@ describe("parseHandPattern", () => {
   })
 
   it("handles a description with no parenthetical note", () => {
-    // winds-dragons-1a: "NNNN EEE WWW SSSS — variant A: …"
-    const { pattern, note } = parseHandPattern(hand("winds-dragons-1a").description)
+    // winds-dragons-1a: "NNNN EEE WWW SSSS—variant A: …"
+    const { pattern, note } = parseHandPattern(
+      hand("winds-dragons-1a").description,
+    )
     expect(pattern).toBe("NNNN EEE WWW SSSS")
     expect(note).toBe("")
   })
@@ -36,16 +38,25 @@ describe("handTileColors", () => {
   it("colors FF 2222 44 66 8888 by suit (flowers navy, X green, Y red)", () => {
     // FF(navy×2) 2222(X→green×4) 44(Y→red×2) 66(Y→red×2) 8888(X→green×4)
     expect(handTileColors(hand("2468-2").groups)).toEqual([
-      NAVY, NAVY,
-      GREEN, GREEN, GREEN, GREEN,
-      RED, RED,
-      RED, RED,
-      GREEN, GREEN, GREEN, GREEN,
+      NAVY,
+      NAVY,
+      GREEN,
+      GREEN,
+      GREEN,
+      GREEN,
+      RED,
+      RED,
+      RED,
+      RED,
+      GREEN,
+      GREEN,
+      GREEN,
+      GREEN,
     ])
   })
 
   it("colors soap (0) navy while its year-digit neighbors follow the suit var", () => {
-    // singles-pairs-6: FF 2026 2026 2026 — each 2026 = 2(X) 0(soap→navy) 2(X) 6(X)
+    // singles-pairs-6: FF 2026 2026 2026—each 2026 = 2(X) 0(soap→navy) 2(X) 6(X)
     const colors = handTileColors(hand("singles-pairs-6").groups)
     // FF
     expect(colors.slice(0, 2)).toEqual([NAVY, NAVY])
@@ -53,7 +64,7 @@ describe("handTileColors", () => {
     expect(colors.slice(2, 6)).toEqual([GREEN, NAVY, GREEN, GREEN])
     // second 2026 group (Y=red digits, soap navy)
     expect(colors.slice(6, 10)).toEqual([RED, NAVY, RED, RED])
-    // third 2026 group (Z=navy digits, soap navy) — all navy
+    // third 2026 group (Z=navy digits, soap navy)—all navy
     expect(colors.slice(10, 14)).toEqual([NAVY, NAVY, NAVY, NAVY])
   })
 
@@ -63,7 +74,7 @@ describe("handTileColors", () => {
         const colors = handTileColors(h.groups)
         expect(colors).toHaveLength(14)
         const { pattern } = parseHandPattern(h.description)
-        // Tile characters only — "+"/"=" are navy separators, not tiles.
+        // Tile characters only—"+"/"=" are navy separators, not tiles.
         expect(pattern.replace(/[\s+=]/g, "").length).toBe(14)
       }
     }

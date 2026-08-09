@@ -1,4 +1,4 @@
-// Mulberry32 — small, deterministic 32-bit PRNG. Good enough for shuffling
+// Mulberry32—small, deterministic 32-bit PRNG. Good enough for shuffling
 // game state; makes tests reproducible when we seed it.
 
 export type Rng = {
@@ -17,8 +17,9 @@ export function createRng(seed: number): Rng {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
-  const nextInt = (maxExclusive: number): number => Math.floor(next() * maxExclusive)
-  const pick = <T,>(items: readonly T[]): T => items[nextInt(items.length)]!
+  const nextInt = (maxExclusive: number): number =>
+    Math.floor(next() * maxExclusive)
+  const pick = <T>(items: readonly T[]): T => items[nextInt(items.length)]!
   return { seed, next, nextInt, pick }
 }
 
