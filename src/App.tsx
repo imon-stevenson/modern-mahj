@@ -5,6 +5,7 @@ import { RulesPanel } from "./components/RulesPanel"
 import { CardDrawer } from "./components/CardDrawer"
 import { RotateNudge } from "./components/RotateNudge"
 import { EmojiRain } from "./components/EmojiRain"
+import { ShowHandOverlay } from "./components/ShowHandOverlay"
 import { PauseButton } from "./components/PauseButton"
 import { useBotTurns } from "./hooks/useBotTurns"
 import { useAutoHideHeader } from "./hooks/useAutoHideHeader"
@@ -51,6 +52,9 @@ export default function App(): React.ReactElement {
       />
 
       <RotateNudge />
+      {/* Show-hand reveal sits under the emoji rain (which is z 2000) so the
+          celebration animates on top of the winning hand for a human win. */}
+      <ShowHandOverlay />
       <EmojiRain />
     </div>
   )

@@ -331,6 +331,12 @@
   display: grid;
   gap: 18px;
   grid-template-columns: minmax(150px, 1fr) 2.3fr minmax(150px, 1fr);
+  /* Fixed min-height + a flexible middle row keep the mat a constant size: the
+     top (west) and bottom (east/you) rows are pinned to the mat's edges while
+     the middle row absorbs slack, so growing discards/exposures never shove the
+     human rack around. */
+  grid-template-rows: auto 1fr auto;
+  min-height: 660px;
   grid-template-areas:
     'west   west   west'
     'south  center north'

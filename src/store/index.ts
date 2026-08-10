@@ -51,6 +51,18 @@ type CharlestonState = {
   courtesyAgreedCount: number
 }
 
+/**
+ * True while the Charleston is waiting on a button decision rather than a tile
+ * selection—the second-Charleston question, the bot-declined acknowledgement,
+ * and the two courtesy negotiation steps. Rack taps are inert in these states.
+ */
+export function isCharlestonDecisionPrompt(c: CharlestonState): boolean {
+  if (c.pass === null) return true
+  if (c.pass !== "courtesy") return false
+  // Matches CharlestonUI's `courtesyStep ?? 'choose'` default.
+  return (c.courtesyStep ?? "choose") !== "select"
+}
+
 type LastAction =
   | { kind: "discard"; seat: Seat; tileId: string }
   | { kind: "call"; seat: Seat; call: CallKind; tileId: string }

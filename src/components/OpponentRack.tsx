@@ -95,7 +95,12 @@ export function OpponentRack({
         ))}
       </div>
 
-      <ExposureRow exposures={player.exposures} tileWidth={44} seat={seat} />
+      {/* Reserve the exposure row's height even when empty, so a box is the
+          same size with or without exposures — otherwise the first pung/kong
+          an opponent exposes would jump the mat (west especially, top row). */}
+      <div style={{ minHeight: 56 }}>
+        <ExposureRow exposures={player.exposures} tileWidth={44} seat={seat} />
+      </div>
     </div>
   )
 }

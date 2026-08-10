@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  arrangeWinningHand,
   exposureAwareCloseness,
   handsAllowGroupingForTile,
   matchHand,
@@ -864,5 +865,75 @@ describe("handsAllowGroupingForTile—pung/kong", () => {
         "pung",
       ),
     ).toBe(false)
+  })
+})
+
+describe("arrangeWinningHand", () => {
+  it("lays tiles out in the card's group order, exposures included", () => {
+    // The 2(X) kong is exposed; the rest is concealed. The layout should still
+    // follow card order: FF, 2222(X), white kong, 6666(Z).
+    const exposure = buildExposure(
+      "kong",
+      [
+        n("bams", 2, "b0"),
+        n("bams", 2, "b1"),
+        n("bams", 2, "b2"),
+        n("bams", 2, "b3"),
+      ],
+      n("bams", 2, "b0"),
+    )
+    const rack: Tile[] = [
+      n("dots", 6, "d0"),
+      flower("f0"),
+      dragon("white", "w0"),
+      dragon("white", "w1"),
+      n("dots", 6, "d1"),
+      flower("f1"),
+      dragon("white", "w2"),
+      dragon("white", "w3"),
+      n("dots", 6, "d2"),
+      n("dots", 6, "d3"),
+    ]
+    const groups = arrangeWinningHand(rack, [exposure], threeSuitsHand)
+    expect(groups).not.toBeNull()
+    expect(groups!.map((g) => g.kind)).toEqual(["pair", "kong", "kong", "kong"])
+    expect(groups!.map((g) => g.tiles.length)).toEqual([2, 4, 4, 4])
+    expect(groups![0]!.tiles.every((t) => t.kind === "flower")).toBe(true)
+    expect(
+      groups![1]!.tiles.every((t) => t.kind === "number" && t.rank === 2),
+    ).toBe(true)
+    expect(groups![2]!.tiles.every((t) => t.kind === "dragon")).toBe(true)
+    expect(
+      groups![3]!.tiles.every((t) => t.kind === "number" && t.rank === 6),
+    ).toBe(true)
+  })
+
+  it("places a joker into the joker-allowed group it fills", () => {
+    const rack: Tile[] = [
+      flower("f0"),
+      flower("f1"),
+      n("bams", 2, "b0"),
+      n("bams", 2, "b1"),
+      n("bams", 2, "b2"),
+      joker("j0"), // fills the 4th tile of the 2222(X) kong
+      dragon("white", "w0"),
+      dragon("white", "w1"),
+      dragon("white", "w2"),
+      dragon("white", "w3"),
+      n("dots", 6, "d0"),
+      n("dots", 6, "d1"),
+      n("dots", 6, "d2"),
+      n("dots", 6, "d3"),
+    ]
+    const groups = arrangeWinningHand(rack, [], threeSuitsHand)
+    expect(groups).not.toBeNull()
+    const kong2 = groups![1]!
+    expect(kong2.tiles.filter((t) => t.kind === "joker")).toHaveLength(1)
+    expect(kong2.tiles).toHaveLength(4)
+  })
+
+  it("returns null when the tiles don't complete the hand", () => {
+    const rack: Tile[] = [flower("f0"), flower("f1")]
+    expect(arrangeWinningHand(rack, [], threeSuitsHand)).toBeNull()
   })
 })

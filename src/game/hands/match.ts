@@ -488,6 +488,57 @@ export function matchAgainstAll(
   return null
 }
 
+// One group of the completed winning hand, laid out in the order the hand is
+// written on the card, filled with the winner's actual tiles.
+export type WinningGroup = { kind: GroupKind; tiles: Tile[] }
+
+// Arrange a winning hand's real tiles (concealed `rack` + every exposed tile)
+// into the hand's groups, in the card's written order. Returns null if the
+// tiles don't actually complete `hand`. Used by the end-of-game "show hand"
+// reveal so the winner's tiles display exactly as the card lists them.
+export function arrangeWinningHand(
+  rack: Tile[],
+  exposures: Exposure[],
+  hand: NMJLHand,
+): WinningGroup[] | null {
+  const res = matchHand(rack, exposures, hand)
+  if (!res) return null
+  const groups = materializeGroups(hand, res.binding)
+  if (!groups) return null
+
+  // Bucket every actual tile by identity; jokers are fungible fillers.
+  const naturals = new Map<string, Tile[]>()
+  const jokers: Tile[] = []
+  for (const t of [...rack, ...exposures.flatMap((e) => e.tiles)]) {
+    const k = tileIdentityKey(t)
+    if (k === null) {
+      jokers.push(t)
+    } else {
+      const arr = naturals.get(k) ?? []
+      arr.push(t)
+      naturals.set(k, arr)
+    }
+  }
+
+  const out: WinningGroup[] = groups.map((g) => ({ kind: g.kind, tiles: [] }))
+  // Pass 1: groups that can't take jokers must be filled by naturals — claim
+  // their naturals first so a joker-allowed group can't steal them.
+  groups.forEach((g, i) => {
+    if (g.jokersAllowed) return
+    const avail = naturals.get(identityKey(g.identity)) ?? []
+    out[i]!.tiles = avail.splice(0, GROUP_SIZE[g.kind])
+  })
+  // Pass 2: joker-allowed groups take remaining naturals, then top up with jokers.
+  groups.forEach((g, i) => {
+    if (!g.jokersAllowed) return
+    const need = GROUP_SIZE[g.kind]
+    const nat = (naturals.get(identityKey(g.identity)) ?? []).splice(0, need)
+    const jk = jokers.splice(0, need - nat.length)
+    out[i]!.tiles = [...nat, ...jk]
+  })
+  return out
+}
+
 // Greedy count of how many tile slots of `groups` the rack's naturals can fill
 // (each natural used once). A partial-progress heuristic, not exact completion.
 function rackNaturalFill(rack: Tile[], groups: ConcreteGroup[]): number {

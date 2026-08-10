@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useMahjStore } from "../store"
+import { isCharlestonDecisionPrompt, useMahjStore } from "../store"
 import { PlayerRack } from "./PlayerRack"
 import { OpponentRack } from "./OpponentRack"
 import { DiscardPile } from "./DiscardPile"
@@ -41,6 +41,10 @@ export function Board(): React.ReactElement {
   // Bumped whenever the human clicks somewhere on the board while they still
   // owe a draw—replays the "Draw tile" button's attention shake.
   const [drawNudge, setDrawNudge] = useState(0)
+
+  // Bumped whenever the human taps a rack tile while a Charleston decision
+  // prompt is up—replays the prompt buttons' attention shake.
+  const [charlestonNudge, setCharlestonNudge] = useState(0)
 
   // Transient rejection when the human taps a joker during the Charleston
   const [jokerReject, setJokerReject] = useState<{ id: string } | null>(null)
@@ -223,6 +227,9 @@ export function Board(): React.ReactElement {
   const isPlay = phase === "play"
   const eastIsCurrent = isPlay && currentSeat === "east"
   const selectedIds = charleston.selections.east
+  // Waiting on a button answer (second Charleston / courtesy negotiation)—the
+  // rack is inert until the human decides.
+  const charlestonPrompt = isCharleston && isCharlestonDecisionPrompt(charleston)
 
   const eastTotal =
     players.east.rack.length +
@@ -233,6 +240,11 @@ export function Board(): React.ReactElement {
     // If a joker swap is in progress, this rack tile is the offered tile.
     if (attemptJokerSwap(tileId)) return
     if (isCharleston) {
+      // A decision prompt is up—swallow the tap and shake its buttons instead.
+      if (charlestonPrompt) {
+        setCharlestonNudge((n) => n + 1)
+        return
+      }
       // Jokers may never be passed in the Charleston—reject the tap.
       const tile = players.east.rack.find((t) => t.id === tileId)
       if (tile?.kind === "joker") {
@@ -254,7 +266,7 @@ export function Board(): React.ReactElement {
   }
 
   const actionSlot = isCharleston ? (
-    <CharlestonUI />
+    <CharlestonUI nudge={charlestonNudge} />
   ) : isPlay ? (
     <div
       style={{
@@ -403,7 +415,7 @@ export function Board(): React.ReactElement {
             shakeTileId={jokerReject?.id ?? null}
             notice={
               jokerReject
-                ? "You can't pass jokers during the Charleston."
+                ? "You can't pass Jokers during the Charleston."
                 : null
             }
           />

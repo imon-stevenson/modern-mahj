@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import { useMahjStore } from "../store"
 import { passDirection, passTarget } from "../game/charleston"
 import {
@@ -29,7 +30,12 @@ const bodyStyle: React.CSSProperties = {
 
 const plural = (n: number) => (n === 1 ? "tile" : "tiles")
 
-export function CharlestonUI(): React.ReactElement {
+export function CharlestonUI({
+  nudge = 0,
+}: {
+  /** Bumped when the human taps a tile during a decision prompt. */
+  nudge?: number
+}): React.ReactElement {
   const charleston = useMahjStore((s) => s.charleston)
   const selections = charleston.selections.east
   const clearSelection = useMahjStore((s) => s.clearSelection)
@@ -46,6 +52,18 @@ export function CharlestonUI(): React.ReactElement {
   // Resolve currently-selected ids to Tile objects for the flight animation.
   const selectedTiles = () => eastRack.filter((t) => selections.includes(t.id))
 
+  // Replay the shake each time `nudge` changes. Resetting the animation to
+  // 'none' + forcing a reflow restarts it even mid-run.
+  const rowRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!nudge) return
+    const el = rowRef.current
+    if (!el) return
+    el.style.animation = "none"
+    void el.offsetWidth
+    el.style.animation = "draw-nudge 500ms ease"
+  }, [nudge])
+
   if (charleston.pass === null && charleston.secondCharlestonAgreed === null) {
     // Between first and second—bots agreed, waiting on the human.
     return (
@@ -54,7 +72,7 @@ export function CharlestonUI(): React.ReactElement {
         <div style={bodyStyle}>
           First Charleston complete. Continue with a second Charleston?
         </div>
-        <div style={{ display: "flex", gap: 10 }}>
+        <div ref={rowRef} style={{ display: "flex", gap: 10 }}>
           <button
             type="button"
             className="btn btn-gold"
@@ -92,7 +110,7 @@ export function CharlestonUI(): React.ReactElement {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={eyebrowStyle}>Charleston</div>
         <div style={bodyStyle}>{who} declined the second Charleston.</div>
-        <div>
+        <div ref={rowRef}>
           <button
             type="button"
             className="btn btn-gold"
@@ -121,31 +139,36 @@ export function CharlestonUI(): React.ReactElement {
             How many tiles would you like to exchange with West? You'll pass and
             receive the greatest number of tiles you agree on.
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {[0, 1, 2, 3].map((n) => (
+          <div
+            ref={rowRef}
+            style={{ display: "flex", flexDirection: "column", gap: 12 }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {[0, 1, 2, 3].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  className={
+                    courtesyOffers.east === n ? "btn btn-gold" : "btn btn-ghost"
+                  }
+                  style={{ padding: "6px 14px" }}
+                  onClick={() => setCourtesyOffer("east", n)}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+            <div>
               <button
-                key={n}
                 type="button"
-                className={
-                  courtesyOffers.east === n ? "btn btn-gold" : "btn btn-ghost"
-                }
-                style={{ padding: "6px 14px" }}
-                onClick={() => setCourtesyOffer("east", n)}
+                className="btn btn-gold"
+                onClick={() => proposeCourtesy(courtesyOffers.east)}
               >
-                {n}
+                {courtesyOffers.east === 0
+                  ? "Skip courtesy pass"
+                  : `Propose ${courtesyOffers.east}`}
               </button>
-            ))}
-          </div>
-          <div>
-            <button
-              type="button"
-              className="btn btn-gold"
-              onClick={() => proposeCourtesy(courtesyOffers.east)}
-            >
-              {courtesyOffers.east === 0
-                ? "Skip courtesy pass"
-                : `Propose ${courtesyOffers.east}`}
-            </button>
+            </div>
           </div>
         </div>
       )
@@ -160,7 +183,7 @@ export function CharlestonUI(): React.ReactElement {
               ? `West can only courtesy pass ${agreed} ${plural(agreed)}. Continue with ${agreed}?`
               : `West doesn't want to courtesy pass any tiles.`}
           </div>
-          <div style={{ display: "flex", gap: 10 }}>
+          <div ref={rowRef} style={{ display: "flex", gap: 10 }}>
             {agreed > 0 && (
               <button
                 type="button"
