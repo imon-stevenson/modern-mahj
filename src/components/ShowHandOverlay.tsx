@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useMahjStore } from "../store"
+import { HandPattern } from "./HandPattern"
 import { TileView } from "./Tile"
 import { arrangeWinningHand } from "../game/hands/match"
 import type { Seat } from "../game/types"
@@ -81,14 +82,7 @@ export function ShowHandOverlay(): React.ReactElement | null {
           >
             {youWon ? "Mahjong! You win 🎉" : `${SEAT_LABEL[seat]} wins`}
           </div>
-          <div
-            style={{
-              font: "600 14px var(--font-ui)",
-              color: "var(--felt-ink-soft, #667)",
-            }}
-          >
-            {winningHand!.description}
-          </div>
+          <HandPattern hand={winningHand!} />
           <div className="eyebrow" style={{ opacity: 0.8 }}>
             {winningHand!.section} · Line {winningHand!.line}
             {winningHand!.closed ? " · Concealed" : ""}
@@ -128,7 +122,7 @@ export function ShowHandOverlay(): React.ReactElement | null {
         <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
           <button
             type="button"
-            className="btn btn-ghost"
+            className="btn btn-navy"
             onClick={() => setDismissed(true)}
           >
             View board

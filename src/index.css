@@ -157,6 +157,15 @@
     filter: brightness(1.06);
   }
 
+  /* Solid secondary for light surfaces (the Mahjong reveal card), where
+     .btn-ghost's felt-tuned white-on-transparent disappears. */
+  .btn-navy {
+    @apply bg-tile-navy text-paper;
+  }
+  .btn-navy:hover:not(:disabled) {
+    filter: brightness(1.12);
+  }
+
   .btn-gold {
     @apply bg-gold text-gold-ink font-extrabold;
   }
