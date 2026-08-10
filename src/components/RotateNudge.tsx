@@ -43,21 +43,9 @@ export function RotateNudge(): React.ReactElement | null {
       role="dialog"
       aria-label="Rotate your phone to landscape"
       onClick={() => setShow(false)}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 1000,
-        background: "var(--felt)",
-        color: "var(--felt-ink)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        gap: 24,
-        padding: 32,
-        animation: "rotate-nudge-in 240ms ease",
-      }}
+      className="fixed inset-0 z-[1000] bg-felt text-felt-ink flex flex-col items-center justify-center text-center gap-6 p-8"
+      // Entrance animation isn't expressible as a utility (custom keyframes).
+      style={{ animation: "rotate-nudge-in 240ms ease" }}
     >
       <svg
         className="rotate-nudge-icon"
@@ -101,21 +89,15 @@ export function RotateNudge(): React.ReactElement | null {
       </svg>
 
       <div>
-        <div style={{ font: "800 24px var(--font-ui)", letterSpacing: "-0.01em" }}>
+        <div className="font-ui text-[24px] font-extrabold tracking-[-0.01em]">
           Rotate your phone
         </div>
-        <div
-          style={{
-            marginTop: 8,
-            font: "500 15px var(--font-ui)",
-            color: "var(--felt-ink-soft)",
-          }}
-        >
+        <div className="mt-2 font-ui text-[15px] font-medium text-felt-ink-soft">
           This game plays best in landscape.
         </div>
       </div>
 
-      <div style={{ font: "600 12px var(--font-ui)", color: "var(--felt-ink-mute)" }}>
+      <div className="font-ui text-[12px] font-semibold text-felt-ink-mute">
         Tap to dismiss
       </div>
     </div>

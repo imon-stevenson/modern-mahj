@@ -37,20 +37,10 @@ export function ExposureRow({
     phase === "play" && currentSeat === "east" && eastTotal === 14
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 14,
-        transform: flip ? "rotate(180deg)" : undefined,
-      }}
-    >
+    <div className={`flex flex-wrap gap-[14px] ${flip ? "rotate-180" : ""}`}>
       {exposures.map((ex, i) => (
-        <div
-          key={i}
-          style={{ display: "flex", flexDirection: "column", gap: 4 }}
-        >
-          <div style={{ display: "flex", gap: 4 }}>
+        <div key={i} className="flex flex-col gap-1">
+          <div className="flex gap-1">
             {ex.tiles.map((t) => {
               const canClick = t.kind === "joker" && swapEnabled
               const isSource = source?.jokerId === t.id
@@ -70,8 +60,9 @@ export function ExposureRow({
                         }
                       : undefined
                   }
+                  className="rounded-sm transition-[box-shadow] duration-[120ms] ease-[ease]"
+                  // Every remaining property here is computed per tile.
                   style={{
-                    borderRadius: 8,
                     cursor: canClick ? "pointer" : undefined,
                     visibility: hiddenIds.includes(t.id) ? "hidden" : "visible",
                     boxShadow: isSource
@@ -82,7 +73,6 @@ export function ExposureRow({
                       : highlightIds.includes(t.id)
                         ? `tile-highlight ${BOT_FLASH_MS}ms ease`
                         : undefined,
-                    transition: "box-shadow 120ms ease",
                   }}
                 >
                   <TileView tile={t} width={tileWidth} />

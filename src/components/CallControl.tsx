@@ -102,38 +102,16 @@ export function CallControl(): React.ReactElement {
   }, [isDesktop, claimable, choosing, openHumanCall, passCall])
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        flexWrap: "wrap",
-        minHeight: 44,
-      }}
-    >
+    <div className="flex items-center gap-3 flex-wrap min-h-[44px]">
       {claimable && awaitingCall && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div className="flex items-center gap-2">
           <TileView tile={awaitingCall.discardTile} width={40} />
-          <span
-            style={{
-              font: "600 13px var(--font-ui)",
-              color: "var(--felt-ink-soft)",
-            }}
-          >
-            {discarder} discarded
-          </span>
+          <span className="felt-note">{discarder} discarded</span>
         </div>
       )}
 
       {choosing ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            flexWrap: "wrap",
-          }}
-        >
+        <div className="flex items-center gap-2 flex-wrap">
           {options.map((kind) => (
             <button
               key={kind}
@@ -150,13 +128,13 @@ export function CallControl(): React.ReactElement {
             onClick={() => passCall()}
           >
             Never mind
-            <div style={{ fontSize: "8px", opacity: 0.75 }}>
+            <div className="text-[8px] opacity-75">
               {isDesktop ? ' (Hint: Press "p")' : ""}
             </div>
           </button>
         </div>
       ) : (
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             className="btn btn-gold"
@@ -164,7 +142,7 @@ export function CallControl(): React.ReactElement {
             disabled={!claimable}
           >
             Call
-            <div style={{ fontSize: "8px", opacity: 0.75 }}>
+            <div className="text-[8px] opacity-75">
               {isDesktop ? ' (Hint: Press "c")' : ""}
             </div>
           </button>
@@ -175,19 +153,13 @@ export function CallControl(): React.ReactElement {
               onClick={() => passCall()}
             >
               Pass
-              <div style={{ fontSize: "8px", opacity: 0.75 }}>
+              <div className="text-[8px] opacity-75">
                 {isDesktop ? ' (Hint: Press "p")' : ""}
               </div>
             </button>
           )}
           {claimable && secondsLeft !== null && (
-            <span
-              className="mono"
-              style={{
-                font: "700 14px var(--font-mono)",
-                color: "var(--suit-red)",
-              }}
-            >
+            <span className="mono text-[14px] font-bold text-suit-red">
               {secondsLeft}s
             </span>
           )}

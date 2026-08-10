@@ -12,20 +12,14 @@ export function HandPattern({ hand }: { hand: NMJLHand }): React.ReactElement {
   const runs = patternColorRuns(pattern, handTileColors(hand.groups))
 
   return (
-    <div style={{ font: "700 14px var(--font-ui)", letterSpacing: "0.02em" }}>
+    <div className="font-ui text-[14px] font-bold tracking-[0.02em]">
       {runs.map((r, i) => (
         <span key={i} style={{ color: r.color ?? undefined }}>
           {r.text}
         </span>
       ))}
       {note && (
-        <span
-          style={{
-            marginLeft: 8,
-            font: "500 12px var(--font-ui)",
-            color: "var(--ink-faint)",
-          }}
-        >
+        <span className="ml-2 font-ui text-[12px] font-medium text-ink-faint">
           {note}
         </span>
       )}

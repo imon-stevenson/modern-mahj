@@ -64,13 +64,7 @@ export function EmojiRain(): React.ReactElement | null {
   return (
     <div
       aria-hidden="true"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 2000,
-        pointerEvents: "none",
-        overflow: "hidden",
-      }}
+      className="fixed inset-0 z-[2000] pointer-events-none overflow-hidden"
     >
       {pieces.map((p) => (
         <span

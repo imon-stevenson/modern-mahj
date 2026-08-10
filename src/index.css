@@ -117,6 +117,15 @@
     @apply font-ui text-[12px] font-bold uppercase tracking-[0.12em] text-label-blue;
   }
 
+  /* Felt-side counterparts to .eyebrow / paper body text. */
+  .felt-label {
+    @apply font-ui text-[11px] font-bold uppercase tracking-[0.08em] text-felt-ink-mute;
+  }
+
+  .felt-note {
+    @apply font-ui text-[13px] font-semibold text-felt-ink-soft;
+  }
+
   .mono {
     @apply font-mono font-semibold tracking-[-0.01em] tabular-nums;
   }

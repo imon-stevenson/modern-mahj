@@ -23,11 +23,12 @@ export function GameOverBanner(): React.ReactElement | null {
   const youWon = winner === "east"
   const wallGame = winner === null
 
+  // Left accent bar color: win / wall game / loss.
   const accent = youWon
-    ? "var(--gold)"
+    ? "border-l-gold"
     : wallGame
-      ? "var(--felt-divider)"
-      : "var(--tile-navy)"
+      ? "border-l-felt-divider"
+      : "border-l-tile-navy"
   const heading = youWon
     ? "Mahjong! 🤪"
     : wallGame
@@ -41,9 +42,7 @@ export function GameOverBanner(): React.ReactElement | null {
 
   return (
     <div
-      className="flex items-center gap-4 bg-paper border border-solid border-hairline rounded-md mb-4 px-[22px] py-[18px]"
-      // Left accent bar color is win/loss/wall dependent—dynamic, stays inline.
-      style={{ borderLeftWidth: 6, borderLeftColor: accent }}
+      className={`flex items-center gap-4 bg-paper border border-solid border-hairline rounded-md mb-4 px-[22px] py-[18px] border-l-[6px] ${accent}`}
     >
       <div>
         <div className="font-ui text-[22px] font-extrabold tracking-[-0.01em]">

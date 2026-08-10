@@ -72,9 +72,14 @@ Notes:
 - TS uses project references — `tsc -b` builds both `tsconfig.app.json` and `tsconfig.node.json`.
 - React Compiler is **not** enabled.
 
-## Styling (Tailwind v4, hybrid)
+## Styling (Tailwind v4)
+
+**All styling is Tailwind.** The inline-style migration is finished — every `style={{}}` left in `src/` is a runtime-computed value. New UI uses utility classes; do not add static inline styles.
 
 - Tailwind v4 is wired via `@tailwindcss/vite`; `src/index.css` imports **theme + utilities only (no Preflight)** — the app keeps its own reset in `@layer base`, so bare buttons/inputs aren't restyled. Don't add Preflight without auditing.
 - Design tokens live in the `@theme` block as `--color-*` / `--font-*` / `--radius-*`, so they're usable as utilities (`bg-tile-navy`, `text-suit-red`, `font-ui`, `rounded-md`). The short names (`var(--tile-navy)`, …) still resolve via back-compat aliases in `:root`.
-- New / static UI: use Tailwind utility classes (or the `@layer components` atoms `.btn*`, `.eyebrow`, `.mono`, `.card-surface`). Because Preflight is off, include `border-solid` whenever you use `border`.
-- **Runtime-computed styles stay inline** (`style={{}}`): tile sizing, flight-overlay/emoji CSS vars, drawer bounds, per-tile colors, animation strings. `@keyframes` and the board grid stay in `index.css`. Migrate existing inline styles to Tailwind only opportunistically, verifying no visual change.
+- Reach for an existing `@layer components` atom before respelling a recipe: `.btn` + `.btn-{gold,green,ghost,outline,navy}`, `.eyebrow` / `.card-surface` (paper surfaces), `.felt-label` / `.felt-note` (felt surfaces), `.mono`. Promote a recipe to a new atom once it appears in 3+ places.
+- Because Preflight is off, include `border-solid` whenever you use `border`.
+- **Only runtime-computed styles stay inline** (`style={{}}`): per-tile sizing and colors, flight-overlay/emoji CSS vars, drawer bounds, pointer-tracked positions, animation strings built from a JS constant. When an element mixes both, put the static properties in `className` and leave only the computed ones inline.
+- `@keyframes`, the `.board-grid` template, and `.opp-tiles`' media query stay in `index.css`.
+- **Tailwind scans raw source text**, so a class it can't see emits no CSS and fails silently through build, test, and lint. Always leave a space before `${` in a template-literal `className` (`` `flex gap-2 ${on ? "bg-gold" : ""}` ``) and never assemble class names by concatenation. After adding arbitrary-value utilities, confirm they landed: `npm run build`, then grep `dist/assets/*.css` for the escaped selector (e.g. `gap-\[14px\]`).

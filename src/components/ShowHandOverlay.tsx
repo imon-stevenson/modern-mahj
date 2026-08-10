@@ -42,48 +42,23 @@ export function ShowHandOverlay(): React.ReactElement | null {
   return (
     <div
       // Below EmojiRain (z 2000) so the celebration rains on top of the reveal.
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px 16px",
-        background: "oklch(0.15 0.03 258 / 0.62)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        overflowY: "auto",
-      }}
+      className="fixed inset-0 z-[1000] flex items-center justify-center px-4 py-6 bg-[oklch(0.15_0.03_258_/_0.62)] backdrop-blur-[8px] overflow-y-auto"
     >
       <div
-        className="card-surface"
-        style={{
-          maxWidth: 880,
-          width: "100%",
-          borderRadius: "var(--radius-lg)",
-          padding: "clamp(20px, 4vw, 36px)",
-          border: `1px solid ${youWon ? "var(--gold)" : "var(--hairline)"}`,
-          boxShadow: "0 24px 64px oklch(0.15 0.03 258 / 0.55)",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          gap: 18,
-          alignItems: "center",
-        }}
+        className={`card-surface max-w-[880px] w-full rounded-lg p-[clamp(20px,4vw,36px)] border border-solid shadow-[0_24px_64px_oklch(0.15_0.03_258_/_0.55)] text-center flex flex-col gap-[18px] items-center ${
+          youWon ? "border-gold" : "border-hairline"
+        }`}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <div className="flex flex-col gap-1">
           <div
-            style={{
-              font: "800 26px var(--font-ui)",
-              letterSpacing: "-0.01em",
-              color: youWon ? "var(--gold-ink)" : "var(--tile-navy)",
-            }}
+            className={`font-ui text-[26px] font-extrabold tracking-[-0.01em] ${
+              youWon ? "text-gold-ink" : "text-tile-navy"
+            }`}
           >
             {youWon ? "Mahjong! You win 🎉" : `${SEAT_LABEL[seat]} wins`}
           </div>
           <HandPattern hand={winningHand!} />
-          <div className="eyebrow" style={{ opacity: 0.8 }}>
+          <div className="eyebrow opacity-80">
             {winningHand!.section} · Line {winningHand!.line}
             {winningHand!.closed ? " · Concealed" : ""}
           </div>
@@ -91,19 +66,10 @@ export function ShowHandOverlay(): React.ReactElement | null {
 
         {/* Winning tiles, in the order the hand is written on the card. Groups
             are separated by a wider gap; the whole row scrolls if it's narrow. */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "flex-end",
-            gap: 20,
-            maxWidth: "100%",
-          }}
-        >
+        <div className="flex flex-wrap justify-center items-end gap-5 max-w-full">
           {groups ? (
             groups.map((g, gi) => (
-              <div key={gi} style={{ display: "flex", gap: 3 }}>
+              <div key={gi} className="flex gap-[3px]">
                 {g.tiles.map((t) => (
                   <TileView key={t.id} tile={t} width={46} />
                 ))}
@@ -111,7 +77,7 @@ export function ShowHandOverlay(): React.ReactElement | null {
             ))
           ) : (
             // Fallback (shouldn't happen): show the raw tiles ungrouped.
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+            <div className="flex flex-wrap gap-[3px]">
               {[...p.rack, ...p.exposures.flatMap((e) => e.tiles)].map((t) => (
                 <TileView key={t.id} tile={t} width={46} />
               ))}
@@ -119,7 +85,7 @@ export function ShowHandOverlay(): React.ReactElement | null {
           )}
         </div>
 
-        <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+        <div className="flex gap-3 mt-1">
           <button
             type="button"
             className="btn btn-navy"

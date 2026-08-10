@@ -2,8 +2,6 @@ import { Fragment, useEffect, useMemo, useState } from "react"
 import { useMahjStore } from "../store"
 import { HandPattern } from "./HandPattern"
 
-const DRAWER_Z = 30
-
 // "The Card"—a scannable reference of the NMJL hands. Shown as a right-side
 // drawer with a pull tab when closed. Its height is bounded to stop above the
 // human's rack (measured from `#seat-east`) so the rack stays visible while the
@@ -76,23 +74,7 @@ export function CardDrawer({
         type="button"
         onClick={onOpen}
         aria-label="Open the card"
-        style={{
-          position: "fixed",
-          right: 0,
-          top: "10%",
-          zIndex: DRAWER_Z,
-          writingMode: "vertical-rl",
-          padding: "16px 8px",
-          border: "none",
-          borderRadius: "12px 0 0 12px",
-          background: "var(--gold)",
-          color: "var(--gold-ink)",
-          font: "800 12px var(--font-ui)",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          boxShadow: "-5px 6px 18px oklch(0.22 0.05 255 / 0.28)",
-          cursor: "pointer",
-        }}
+        className="fixed right-0 top-[10%] px-3 z-30 [writing-mode:vertical-rl] px-2 py-4 border-none rounded-[12px_0_0_12px] bg-gold text-gold-ink font-ui text-[12px] font-extrabold tracking-[0.12em] uppercase shadow-[-5px_6px_18px_oklch(0.22_0.05_255_/_0.28)] cursor-pointer"
       >
         The Card
       </button>
@@ -101,92 +83,41 @@ export function CardDrawer({
 
   return (
     <div
+      className="fixed right-0 w-[min(400px,92vw)] z-30 flex flex-col overflow-hidden bg-paper border border-solid border-hairline border-r-0 rounded-[var(--radius-md)_0_0_var(--radius-md)] shadow-[-14px_0_44px_oklch(0.22_0.05_255_/_0.3)]"
+      // Bounds are measured from the header/rack; the slide-in uses custom
+      // keyframes. Both stay inline.
       style={{
-        position: "fixed",
-        right: 0,
         top: bounds.top,
         bottom: bounds.bottom,
-        width: "min(400px, 92vw)",
-        zIndex: DRAWER_Z,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        background: "var(--paper)",
-        border: "1px solid var(--hairline)",
-        borderRight: "none",
-        borderRadius: "var(--radius-md) 0 0 var(--radius-md)",
-        boxShadow: "-14px 0 44px oklch(0.22 0.05 255 / 0.3)",
         animation: "card-drawer-slide 220ms ease",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          padding: "14px 18px",
-          borderBottom: "1px solid var(--hairline)",
-        }}
-      >
+      <div className="flex items-center gap-2.5 px-[18px] py-[14px] border-b border-solid border-hairline">
         <div>
-          <div className="eyebrow" style={{ marginBottom: 2 }}>
-            The Card
-          </div>
-          <div
-            style={{
-              font: "800 16px var(--font-ui)",
-              color: "var(--tile-navy)",
-            }}
-          >
+          <div className="eyebrow mb-0.5">The Card</div>
+          <div className="font-ui text-[16px] font-extrabold text-tile-navy">
             {cardYear} Card{" "}
-            <span
-              className="mono"
-              style={{
-                font: "600 12px var(--font-mono)",
-                color: "var(--ink-faint)",
-              }}
-            >
+            <span className="mono text-[12px] text-ink-faint">
               · {hands.length} hands
             </span>
           </div>
         </div>
         <button
           type="button"
-          className="btn btn-outline"
+          className="btn btn-outline ml-auto px-3 py-[6px] leading-none"
           aria-label="Close the card"
-          style={{ marginLeft: "auto", padding: "6px 12px", lineHeight: 1 }}
           onClick={onClose}
         >
           ✕ Close
         </button>
       </div>
 
-      <ul
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-          overflowY: "auto",
-          flex: 1,
-        }}
-      >
+      <ul className="list-none p-0 m-0 overflow-y-auto flex-1">
         {sections.map((group) => (
           <Fragment key={group.section}>
             <li
               role="presentation"
-              style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
-                padding: "10px 18px",
-                background: "var(--paper)",
-                borderBottom: "1px solid var(--hairline)",
-                textAlign: "center",
-                textTransform: "uppercase",
-                letterSpacing: "0.16em",
-                font: "800 13px var(--font-ui)",
-                color: "var(--tile-navy)",
-              }}
+              className="sticky top-0 z-[1] px-[18px] py-2.5 bg-paper border-b border-solid border-hairline text-center uppercase tracking-[0.16em] font-ui text-[13px] font-extrabold text-tile-navy"
             >
               {group.section}
             </li>
@@ -207,44 +138,20 @@ export function CardDrawer({
                       toggle()
                     }
                   }}
-                  style={{
-                    padding: "12px 18px",
-                    borderBottom: "1px solid var(--hairline)",
-                    cursor: "pointer",
-                    background: on ? "var(--hand-highlight)" : "transparent",
-                  }}
+                  className={`px-[18px] py-3 border-b border-solid border-hairline cursor-pointer ${
+                    on ? "bg-hand-highlight" : "bg-transparent"
+                  }`}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      font: "600 11px var(--font-ui)",
-                      color: "var(--ink-faint)",
-                      marginBottom: 4,
-                    }}
-                  >
-                    <span
-                      style={{
-                        textTransform: "uppercase",
-                        letterSpacing: "0.06em",
-                      }}
-                    >
+                  <div className="flex items-center gap-2 font-ui text-[11px] font-semibold text-ink-faint mb-1">
+                    <span className="uppercase tracking-[0.06em]">
                       L{h.line}
                     </span>
                     <span
-                      style={{
-                        marginLeft: "auto",
-                        font: "700 10px var(--font-ui)",
-                        padding: "2px 6px",
-                        borderRadius: 6,
-                        background: h.closed
-                          ? "oklch(0.32 0.07 255 / 0.12)"
-                          : "oklch(0.5 0.14 150 / 0.14)",
-                        color: h.closed
-                          ? "var(--tile-navy)"
-                          : "var(--suit-green)",
-                      }}
+                      className={`ml-auto font-ui text-[10px] font-bold px-1.5 py-[2px] rounded-[6px] ${
+                        h.closed
+                          ? "bg-[oklch(0.32_0.07_255_/_0.12)] text-tile-navy"
+                          : "bg-[oklch(0.5_0.14_150_/_0.14)] text-suit-green"
+                      }`}
                       title={
                         h.closed ? "Concealed hand" : "Exposed hand allowed"
                       }

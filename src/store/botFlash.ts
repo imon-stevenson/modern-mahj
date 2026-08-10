@@ -6,7 +6,7 @@ import type { Seat } from "../game/types"
 // seat, so North's can still be up while South acts. Kept out of game state so
 // it never touches gameplay or localStorage.
 
-export const BOT_FLASH_MS = 4000
+export const BOT_FLASH_MS = 6000
 
 type Flash = {
   text: string

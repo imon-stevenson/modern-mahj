@@ -100,24 +100,8 @@ export function Board(): React.ReactElement {
 
   if (phase === "setup") {
     return (
-      <div
-        style={{
-          background: "var(--felt)",
-          borderRadius: "var(--radius-lg)",
-          padding: "64px 40px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "48px",
-        }}
-      >
-        <div
-          style={{
-            color: "var(--felt-ink-soft)",
-            font: "500 16px var(--font-ui)",
-            paddingTop: "24px",
-          }}
-        >
+      <div className="bg-felt rounded-lg px-10 py-16 flex flex-col items-center gap-12">
+        <div className="text-felt-ink-soft font-ui text-[16px] font-medium pt-6">
           No game in progress. Start one from the top bar to take your seat at
           the table.
         </div>
@@ -129,75 +113,35 @@ export function Board(): React.ReactElement {
     // Card picker drawn within the mat boundary before every game. The default
     // (most recently used / 2026) is the primary button.
     return (
-      <div
-        style={{
-          background: "var(--felt)",
-          borderRadius: "var(--radius-lg)",
-          padding: "56px 40px",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 22,
-        }}
-      >
-        <div
-          style={{
-            font: "800 22px var(--font-ui)",
-            color: "var(--felt-ink)",
-            letterSpacing: "-0.01em",
-          }}
-        >
+      <div className="bg-felt rounded-lg px-10 py-14 text-center flex flex-col items-center gap-[22px]">
+        <div className="font-ui text-[22px] font-extrabold text-felt-ink tracking-[-0.01em]">
           Which card are you playing with?
         </div>
-        <div
-          style={{
-            font: "500 14px var(--font-ui)",
-            color: "var(--felt-ink-soft)",
-          }}
-        >
+        <div className="font-ui text-[14px] font-medium text-felt-ink-soft">
           Pick the NMJL card for this game—it can't change once you start!
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: 14,
-            marginTop: 6,
-          }}
-        >
+        <div className="flex flex-wrap justify-center gap-[14px] mt-1.5">
           {CARD_YEARS.map((year) => (
             <button
               key={year}
               type="button"
-              className={year === cardYear ? "btn btn-gold" : "btn btn-outline"}
-              style={{ padding: "12px 22px", font: "800 15px var(--font-ui)" }}
+              className={`btn px-[22px] py-3 text-[15px] font-extrabold ${
+                year === cardYear ? "btn-gold" : "btn-outline"
+              }`}
               onClick={() => setCardYear(year)}
             >
               {year}
             </button>
           ))}
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: 14,
-            marginTop: 6,
-          }}
-        >
+        <div className="flex flex-wrap justify-center gap-[14px] mt-1.5">
           {["Beginner", "Intermediate", "Expert"].map((level) => (
             <button
               key={level}
               type="button"
-              className={
-                level.toLowerCase() === difficulty
-                  ? "btn btn-gold"
-                  : "btn btn-outline"
-              }
-              style={{ padding: "12px 14px", font: "800 15px var(--font-ui)" }}
+              className={`btn px-[14px] py-3 text-[15px] font-extrabold ${
+                level.toLowerCase() === difficulty ? "btn-gold" : "btn-outline"
+              }`}
               onClick={() => setDifficulty(level.toLowerCase() as Difficulty)}
             >
               {level}
@@ -207,14 +151,7 @@ export function Board(): React.ReactElement {
         <button
           type="button"
           autoFocus
-          className="btn btn-green"
-          style={{
-            marginTop: 6,
-            padding: "15px 52px",
-            font: "800 17px var(--font-ui)",
-            letterSpacing: "0.02em",
-            boxShadow: "0 8px 22px oklch(0.22 0.05 255 / 0.4)",
-          }}
+          className="btn btn-green mt-1.5 px-[52px] py-[15px] text-[17px] font-extrabold tracking-[0.02em] shadow-[0_8px_22px_oklch(0.22_0.05_255_/_0.4)]"
           onClick={() => startGameWithCard(cardYear)}
         >
           Begin →
@@ -268,16 +205,7 @@ export function Board(): React.ReactElement {
   const actionSlot = isCharleston ? (
     <CharlestonUI nudge={charlestonNudge} />
   ) : isPlay ? (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: 20,
-        flexWrap: "wrap",
-        rowGap: 10,
-      }}
-    >
+    <div className="flex justify-between items-center gap-x-5 gap-y-2.5 flex-wrap">
       <PlayActions
         eastIsCurrent={eastIsCurrent}
         needsDraw={needsDraw}
@@ -294,51 +222,20 @@ export function Board(): React.ReactElement {
     <div>
       <GameOverBanner />
       <div
-        className="board-grid"
+        className="board-grid relative bg-felt rounded-lg p-6"
         onClick={onBoardClick}
-        style={{
-          position: "relative",
-          background: "var(--felt)",
-          borderRadius: "var(--radius-lg)",
-          padding: 24,
-        }}
       >
         {paused && (
           // Opaque overlay covering only the mat—the header, Card drawer, and
           // Rules panel (outside the board) stay visible and usable.
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{
-              position: "absolute",
-              inset: 0,
-              zIndex: 5,
-              borderRadius: "var(--radius-lg)",
-              background:
-                "linear-gradient(160deg, oklch(0.24 0.05 258), oklch(0.19 0.05 258))",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-              textAlign: "center",
-              padding: 24,
-            }}
+            className="absolute inset-0 z-[5] rounded-lg bg-[linear-gradient(160deg,oklch(0.24_0.05_258),oklch(0.19_0.05_258))] flex flex-col items-center justify-center gap-5 text-center p-6"
           >
-            <div
-              style={{
-                font: "800 26px var(--font-ui)",
-                color: "var(--felt-ink)",
-              }}
-            >
+            <div className="font-ui text-[26px] font-extrabold text-felt-ink">
               Game Paused
             </div>
-            <div
-              style={{
-                font: "500 14px var(--font-ui)",
-                color: "var(--felt-ink-soft)",
-                maxWidth: 360,
-              }}
-            >
+            <div className="font-ui text-[14px] font-medium text-felt-ink-soft max-w-[360px]">
               The game is on hold. Resume when you're ready.
             </div>
             <button
@@ -350,15 +247,9 @@ export function Board(): React.ReactElement {
             </button>
           </div>
         )}
-        <div
-          style={{
-            gridArea: "west",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
+        <div className="[grid-area:west] flex justify-center">
           {/* Centered box with open felt on either side, matching N/S width. */}
-          <div id="seat-west" style={{ width: "100%", maxWidth: 330 }}>
+          <div id="seat-west" className="w-full max-w-[330px]">
             <OpponentRack
               seat="west"
               player={players.west}
@@ -367,14 +258,14 @@ export function Board(): React.ReactElement {
             />
           </div>
         </div>
-        <div id="seat-north" style={{ gridArea: "north" }}>
+        <div id="seat-north" className="[grid-area:north]">
           <OpponentRack
             seat="north"
             player={players.north}
             isCurrent={currentSeat === "north"}
           />
         </div>
-        <div id="seat-south" style={{ gridArea: "south" }}>
+        <div id="seat-south" className="[grid-area:south]">
           <OpponentRack
             seat="south"
             player={players.south}
@@ -382,22 +273,12 @@ export function Board(): React.ReactElement {
           />
         </div>
 
-        <div
-          style={{
-            gridArea: "center",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: 22,
-            padding: "8px 0",
-          }}
-        >
+        <div className="[grid-area:center] flex flex-col items-center justify-start gap-[22px] py-2">
           <WallIndicator remaining={wall.length} />
           <DiscardPile discards={discards} />
         </div>
 
-        <div id="seat-east" style={{ gridArea: "east" }}>
+        <div id="seat-east" className="[grid-area:east]">
           <PlayerRack
             player={players.east}
             selectedIds={isCharleston ? selectedIds : []}
@@ -435,44 +316,19 @@ function WallIndicator({
   remaining: number
 }): React.ReactElement {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 6,
-      }}
-    >
-      <div
-        style={{
-          font: "700 11px var(--font-ui)",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--felt-ink-mute)",
-        }}
-      >
-        Wall
-      </div>
-      <div style={{ display: "flex", gap: 2 }}>
+    <div className="flex flex-col items-center gap-1.5">
+      <div className="felt-label">Wall</div>
+      <div className="flex gap-[2px]">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            style={{
-              width: 20,
-              height: 28,
-              borderRadius: 4,
-              background:
-                "linear-gradient(155deg, oklch(0.36 0.07 255), oklch(0.22 0.06 258))",
-              border: "1px solid oklch(0.18 0.05 258)",
-              opacity: remaining > i * (remaining / 8) ? 1 : 0.3,
-            }}
+            className="w-5 h-7 rounded-[4px] bg-[linear-gradient(155deg,oklch(0.36_0.07_255),oklch(0.22_0.06_258))] border border-solid border-[oklch(0.18_0.05_258)]"
+            // Segments dim as the wall depletes.
+            style={{ opacity: remaining > i * (remaining / 8) ? 1 : 0.3 }}
           />
         ))}
       </div>
-      <div
-        className="mono"
-        style={{ font: "600 12px var(--font-mono)", color: "var(--gold)" }}
-      >
+      <div className="mono text-[12px] text-gold">
         {remaining} remaining
       </div>
     </div>
@@ -510,19 +366,14 @@ function PlayActions({
   if (!eastIsCurrent) {
     const name = currentSeat.charAt(0).toUpperCase() + currentSeat.slice(1)
     return (
-      <div
-        style={{
-          font: "600 13px var(--font-ui)",
-          color: "var(--felt-ink-mute)",
-        }}
-      >
+      <div className="font-ui text-[13px] font-semibold text-felt-ink-mute">
         Waiting for {name} to play…
       </div>
     )
   }
   if (needsDraw) {
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div className="flex items-center gap-3">
         <button
           ref={btnRef}
           data-draw-btn="true"
@@ -531,26 +382,17 @@ function PlayActions({
           onClick={onDraw}
         >
           Draw
-          <div style={{ fontSize: "8px", opacity: 0.75 }}>
+          <div className="text-[8px] opacity-75">
             {isDesktop ? ' (Hint: Press "d")' : ""}
           </div>
         </button>
-        <span
-          style={{
-            font: "600 12px var(--font-ui)",
-            color: "var(--felt-ink-mute)",
-          }}
-        >
+        <span className="font-ui text-[12px] font-semibold text-felt-ink-mute">
           Draw from the wall to begin your turn.
         </span>
       </div>
     )
   }
   return (
-    <div
-      style={{ font: "600 13px var(--font-ui)", color: "var(--felt-ink-soft)" }}
-    >
-      Click a tile to discard it.
-    </div>
+    <div className="felt-note">Click a tile to discard it.</div>
   )
 }

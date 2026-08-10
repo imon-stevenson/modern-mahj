@@ -16,17 +16,11 @@ const PASS_LABEL: Record<string, string> = {
   courtesy: "Courtesy · With West",
 }
 
-const eyebrowStyle: React.CSSProperties = {
-  font: "600 14px var(--font-ui)",
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  color: "var(--gold)",
-}
-
-const bodyStyle: React.CSSProperties = {
-  font: "600 13px var(--font-ui)",
-  color: "var(--felt-ink)",
-}
+// Gold prompt heading + its body copy. Both are specific to the Charleston
+// panel—the felt-wide atoms (.felt-label / .felt-note) are a different recipe.
+const EYEBROW =
+  "font-ui text-[14px] font-semibold uppercase tracking-[0.08em] text-gold"
+const BODY = "font-ui text-[13px] font-semibold text-felt-ink"
 
 const plural = (n: number) => (n === 1 ? "tile" : "tiles")
 
@@ -67,12 +61,12 @@ export function CharlestonUI({
   if (charleston.pass === null && charleston.secondCharlestonAgreed === null) {
     // Between first and second—bots agreed, waiting on the human.
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={eyebrowStyle}>Charleston</div>
-        <div style={bodyStyle}>
+      <div className="flex flex-col gap-2.5">
+        <div className={EYEBROW}>Charleston</div>
+        <div className={BODY}>
           First Charleston complete. Continue with a second Charleston?
         </div>
-        <div ref={rowRef} style={{ display: "flex", gap: 10 }}>
+        <div ref={rowRef} className="flex gap-2.5">
           <button
             type="button"
             className="btn btn-gold"
@@ -107,9 +101,9 @@ export function CharlestonUI({
             ? `${names[0]} and ${names[1]}`
             : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={eyebrowStyle}>Charleston</div>
-        <div style={bodyStyle}>{who} declined the second Charleston.</div>
+      <div className="flex flex-col gap-2.5">
+        <div className={EYEBROW}>Charleston</div>
+        <div className={BODY}>{who} declined the second Charleston.</div>
         <div ref={rowRef}>
           <button
             type="button"
@@ -133,25 +127,21 @@ export function CharlestonUI({
 
     if (step === "choose") {
       return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={eyebrowStyle}>Courtesy Pass · East ↔ West</div>
-          <div style={bodyStyle}>
+        <div className="flex flex-col gap-3">
+          <div className={EYEBROW}>Courtesy Pass · East ↔ West</div>
+          <div className={BODY}>
             How many tiles would you like to exchange with West? You'll pass and
             receive the greatest number of tiles you agree on.
           </div>
-          <div
-            ref={rowRef}
-            style={{ display: "flex", flexDirection: "column", gap: 12 }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div ref={rowRef} className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
               {[0, 1, 2, 3].map((n) => (
                 <button
                   key={n}
                   type="button"
-                  className={
-                    courtesyOffers.east === n ? "btn btn-gold" : "btn btn-ghost"
-                  }
-                  style={{ padding: "6px 14px" }}
+                  className={`btn px-[14px] py-[6px] ${
+                    courtesyOffers.east === n ? "btn-gold" : "btn-ghost"
+                  }`}
                   onClick={() => setCourtesyOffer("east", n)}
                 >
                   {n}
@@ -176,14 +166,14 @@ export function CharlestonUI({
 
     if (step === "confirm") {
       return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={eyebrowStyle}>Courtesy Pass · East ↔ West</div>
-          <div style={bodyStyle}>
+        <div className="flex flex-col gap-3">
+          <div className={EYEBROW}>Courtesy Pass · East ↔ West</div>
+          <div className={BODY}>
             {agreed > 0
               ? `West can only courtesy pass ${agreed} ${plural(agreed)}. Continue with ${agreed}?`
               : `West doesn't want to courtesy pass any tiles.`}
           </div>
-          <div ref={rowRef} style={{ display: "flex", gap: 10 }}>
+          <div ref={rowRef} className="flex gap-2.5">
             {agreed > 0 && (
               <button
                 type="button"
@@ -214,16 +204,16 @@ export function CharlestonUI({
       void playCharlestonFlight(captured)
     }
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={eyebrowStyle}>Courtesy Pass · East ↔ West</div>
-        <div style={bodyStyle}>
+      <div className="flex flex-col gap-3">
+        <div className={EYEBROW}>Courtesy Pass · East ↔ West</div>
+        <div className={BODY}>
           Select {agreed} {plural(agreed)} to pass to WEST ·{" "}
-          <span className="mono" style={{ color: "var(--gold)" }}>
+          <span className="mono text-gold">
             {selections.length}/{agreed}
           </span>{" "}
           selected
         </div>
-        <div style={{ display: "flex", gap: 10 }}>
+        <div className="flex gap-2.5">
           <button
             type="button"
             className="btn btn-ghost"
@@ -259,17 +249,17 @@ export function CharlestonUI({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <div style={eyebrowStyle}>{PASS_LABEL[pass]}</div>
-      <div style={bodyStyle}>
+    <div className="flex flex-col gap-3">
+      <div className={EYEBROW}>{PASS_LABEL[pass]}</div>
+      <div className={BODY}>
         Pass {direction} to {target.toUpperCase()} ·{" "}
-        <span className="mono" style={{ color: "var(--gold)" }}>
+        <span className="mono text-gold">
           {selections.length}/3
         </span>{" "}
         selected
       </div>
 
-      <div style={{ display: "flex", gap: 10 }}>
+      <div className="flex gap-2.5">
         <button
           type="button"
           className="btn btn-ghost"

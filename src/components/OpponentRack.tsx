@@ -32,51 +32,23 @@ export function OpponentRack({
   const flash = useBotFlash((s) => s.flashes[seat])
   return (
     <div
-      style={{
-        background: "var(--felt-panel)",
-        border: `1px solid ${isCurrent ? "var(--gold)" : "var(--felt-border)"}`,
-        borderRadius: "var(--radius-md)",
-        padding: "14px 16px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 10,
-        transition: "border-color 160ms ease, box-shadow 160ms ease",
-        boxShadow: isCurrent ? "0 0 0 3px oklch(0.75 0.13 80 / 0.18)" : "none",
-      }}
+      className={`bg-felt-panel border border-solid rounded-md px-4 py-[14px] flex flex-col gap-2.5 transition-[border-color,box-shadow] duration-[160ms] ease-[ease] ${
+        isCurrent
+          ? "border-gold shadow-[0_0_0_3px_oklch(0.75_0.13_80_/_0.18)]"
+          : "border-felt-border shadow-none"
+      }`}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div className="flex items-center gap-2">
         {isCurrent && (
-          <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: "var(--gold)",
-              flex: "0 0 auto",
-            }}
-          />
+          <span className="w-2 h-2 rounded-full bg-gold flex-none" />
         )}
-        <span
-          style={{
-            font: "700 13px var(--font-ui)",
-            color: "oklch(0.92 0.01 260)",
-          }}
-        >
+        <span className="font-ui text-[13px] font-bold text-[oklch(0.92_0.01_260)]">
           {BOT_NAME[seat]
             ? `${SEAT_LABEL[seat]} · ${BOT_NAME[seat]}`
             : SEAT_LABEL[seat]}
         </span>
         {isCurrent && (
-          <span
-            style={{
-              font: "700 10px var(--font-ui)",
-              letterSpacing: "0.04em",
-              background: "var(--gold)",
-              color: "var(--gold-ink)",
-              padding: "2px 7px",
-              borderRadius: 20,
-            }}
-          >
+          <span className="font-ui text-[10px] font-bold tracking-[0.04em] bg-gold text-gold-ink px-[7px] py-[2px] rounded-[20px]">
             THINKING…
           </span>
         )}
@@ -87,19 +59,13 @@ export function OpponentRack({
       <div
         role="status"
         aria-live="polite"
-        style={{
-          minHeight: 15,
-          font: "600 11px var(--font-ui)",
-          lineHeight: "15px",
-          color: "var(--gold)",
-        }}
+        className="min-h-[15px] font-ui text-[11px] font-semibold leading-[15px] text-gold"
       >
         {flash && (
           <span
             key={flash.nonce}
-            className="bot-flash"
+            className="bot-flash inline-block"
             style={{
-              display: "inline-block",
               animation: `bot-flash ${BOT_FLASH_MS}ms ease forwards`,
             }}
           >
@@ -108,10 +74,7 @@ export function OpponentRack({
         )}
       </div>
 
-      <div
-        className="opp-tiles"
-        style={centerTiles ? { justifyContent: "center" } : undefined}
-      >
+      <div className={centerTiles ? "opp-tiles justify-center" : "opp-tiles"}>
         {Array.from({ length: count }).map((_, i) => (
           <TileView key={i} tile={HIDDEN} faceDown width={20} />
         ))}
@@ -121,7 +84,7 @@ export function OpponentRack({
           same size with or without exposures — otherwise the first pung/kong
           an opponent exposes would jump the mat (west especially, top row).
           61px is one exposure tile at tileWidth 44 (round(44 * 1.375)). */}
-      <div style={{ minHeight: 61 }}>
+      <div className="min-h-[61px]">
         <ExposureRow exposures={player.exposures} tileWidth={44} seat={seat} />
       </div>
     </div>

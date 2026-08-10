@@ -7,8 +7,6 @@ import { useDiscardFlightStore } from "../store/discardFlight"
 // as it grows. It lives in a fixed-height box (below) that scrolls internally,
 // so the pile's footprint on the mat is stable from the first tile to the last.
 const DISCARD_TILE_WIDTH = 34
-// ~5 rows tall. Constant regardless of tile count — keeps the mat from jumping.
-const DISCARD_BOX_HEIGHT = 180
 
 export function DiscardPile({
   discards,
@@ -27,63 +25,23 @@ export function DiscardPile({
   }, [discards.length])
 
   return (
-    <div
-      id="discard-pile"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 8,
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          font: "700 11px var(--font-ui)",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--felt-ink-mute)",
-        }}
-      >
+    <div id="discard-pile" className="flex flex-col items-center gap-2 w-full">
+      <div className="felt-label">
         Discarded Tiles{" "}
-        <span className="mono" style={{ color: "var(--felt-ink-soft)" }}>
-          · {discards.length}
-        </span>
+        <span className="mono text-felt-ink-soft">· {discards.length}</span>
       </div>
+      {/* ~5 rows tall. Constant regardless of tile count—keeps the mat from
+          jumping as the pile grows. */}
       <div
         ref={scrollRef}
-        style={{
-          height: DISCARD_BOX_HEIGHT,
-          width: "100%",
-          overflowY: "auto",
-          overflowX: "hidden",
-        }}
+        className="h-[180px] w-full overflow-y-auto overflow-x-hidden"
       >
         {discards.length === 0 ? (
-          <div
-            style={{
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              font: "500 12px var(--font-ui)",
-              color: "var(--felt-ink-mute)",
-              opacity: 0.7,
-            }}
-          >
+          <div className="h-full flex items-center justify-center font-ui text-[12px] font-medium text-felt-ink-mute opacity-70">
             No discards yet
           </div>
         ) : (
-          <div
-            style={{
-              display: "flex",
-              gap: 3,
-              flexWrap: "wrap",
-              width: "100%",
-              justifyContent: "center",
-              alignContent: "flex-start",
-            }}
-          >
+          <div className="flex gap-[3px] flex-wrap w-full justify-center content-start">
             {discards.map((t) => (
               <div
                 key={t.id}

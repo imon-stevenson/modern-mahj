@@ -208,50 +208,24 @@ export function PlayerRack({
 
   return (
     <div
-      style={{
-        background: "var(--felt-panel-2)",
-        borderRadius: "var(--radius-md)",
-        padding: "18px 22px",
-        border: `1px solid ${active ? "var(--gold)" : "var(--felt-border)"}`,
-        boxShadow: active ? "0 0 0 3px oklch(0.75 0.13 80 / 0.16)" : "none",
-        transition: "border-color 160ms ease, box-shadow 160ms ease",
-      }}
+      className={`bg-felt-panel-2 rounded-md px-[22px] py-[18px] border border-solid transition-[border-color,box-shadow] duration-[160ms] ease-[ease] ${
+        active
+          ? "border-gold shadow-[0_0_0_3px_oklch(0.75_0.13_80_/_0.16)]"
+          : "border-felt-border shadow-none"
+      }`}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 12,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2.5">
           <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: active ? "var(--gold)" : "var(--felt-divider)",
-            }}
+            className={`w-2 h-2 rounded-full ${
+              active ? "bg-gold" : "bg-felt-divider"
+            }`}
           />
-          <span
-            style={{
-              font: "800 14px var(--font-ui)",
-              color: "var(--felt-ink)",
-            }}
-          >
+          <span className="font-ui text-[14px] font-extrabold text-felt-ink">
             East · You
           </span>
           {active && (
-            <span
-              style={{
-                font: "700 11px var(--font-ui)",
-                background: "var(--gold)",
-                color: "var(--gold-ink)",
-                padding: "3px 8px",
-                borderRadius: 20,
-              }}
-            >
+            <span className="font-ui text-[11px] font-bold bg-gold text-gold-ink px-2 py-[3px] rounded-[20px]">
               YOUR TURN
             </span>
           )}
@@ -259,24 +233,16 @@ export function PlayerRack({
         {notice && (
           <div
             role="alert"
-            style={{
-              textAlign: "center",
-              font: "700 13px var(--font-ui)",
-              color: "var(--gold-ink)",
-              background: "var(--gold)",
-              borderRadius: "var(--radius-sm)",
-              padding: "4px 16px",
-            }}
+            className="text-center font-ui text-[13px] font-bold text-gold-ink bg-gold rounded-sm px-4 py-1"
           >
             {notice}
           </div>
         )}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="flex items-center gap-3">
           {onResetOrder && (
             <button
               type="button"
-              className="btn btn-ghost"
-              style={{ padding: "5px 12px", font: "700 11px var(--font-ui)" }}
+              className="btn btn-ghost px-3 py-[5px] text-[11px] font-bold"
               onClick={() => {
                 // Dismiss the drawn-tile pin so it sorts in with the rest.
                 setDismissedPinnedTileId(pinnedTileId ?? null)
@@ -287,21 +253,14 @@ export function PlayerRack({
               Sort Tiles
             </button>
           )}
-          <span
-            className="mono"
-            style={{ font: "600 12px var(--font-mono)", color: "var(--gold)" }}
-          >
-            {total} tiles
-          </span>
+          <span className="mono text-[12px] text-gold">{total} tiles</span>
         </div>
       </div>
 
       {/* Exposed sets sit above the rack, rotated to face the other players —
           slightly smaller than the rack tiles, upside-down from your POV. */}
       {player.exposures.length > 0 && (
-        <div
-          style={{ display: "flex", justifyContent: "center", paddingTop: 8 }}
-        >
+        <div className="flex justify-center pt-2">
           <ExposureRow
             exposures={player.exposures}
             tileWidth={48}
@@ -311,22 +270,10 @@ export function PlayerRack({
         </div>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          paddingTop: "12px",
-        }}
-      >
+      <div className="flex justify-center flex-wrap pt-3">
         <div
           onClickCapture={onRackClickCapture}
-          style={{
-            display: "flex",
-            gap: 4,
-            flexWrap: "wrap",
-            justifyContent: "center",
-          }}
+          className="flex gap-1 flex-wrap justify-center"
         >
           {ordered.map((t) => (
             <div
@@ -336,9 +283,9 @@ export function PlayerRack({
               onPointerMove={(e) => onPointerMove(e, t)}
               onPointerUp={() => endDrag(true)}
               onPointerCancel={() => endDrag(false)}
+              className="cursor-grab rounded-[9px] transition-[opacity,box-shadow] duration-[120ms] ease-[ease] touch-none"
+              // Everything below is computed per tile.
               style={{
-                cursor: "grab",
-                borderRadius: 9,
                 opacity: dragId === t.id ? 0.35 : 1,
                 visibility: swapHiddenIds.includes(t.id) ? "hidden" : "visible",
                 boxShadow:
@@ -347,8 +294,6 @@ export function PlayerRack({
                     : overId === t.id && dragId && dragId !== t.id
                       ? "0 0 0 2px var(--gold)"
                       : "none",
-                transition: "opacity 120ms ease, box-shadow 120ms ease",
-                touchAction: "none",
                 // Joker-swap shake takes priority; else freshly drawn/received
                 // tiles glow, then fade (~6s).
                 animation:
@@ -371,21 +316,18 @@ export function PlayerRack({
         </div>
       </div>
 
-      {actionSlot && <div style={{ marginTop: 18 }}>{actionSlot}</div>}
+      {actionSlot && <div className="mt-[18px]">{actionSlot}</div>}
 
       {/* Floating clone that follows the pointer while dragging a tile—the key
           affordance on touch, where the finger otherwise covers the tile. */}
       {ghost && (
         <div
+          className="fixed pointer-events-none z-[300] opacity-95 drop-shadow-[0_8px_16px_oklch(0.22_0.05_255_/_0.5)]"
+          // Pointer-tracked position, and the offset transform that goes with it.
           style={{
-            position: "fixed",
             left: ghost.x,
             top: ghost.y,
             transform: "translate(-50%, -120%) rotate(-4deg)",
-            pointerEvents: "none",
-            zIndex: 300,
-            opacity: 0.95,
-            filter: "drop-shadow(0 8px 16px oklch(0.22 0.05 255 / 0.5))",
           }}
         >
           <TileView tile={ghost.tile} width={52} />
