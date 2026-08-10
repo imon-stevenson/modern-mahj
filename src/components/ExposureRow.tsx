@@ -2,6 +2,7 @@ import type { Exposure, Seat } from "../game/types"
 import { TileView } from "./Tile"
 import { useMahjStore } from "../store"
 import { useJokerSwapUi } from "../store/jokerSwapUi"
+import { BOT_FLASH_MS, useBotFlash } from "../store/botFlash"
 
 export function ExposureRow({
   exposures,
@@ -24,6 +25,8 @@ export function ExposureRow({
   const shakeIds = useJokerSwapUi((s) => s.shakeIds)
   const hiddenIds = useJokerSwapUi((s) => s.hiddenIds)
   const toggleJoker = useJokerSwapUi((s) => s.toggleJoker)
+  // Tiles a bot just changed—ringed for as long as its message is up.
+  const highlightIds = useBotFlash((s) => s.highlightIds)
 
   if (exposures.length === 0) return null
 
@@ -76,7 +79,9 @@ export function ExposureRow({
                       : "none",
                     animation: shakeIds.includes(t.id)
                       ? "tile-shake 450ms ease"
-                      : undefined,
+                      : highlightIds.includes(t.id)
+                        ? `tile-highlight ${BOT_FLASH_MS}ms ease`
+                        : undefined,
                     transition: "box-shadow 120ms ease",
                   }}
                 >

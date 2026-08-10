@@ -1,17 +1,12 @@
 import type { PlayerState, Seat } from "../game/types"
+import { SEAT_LABEL } from "../game/actionText"
+import { BOT_FLASH_MS, useBotFlash } from "../store/botFlash"
 import { ExposureRow } from "./ExposureRow"
 import { TileView } from "./Tile"
 
 // A face-down "hidden" tile stand-in. The store hides bot racks from the human,
 // so all we render is the count as a neat row of tile backs.
 const HIDDEN = { id: "", kind: "joker" as const }
-
-const SEAT_NAME: Record<Seat, string> = {
-  east: "East",
-  south: "South",
-  west: "West",
-  north: "North",
-}
 
 const BOT_NAME: Record<Seat, string> = {
   east: "You",
@@ -34,6 +29,7 @@ export function OpponentRack({
   centerTiles?: boolean
 }): React.ReactElement {
   const count = player.rack.length
+  const flash = useBotFlash((s) => s.flashes[seat])
   return (
     <div
       style={{
@@ -67,8 +63,8 @@ export function OpponentRack({
           }}
         >
           {BOT_NAME[seat]
-            ? "SEAT_NAME[seat]} · {BOT_NAME[seat]"
-            : SEAT_NAME[seat]}
+            ? `${SEAT_LABEL[seat]} · ${BOT_NAME[seat]}`
+            : SEAT_LABEL[seat]}
         </span>
         {isCurrent && (
           <span
@@ -86,6 +82,32 @@ export function OpponentRack({
         )}
       </div>
 
+      {/* What this seat just did (called a tile, redeemed a joker). The row is
+          always present, so a message appearing never shifts the card. */}
+      <div
+        role="status"
+        aria-live="polite"
+        style={{
+          minHeight: 15,
+          font: "600 11px var(--font-ui)",
+          lineHeight: "15px",
+          color: "var(--gold)",
+        }}
+      >
+        {flash && (
+          <span
+            key={flash.nonce}
+            className="bot-flash"
+            style={{
+              display: "inline-block",
+              animation: `bot-flash ${BOT_FLASH_MS}ms ease forwards`,
+            }}
+          >
+            {flash.text}
+          </span>
+        )}
+      </div>
+
       <div
         className="opp-tiles"
         style={centerTiles ? { justifyContent: "center" } : undefined}
@@ -97,8 +119,9 @@ export function OpponentRack({
 
       {/* Reserve the exposure row's height even when empty, so a box is the
           same size with or without exposures — otherwise the first pung/kong
-          an opponent exposes would jump the mat (west especially, top row). */}
-      <div style={{ minHeight: 56 }}>
+          an opponent exposes would jump the mat (west especially, top row).
+          61px is one exposure tile at tileWidth 44 (round(44 * 1.375)). */}
+      <div style={{ minHeight: 61 }}>
         <ExposureRow exposures={player.exposures} tileWidth={44} seat={seat} />
       </div>
     </div>

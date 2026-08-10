@@ -209,6 +209,31 @@
   }
 }
 
+/* "North called a Pung…" message on an opponent's card: fade in, hold, fade
+   out across the message's full lifetime, so the store only has to schedule
+   the removal and never a separate exit animation. */
+@keyframes bot-flash {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  4%,
+  88% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the message for its full duration—just don't move or fade it. */
+  .bot-flash {
+    animation: none !important;
+  }
+}
+
 /* Attention shake for the "Draw tile" button when the human clicks elsewhere
    before drawing. */
 @keyframes draw-nudge {

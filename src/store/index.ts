@@ -31,6 +31,8 @@ import {
 } from "../game/turn"
 import { applyJokerSwap, validateJokerSwap } from "../game/jokerSwap"
 import type { JokerSwapOffer } from "../game/jokerSwap"
+import { callFlashText, jokerSwapFlashText } from "../game/actionText"
+import { clearBotFlashes, flashBotAction } from "./botFlash"
 
 // ---------- state shape ----------
 
@@ -296,7 +298,22 @@ function resolveBotCalls(
   if (!winner) {
     return { awaitingCall: null, currentSeat: nextSeat(discarder) }
   }
-  return applyCall(state, winner.seat, winner.kind, tile)
+  const next = applyCall(state, winner.seat, winner.kind, tile)
+  if (state.players[winner.seat].isBot) {
+    // Explain the call on the caller's card—the rack shrinking and an exposure
+    // appearing in the same frame is otherwise hard to read.
+    const before = state.players[winner.seat].exposures.length
+    const after = next.players?.[winner.seat].exposures ?? []
+    // Mahjong adds no exposure; only highlight a genuinely new one.
+    const highlight =
+      after.length > before ? after[after.length - 1]!.tiles.map((t) => t.id) : []
+    flashBotAction(
+      winner.seat,
+      callFlashText(winner.kind, tile, discarder),
+      highlight,
+    )
+  }
+  return next
 }
 
 // After a seat commits a discard, decide whether we need to wait on the
@@ -382,6 +399,8 @@ export const useMahjStore = create<MahjState>()(
       // Step 2: deal the game with the chosen card (also becomes the next
       // picker default via `cardYear`).
       startGameWithCard(cardYear) {
+        // Don't let a message from the last hand survive onto a fresh board.
+        clearBotFlashes()
         const seed = Math.floor(Math.random() * 0x7fffffff)
         const rng = createRng(seed)
         const { wall, players } = dealFromWall(rng, (seat) => seat !== "east")
@@ -748,10 +767,22 @@ export const useMahjStore = create<MahjState>()(
         const s = get()
         const v = validateJokerSwap(s.players, offer)
         if (!v.ok) return
+        // Resolve the offered tile before the swap moves it out of the rack.
+        const given = s.players[offer.offeringSeat].rack.find(
+          (t) => t.id === offer.offeredTileId,
+        )
         set({
           players: applyJokerSwap(s.players, offer),
           lastAction: { kind: "jokerSwap", seat: offer.offeringSeat },
         })
+        // Bot swaps have no animation at all, so the message is the only signal.
+        if (given && s.players[offer.offeringSeat].isBot) {
+          flashBotAction(
+            offer.offeringSeat,
+            jokerSwapFlashText(given, offer.targetSeat, offer.offeringSeat),
+            [offer.offeredTileId],
+          )
+        }
       },
 
       pauseGame() {
