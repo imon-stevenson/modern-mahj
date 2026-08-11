@@ -3,6 +3,7 @@ import {
   CHARLESTON_ORDER,
   acrossFrom,
   applyPass,
+  isBlindPass,
   leftOf,
   nextPass,
   passTarget,
@@ -62,6 +63,15 @@ describe('nextPass', () => {
   })
 })
 
+describe('isBlindPass', () => {
+  it('is true only for the third pass of each Charleston', () => {
+    expect(CHARLESTON_ORDER.filter(isBlindPass)).toEqual([
+      'firstLeft',
+      'secondRight',
+    ])
+  })
+})
+
 describe('applyPass', () => {
   it('moves 3 tiles from each seat to the correct neighbor on a right pass', () => {
     const players = makePlayers()
@@ -108,6 +118,19 @@ describe('applyPass', () => {
       south: players.south.rack.slice(0, 3),
     }
     expect(() => applyPass(players, 'firstRight', sel)).toThrow()
+  })
+
+  it('rejects a selection containing a joker on any pass', () => {
+    const players = makePlayers()
+    const joker: Tile = { id: 'east-j', kind: 'joker' }
+    players.east.rack.push(joker)
+    const sel: Record<Seat, Tile[]> = {
+      east: [joker, players.east.rack[1]!, players.east.rack[2]!],
+      north: players.north.rack.slice(0, 3),
+      west: players.west.rack.slice(0, 3),
+      south: players.south.rack.slice(0, 3),
+    }
+    expect(() => applyPass(players, 'firstLeft', sel)).toThrow(/joker/i)
   })
 
   it('rejects a non-courtesy pass with the wrong count', () => {

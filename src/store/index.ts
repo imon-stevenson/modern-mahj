@@ -14,7 +14,7 @@ import type {
 import { SEATS } from "../game/types"
 import { createRng } from "../game/rng"
 import { dealFromWall, drawFromWall } from "../game/wall"
-import { applyPass, nextPass } from "../game/charleston"
+import { applyPass, isBlindPass, nextPass, passTarget } from "../game/charleston"
 import { botFor } from "../game/bots"
 import type { BotCtx } from "../game/bots"
 import type { NMJLHand } from "../game/hands/schema"
@@ -51,6 +51,20 @@ type CharlestonState = {
   courtesyStep: "choose" | "confirm" | "select" | null
   // The finalized East↔West exchange count (min of both offers).
   courtesyAgreedCount: number
+  // Tiles East received on the across pass, held face-down out of the rack
+  // until the following blind pass resolves (see isBlindPass). Kept out of
+  // players.east.rack so the sorter can't betray a hidden tile's suit and no
+  // hand analysis can see it. Only ever East's—bots don't blind pass.
+  blindPool: Tile[]
+  // Has the human answered the "blind pass?" question for this pass?
+  //   null —not yet asked/answered; the prompt is up
+  //   true —using the blind pass; the face-down row is selectable
+  //   false—declined; the pool was revealed into the rack and is now empty
+  blindChoice: boolean | null
+  // Face-down tiles that rejoined the rack because the blind pass moved on
+  // without them. They aren't "just received"—the rack uses this to keep them
+  // out of the new-tile highlight. Cleared on the next pass.
+  blindRevealed: string[]
 }
 
 /**
@@ -60,6 +74,8 @@ type CharlestonState = {
  */
 export function isCharlestonDecisionPrompt(c: CharlestonState): boolean {
   if (c.pass === null) return true
+  // Waiting on the blind-pass question, before any tile may be selected.
+  if ((c.blindPool?.length ?? 0) > 0 && c.blindChoice == null) return true
   if (c.pass !== "courtesy") return false
   // Matches CharlestonUI's `courtesyStep ?? 'choose'` default.
   return (c.courtesyStep ?? "choose") !== "select"
@@ -119,6 +135,7 @@ export type MahjState = {
   runBotCharlestonForAll: () => void
   advanceCharleston: () => void
   agreeSecondCharleston: (agreed: boolean) => void
+  setBlindChoice: (useBlind: boolean) => void
   setCourtesyOffer: (seat: Seat, count: number) => void
   proposeCourtesyCount: (count: number) => void
   confirmCourtesy: (agree: boolean) => void
@@ -146,6 +163,9 @@ function emptyCharleston(): CharlestonState {
     secondDecliners: [],
     courtesyStep: null,
     courtesyAgreedCount: 0,
+    blindPool: [],
+    blindChoice: null,
+    blindRevealed: [],
   }
 }
 
@@ -512,10 +532,33 @@ export const useMahjStore = create<MahjState>()(
         const pass = s.charleston.pass
         if (!pass) return
 
+        // On a blind pass the face-down tiles rejoin East's rack before the
+        // pass is applied: the chosen ones go across, the rest stay behind
+        // (now face-up), which is exactly what applyPass already does.
+        const pool = s.charleston.blindPool ?? []
+        // Face-down tiles the player didn't send on: they rejoin the rack, but
+        // they aren't new arrivals, so the rack shouldn't highlight them.
+        const revealedIds =
+          isBlindPass(pass) && pool.length > 0
+            ? pool
+                .filter((t) => !s.charleston.selections.east.includes(t.id))
+                .map((t) => t.id)
+            : []
+        const players =
+          isBlindPass(pass) && pool.length > 0
+            ? {
+                ...s.players,
+                east: {
+                  ...s.players.east,
+                  rack: [...s.players.east.rack, ...pool],
+                },
+              }
+            : s.players
+
         const selectionTiles: Record<Seat, Tile[]> = Object.fromEntries(
           SEATS.map((seat) => {
             const ids = new Set(s.charleston.selections[seat])
-            return [seat, s.players[seat].rack.filter((t) => ids.has(t.id))]
+            return [seat, players[seat].rack.filter((t) => ids.has(t.id))]
           }),
         ) as Record<Seat, Tile[]>
 
@@ -537,8 +580,27 @@ export const useMahjStore = create<MahjState>()(
           }
         }
 
-        const nextPlayers = applyPass(s.players, pass, toApply)
+        let nextPlayers = applyPass(players, pass, toApply)
         const nextPassId = nextPass(pass)
+
+        // If the next pass is a blind pass, hold the tiles East just received
+        // out of the rack, face-down, so they can be forwarded unseen.
+        let nextBlindPool: Tile[] = []
+        if (nextPassId && isBlindPass(nextPassId)) {
+          const from = SEATS.find((seat) => passTarget(seat, pass) === "east")
+          const incoming = from ? toApply[from] : []
+          if (incoming.length > 0) {
+            const ids = new Set(incoming.map((t) => t.id))
+            nextPlayers = {
+              ...nextPlayers,
+              east: {
+                ...nextPlayers.east,
+                rack: nextPlayers.east.rack.filter((t) => !ids.has(t.id)),
+              },
+            }
+            nextBlindPool = incoming
+          }
+        }
 
         if (nextPassId === "secondLeft") {
           const bots = SEATS.filter((seat) => nextPlayers[seat].isBot)
@@ -558,6 +620,8 @@ export const useMahjStore = create<MahjState>()(
               pass: null,
               secondCharlestonAgreed: decliners.length === 0 ? null : false,
               secondDecliners: decliners,
+              // firstLeft (a blind pass) lands here, so this branch needs it too.
+              blindRevealed: revealedIds,
             },
           })
           return
@@ -569,6 +633,8 @@ export const useMahjStore = create<MahjState>()(
             ...emptyCharleston(),
             pass: nextPassId,
             courtesyStep: nextPassId === "courtesy" ? "choose" : null,
+            blindPool: nextBlindPool,
+            blindRevealed: revealedIds,
           },
         })
         if (nextPassId === null) get().finishSetup()
@@ -593,6 +659,27 @@ export const useMahjStore = create<MahjState>()(
             },
           })
         }
+      },
+
+      setBlindChoice(useBlind) {
+        const s = get()
+        if (useBlind) {
+          set({ charleston: { ...s.charleston, blindChoice: true } })
+          return
+        }
+        // Declined—pick the tiles up. They're new ids in the rack, so the rack
+        // highlights them as freshly received without any extra work.
+        const pool = s.charleston.blindPool ?? []
+        set({
+          players: {
+            ...s.players,
+            east: {
+              ...s.players.east,
+              rack: [...s.players.east.rack, ...pool],
+            },
+          },
+          charleston: { ...s.charleston, blindChoice: false, blindPool: [] },
+        })
       },
 
       setCourtesyOffer(seat, count) {

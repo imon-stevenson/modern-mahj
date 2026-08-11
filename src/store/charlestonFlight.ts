@@ -10,6 +10,8 @@ export type FlightTile = {
   tile: Tile
   fromX: number
   fromY: number
+  // Blind-pass tiles fly face-down—the player chose not to look at them.
+  faceDown?: boolean
 }
 
 type CharlestonFlightState = {
@@ -67,6 +69,7 @@ export type CapturedFlight = {
 export function captureCharlestonFlight(
   tiles: Tile[],
   targetSeat: Seat,
+  faceDownIds?: ReadonlySet<string>,
 ): CapturedFlight {
   if (prefersReducedMotion() || typeof document === "undefined") return null
   const targetEl = document.getElementById(`seat-${targetSeat}`)
@@ -77,7 +80,13 @@ export function captureCharlestonFlight(
     const el = document.querySelector(`[data-tile-id="${cssEscape(tile.id)}"]`)
     if (!el) continue
     const r = el.getBoundingClientRect()
-    flights.push({ key: tile.id, tile, fromX: r.left, fromY: r.top })
+    flights.push({
+      key: tile.id,
+      tile,
+      fromX: r.left,
+      fromY: r.top,
+      faceDown: faceDownIds?.has(tile.id),
+    })
   }
   if (flights.length === 0) return null
 

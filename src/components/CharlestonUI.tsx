@@ -37,6 +37,7 @@ export function CharlestonUI({
   const runBotsAll = useMahjStore((s) => s.runBotCharlestonForAll)
   const advance = useMahjStore((s) => s.advanceCharleston)
   const agreeSecond = useMahjStore((s) => s.agreeSecondCharleston)
+  const setBlindChoice = useMahjStore((s) => s.setBlindChoice)
   const setCourtesyOffer = useMahjStore((s) => s.setCourtesyOffer)
   const proposeCourtesy = useMahjStore((s) => s.proposeCourtesyCount)
   const confirmCourtesy = useMahjStore((s) => s.confirmCourtesy)
@@ -44,7 +45,10 @@ export function CharlestonUI({
   const courtesyOffers = charleston.courtesyOffers
 
   // Resolve currently-selected ids to Tile objects for the flight animation.
-  const selectedTiles = () => eastRack.filter((t) => selections.includes(t.id))
+  // Blind-pass picks live in the face-down pool, not the rack.
+  const blindPool = charleston.blindPool ?? []
+  const selectedTiles = () =>
+    [...eastRack, ...blindPool].filter((t) => selections.includes(t.id))
 
   // Replay the shake each time `nudge` changes. Resetting the animation to
   // 'none' + forcing a reflow restarts it even mid-run.
@@ -238,10 +242,43 @@ export function CharlestonUI({
   const target = passTarget("east", pass)
   const direction = passDirection(pass)
 
+  // Opt in to the blind pass before any tile can be selected. Declining
+  // reveals the face-down tiles into the rack and this pass proceeds normally.
+  if (blindPool.length > 0 && charleston.blindChoice == null) {
+    return (
+      <div className="flex flex-col gap-3">
+        <div className={EYEBROW}>{PASS_LABEL[pass]}</div>
+        <div className={BODY}>
+          Would you like to blind pass? You can select up to 3 tiles.
+        </div>
+        <div ref={rowRef} className="flex gap-2.5">
+          <button
+            type="button"
+            className="btn btn-gold"
+            onClick={() => setBlindChoice(true)}
+          >
+            Yes, blind
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => setBlindChoice(false)}
+          >
+            No, rack them
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   const doPass = () => {
     // Capture tile positions before the pass mutates the rack, then float the
-    // clones toward the recipient seat.
-    const captured = captureCharlestonFlight(selectedTiles(), target)
+    // clones toward the recipient seat. Blind picks fly face-down.
+    const captured = captureCharlestonFlight(
+      selectedTiles(),
+      target,
+      new Set(blindPool.map((t) => t.id)),
+    )
     submit("east", selections)
     runBotsAll()
     advance()
@@ -253,10 +290,13 @@ export function CharlestonUI({
       <div className={EYEBROW}>{PASS_LABEL[pass]}</div>
       <div className={BODY}>
         Pass {direction} to {target.toUpperCase()} ·{" "}
-        <span className="mono text-gold">
-          {selections.length}/3
-        </span>{" "}
-        selected
+        {selections.length > 3 ? (
+          <span className="text-[13px] font-semibold text-suit-red">
+            Only select three tiles
+          </span>
+        ) : (
+          <span className="mono text-gold">{selections.length}/3 selected</span>
+        )}
       </div>
 
       <div className="flex gap-2.5">

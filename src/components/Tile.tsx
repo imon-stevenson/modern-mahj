@@ -274,6 +274,9 @@ export function TileView({
         boxShadow:
           "0 3px 6px rgba(20,20,35,0.35), inset 0 1px 1px rgba(255,255,255,0.18)",
         border: "1px solid oklch(0.18 0.05 258)",
+        // Same selected ring as a face-up tile—needed for blind-pass picks.
+        outline: selected ? "2px solid oklch(0.7 0.14 80)" : undefined,
+        outlineOffset: selected ? 2 : undefined,
       }}
     >
       <div

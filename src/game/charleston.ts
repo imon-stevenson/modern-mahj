@@ -69,6 +69,13 @@ export const CHARLESTON_ORDER: readonly CharlestonPass[] = [
   "courtesy",
 ] as const
 
+// The third pass of each Charleston may be a "blind pass": the human may
+// forward tiles they were just handed on the preceding across pass without
+// looking at them. Only East gets the option—bots always pass from their rack.
+export function isBlindPass(pass: CharlestonPass): boolean {
+  return pass === "firstLeft" || pass === "secondRight"
+}
+
 export function nextPass(pass: CharlestonPass): CharlestonPass | null {
   const idx = CHARLESTON_ORDER.indexOf(pass)
   if (idx < 0 || idx === CHARLESTON_ORDER.length - 1) return null
@@ -102,6 +109,17 @@ export function applyPass(
         throw new Error(
           `charleston ${pass}: ${seat} does not hold tile ${t.id}`,
         )
+      }
+    }
+  }
+
+  // Jokers may never be passed in any Charleston pass. Bot strategies and the
+  // rack's click handler both already exclude them, but the blind pass depends
+  // on the received tiles being joker-free, so enforce it here too.
+  for (const seat of SEATS) {
+    for (const t of selections[seat]) {
+      if (t.kind === "joker") {
+        throw new Error(`charleston ${pass}: ${seat} may not pass a joker`)
       }
     }
   }

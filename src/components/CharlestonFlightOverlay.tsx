@@ -36,7 +36,11 @@ export function CharlestonFlightOverlay(): React.ReactElement | null {
         styleVars['--fy'] = `${toY - f.fromY}px`
         return (
           <div key={f.key} style={style}>
-            <TileView tile={f.tile} width={FLIGHT_TILE_WIDTH} />
+            <TileView
+              tile={f.tile}
+              faceDown={f.faceDown}
+              width={FLIGHT_TILE_WIDTH}
+            />
           </div>
         )
       })}

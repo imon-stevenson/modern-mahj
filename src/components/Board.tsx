@@ -299,6 +299,16 @@ export function Board(): React.ReactElement {
                 ? "You can't pass Jokers during the Charleston."
                 : null
             }
+            blindPool={isCharleston ? (charleston.blindPool ?? []) : []}
+            blindRevealed={
+              isCharleston ? (charleston.blindRevealed ?? []) : []
+            }
+            blindPassActive={isCharleston && charleston.blindChoice === true}
+            // No joker check here—these tiles are face-down, and rejecting a
+            // tap would reveal what one of them is. Bots never pass jokers, so
+            // the pool can't contain one anyway. No prompt guard either: the
+            // row only renders once the blind pass has been accepted.
+            onBlindTileClick={(t) => toggle(t.id)}
           />
         </div>
       </div>

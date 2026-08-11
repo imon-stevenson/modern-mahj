@@ -12,14 +12,24 @@ import { useJokerSwapUi } from "../store/jokerSwapUi"
 // `tile-highlight` keyframe in index.css (5s hold + 1s fade).
 const HIGHLIGHT_MS = 6000
 
+const NO_IDS: ReadonlySet<string> = new Set()
+
 // Tracks which rack tile ids were recently added (drawn or received in the
 // Charleston) so they can be highlighted, then auto-cleared after the fade.
 // The initial hand (first render) is treated as already-present, not new.
-function useNewTileHighlights(ids: string[]): Set<string> {
+// `excludeIds` opts specific ids out of the highlight even though they're new
+// to the rack—used for blind-pass tiles that were only ever hidden, not new.
+function useNewTileHighlights(
+  ids: string[],
+  excludeIds?: ReadonlySet<string>,
+): Set<string> {
   const seen = useRef<Set<string> | null>(null)
   const timers = useRef<Map<string, number>>(new Map())
   const [highlighted, setHighlighted] = useState<Set<string>>(() => new Set())
   const key = ids.join(",")
+  // Callers memoize this by id, so it's referentially stable and safe as a
+  // dependency; a change with no new ids just re-runs an empty diff.
+  const exclude = excludeIds ?? NO_IDS
 
   useEffect(() => {
     const current = key ? key.split(",") : []
@@ -27,7 +37,10 @@ function useNewTileHighlights(ids: string[]): Set<string> {
       seen.current = new Set(current)
       return
     }
-    const added = current.filter((id) => !seen.current!.has(id))
+    // Excluded ids still land in `seen` below, so they never highlight later.
+    const added = current.filter(
+      (id) => !seen.current!.has(id) && !exclude.has(id),
+    )
     seen.current = new Set(current)
     if (added.length === 0) return
 
@@ -49,7 +62,7 @@ function useNewTileHighlights(ids: string[]): Set<string> {
       }, HIGHLIGHT_MS)
       timers.current.set(id, t)
     })
-  }, [key])
+  }, [key, exclude])
 
   useEffect(() => {
     const timeouts = timers.current
@@ -77,6 +90,16 @@ type Props = {
   // optional warning message to show beneath the rack while it's set.
   shakeTileId?: string | null
   notice?: string | null
+  // Tiles received on the across pass, held face-down for the blind pass that
+  // follows. Selectable like rack tiles, but never revealed or draggable.
+  blindPool?: Tile[]
+  onBlindTileClick?: (tile: Tile) => void
+  // Only true once the player has opted into the blind pass. Until then the
+  // face-down row stays hidden—they're still being asked whether they want it.
+  blindPassActive?: boolean
+  // Ids that rejoined the rack from the blind pool rather than arriving from
+  // another player—kept out of the "just received" highlight.
+  blindRevealed?: string[]
 }
 
 export function PlayerRack({
@@ -92,6 +115,10 @@ export function PlayerRack({
   pinnedTileId,
   shakeTileId,
   notice,
+  blindPool,
+  onBlindTileClick,
+  blindPassActive,
+  blindRevealed,
 }: Props): React.ReactElement {
   // Once the player explicitly sorts, stop pinning the drawn tile right so it
   // merges into the sorted hand. Re-arms automatically on the next draw (new id).
@@ -106,11 +133,22 @@ export function PlayerRack({
     [player.rack, rackOrder, activePinnedTileId],
   )
   const selected = new Set(selectedIds)
+  const blind = blindPool ?? []
+  // Face-down tiles are still yours—count them in the total.
   const total =
     player.rack.length +
+    blind.length +
     player.exposures.reduce((n, e) => n + e.tiles.length, 0)
 
-  const highlighted = useNewTileHighlights(player.rack.map((t) => t.id))
+  const revealedKey = (blindRevealed ?? []).join(",")
+  const revealedIds = useMemo(
+    () => new Set(revealedKey ? revealedKey.split(",") : []),
+    [revealedKey],
+  )
+  const highlighted = useNewTileHighlights(
+    player.rack.map((t) => t.id),
+    revealedIds,
+  )
 
   // Joker-swap UI: highlight/shake/hide the offered rack tile during a swap.
   const swapPendingId = useJokerSwapUi((s) => s.pendingRackId)
@@ -253,9 +291,36 @@ export function PlayerRack({
               Sort Tiles
             </button>
           )}
-          <span className="mono text-[12px] text-gold">{total} tiles</span>
         </div>
       </div>
+
+      {/* Tiles just handed to you, still face-down. Click any of them to send
+          them straight on without looking (the Charleston "blind pass"). Only
+          shown once the player has opted in; the tiles still count toward the
+          total above while the question is up. */}
+      {blindPassActive && blind.length > 0 && (
+        <div className="flex flex-col items-center gap-1.5 pt-2">
+          <div className="felt-label">Just Received · Blind Pass</div>
+          {/* Wider than the rack's gap-1: selected tiles carry a gold ring
+              (2px outline at 2px offset) that would otherwise collide. */}
+          <div className="flex gap-2 mt-2">
+            {blind.map((t) => (
+              // data-tile-id anchors the flight animation's capture.
+              <div key={t.id} data-tile-id={t.id}>
+                <TileView
+                  tile={t}
+                  faceDown
+                  width={52}
+                  selected={selected.has(t.id)}
+                  onClick={
+                    onBlindTileClick ? () => onBlindTileClick(t) : undefined
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Exposed sets sit above the rack, rotated to face the other players —
           slightly smaller than the rack tiles, upside-down from your POV. */}
