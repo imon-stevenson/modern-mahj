@@ -91,12 +91,10 @@ type Props = {
   shakeTileId?: string | null
   notice?: string | null
   // Tiles received on the across pass, held face-down for the blind pass that
-  // follows. Selectable like rack tiles, but never revealed or draggable.
+  // follows. Selectable like rack tiles, but never revealed or draggable. Empty
+  // until the player opts in, so the row stays hidden while they're being asked.
   blindPool?: Tile[]
   onBlindTileClick?: (tile: Tile) => void
-  // Only true once the player has opted into the blind pass. Until then the
-  // face-down row stays hidden—they're still being asked whether they want it.
-  blindPassActive?: boolean
   // Ids that rejoined the rack from the blind pool rather than arriving from
   // another player—kept out of the "just received" highlight.
   blindRevealed?: string[]
@@ -117,7 +115,6 @@ export function PlayerRack({
   notice,
   blindPool,
   onBlindTileClick,
-  blindPassActive,
   blindRevealed,
 }: Props): React.ReactElement {
   // Once the player explicitly sorts, stop pinning the drawn tile right so it
@@ -133,12 +130,9 @@ export function PlayerRack({
     [player.rack, rackOrder, activePinnedTileId],
   )
   const selected = new Set(selectedIds)
+  // Empty until the player opts into the blind pass, so this doubles as the
+  // "show the face-down row" flag.
   const blind = blindPool ?? []
-  // Face-down tiles are still yours—count them in the total.
-  const total =
-    player.rack.length +
-    blind.length +
-    player.exposures.reduce((n, e) => n + e.tiles.length, 0)
 
   const revealedKey = (blindRevealed ?? []).join(",")
   const revealedIds = useMemo(
@@ -295,10 +289,8 @@ export function PlayerRack({
       </div>
 
       {/* Tiles just handed to you, still face-down. Click any of them to send
-          them straight on without looking (the Charleston "blind pass"). Only
-          shown once the player has opted in; the tiles still count toward the
-          total above while the question is up. */}
-      {blindPassActive && blind.length > 0 && (
+          them straight on without looking (the Charleston "blind pass"). */}
+      {blind.length > 0 && (
         <div className="flex flex-col items-center gap-1.5 pt-2">
           <div className="felt-label">Just Received · Blind Pass</div>
           {/* Wider than the rack's gap-1: selected tiles carry a gold ring

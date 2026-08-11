@@ -299,11 +299,16 @@ export function Board(): React.ReactElement {
                 ? "You can't pass Jokers during the Charleston."
                 : null
             }
-            blindPool={isCharleston ? (charleston.blindPool ?? []) : []}
+            // Only handed over once the player accepts the blind pass—until
+            // then the face-down row shouldn't be on screen at all.
+            blindPool={
+              isCharleston && charleston.blindChoice === true
+                ? (charleston.blindPool ?? [])
+                : []
+            }
             blindRevealed={
               isCharleston ? (charleston.blindRevealed ?? []) : []
             }
-            blindPassActive={isCharleston && charleston.blindChoice === true}
             // No joker check here—these tiles are face-down, and rejecting a
             // tap would reveal what one of them is. Bots never pass jokers, so
             // the pool can't contain one anyway. No prompt guard either: the
