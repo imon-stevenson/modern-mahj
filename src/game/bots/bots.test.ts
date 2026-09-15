@@ -112,6 +112,77 @@ describe("beginner bot", () => {
 })
 
 describe("intermediate bot", () => {
+  // The Charleston pass is ranked against the bot's OWN rack, not against a
+  // card-global usefulness table. A global table scores every seat's tiles
+  // identically, so all three bots shed the same kinds of tile and a tile that
+  // ranked lowest for the sender ranks lowest for the receiver too—junk just
+  // relays around the table into the human's rack.
+  it("will not break up a pair to shed a tile the card rates lower", () => {
+    // winsHand is FF 2222(X) 6666(X) 8888(X), so 5-crak appears in it under no
+    // suit binding at all—its card-global score is zero, same as the 9-bam.
+    // Ranking by that global score alone therefore passes BOTH 5-craks and
+    // splits the pair. A pair is the raw material of a pung, so it should
+    // outrank the lone dots even though the dots score higher on the card.
+    const rack = [
+      n("craks", 5, "pair-a"),
+      n("craks", 5, "pair-b"),
+      n("dots", 2, "dot-two"),
+      n("dots", 6, "dot-six"),
+      n("dots", 8, "dot-eight"),
+      n("bams", 9, "nine-bam"),
+    ]
+    const passedIds = intermediateBot
+      .chooseCharlestonPass(ctx({ rack }))
+      .map((t) => t.id)
+    expect(passedIds).not.toContain("pair-a")
+    expect(passedIds).not.toContain("pair-b")
+    expect(passedIds).toContain("nine-bam")
+  })
+
+  it("passes the same tile from one rack and keeps it in another", () => {
+    // Identical tile, identical card, opposite decision—driven only by the rest
+    // of the rack. computeUsefulness scores n:bams:2 and n:craks:2 identically
+    // under a suit-variable hand, so the old card-global ranking had to break
+    // that tie on tile id; it could not let the rack decide.
+    // Both racks are three pairs of 2/6/8 in one suit plus a lone 2/6/8 in the
+    // other. Only the suits are swapped, so the two racks are mirror images and
+    // every tile carries the same card-global score in both.
+    const crakRack = [
+      n("craks", 2, "committed-a"),
+      n("craks", 2, "committed-b"),
+      n("craks", 6, "committed-c"),
+      n("craks", 6, "committed-d"),
+      n("craks", 8, "committed-e"),
+      n("craks", 8, "committed-f"),
+      n("bams", 2, "two-bam"),
+      n("bams", 6, "six-bam"),
+      n("bams", 8, "eight-bam"),
+    ]
+    const bamRack = [
+      n("bams", 2, "committed-a"),
+      n("bams", 2, "committed-b"),
+      n("bams", 6, "committed-c"),
+      n("bams", 6, "committed-d"),
+      n("bams", 8, "committed-e"),
+      n("bams", 8, "committed-f"),
+      n("craks", 2, "two-crak"),
+      n("craks", 6, "six-crak"),
+      n("craks", 8, "eight-crak"),
+    ]
+
+    const fromCrakRack = intermediateBot
+      .chooseCharlestonPass(ctx({ rack: crakRack }))
+      .map((t) => t.id)
+    const fromBamRack = intermediateBot
+      .chooseCharlestonPass(ctx({ rack: bamRack }))
+      .map((t) => t.id)
+
+    // The crak-committed rack sheds its bams; the bam-committed rack keeps them
+    // and sheds craks instead. Same tile identities, opposite fate.
+    expect(fromCrakRack.sort()).toEqual(["eight-bam", "six-bam", "two-bam"])
+    expect(fromBamRack.sort()).toEqual(["eight-crak", "six-crak", "two-crak"])
+  })
+
   it("discards the least-useful tile relative to the hands list", () => {
     // Rack has 2 flowers (useful—pair kind requires them) and 1 useless tile
     // that doesn't appear in the winning hand.

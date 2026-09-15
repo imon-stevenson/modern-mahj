@@ -224,17 +224,25 @@ export function sortRackByUsefulnessAsc(
 
 // Very rough "closeness" score for a rack against a hand: fraction of tile
 // slots in the hand that the rack currently satisfies (naturals only).
-export function handCloseness(rack: readonly Tile[], hand: NMJLHand): number {
+// The slot identities a hand demands under the (suit, number) binding that
+// best fits `rack`, plus how many of those slots the rack already fills.
+// Separated out so Charleston scoring can reuse the winning binding instead of
+// only its hit count.
+function bestBindingFor(
+  rack: readonly Tile[],
+  hand: NMJLHand,
+): { identities: TileKey[]; hit: number; totalSlots: number } {
   const totalSlots = hand.groups.reduce((s, g) => s + slotCount(g.kind), 0)
-  if (totalSlots === 0) return 0
-  // Try every suit binding and pick the best count.
+  let best: TileKey[] = []
+  let bestHit = 0
+  if (totalSlots === 0) return { identities: best, hit: 0, totalSlots }
+  // Try every suit binding and pick the one the rack fills most of.
   const suitVars = suitVarsIn(hand)
   const suitBindings = enumerateSuitBindings(suitVars).filter((b) =>
     suitBindingSatisfies(b, hand),
   )
   const numVars = numberVarsIn(hand)
   const nValues = numVars.length > 0 ? nValuesFor(hand) : [null]
-  let best = 0
   for (const sb of suitBindings) {
     for (const nv of nValues) {
       const identities: TileKey[] = []
@@ -257,10 +265,19 @@ export function handCloseness(rack: readonly Tile[], hand: NMJLHand): number {
           hit++
         }
       }
-      if (hit > best) best = hit
+      if (hit > bestHit || best.length === 0) {
+        bestHit = hit
+        best = identities
+      }
     }
   }
-  return best / totalSlots
+  return { identities: best, hit: bestHit, totalSlots }
+}
+
+export function handCloseness(rack: readonly Tile[], hand: NMJLHand): number {
+  const { hit, totalSlots } = bestBindingFor(rack, hand)
+  if (totalSlots === 0) return 0
+  return hit / totalSlots
 }
 
 function slotCount(kind: NMJLHand["groups"][number]["kind"]): number {
@@ -312,6 +329,89 @@ export function topHands(
     .sort((a, b) => b.s - a.s)
     .slice(0, n)
     .map((x) => x.h)
+}
+
+// ---------- Charleston passing (rack-aware) ----------
+//
+// `computeUsefulness` is a card-global table: it scores a tile the same way for
+// every seat, so sorting a rack by it makes all three bots pass the same kinds
+// of tile — and makes a bot forward whatever it was just handed, since a tile
+// that ranked lowest for the sender ranks lowest for the receiver too. The
+// result is one trio of junk relaying around the table into the human's rack.
+//
+// These helpers score a tile against the hands *this particular rack* is
+// closest to, so each bot passes what its own hand doesn't want.
+
+export type Affinity = Map<TileKey, number>
+
+// How much this rack's realistic target hands want each tile identity. Hands
+// are weighted by closeness squared so a line the bot is already deep into
+// dominates one it has barely started.
+export function rackAffinity(
+  rack: readonly Tile[],
+  hands: NMJLHand[],
+  topN = 10,
+): Affinity {
+  const scored = hands
+    .map((hand) => ({ hand, ...bestBindingFor(rack, hand) }))
+    .filter((x) => x.totalSlots > 0)
+    .sort((a, b) => b.hit / b.totalSlots - a.hit / a.totalSlots)
+    .slice(0, topN)
+
+  const bag: Affinity = new Map()
+  for (const { identities, hit, totalSlots } of scored) {
+    const closeness = hit / totalSlots
+    const weight = closeness * closeness
+    if (weight === 0) continue
+    for (const id of identities) {
+      bag.set(id, (bag.get(id) ?? 0) + weight)
+    }
+  }
+  return bag
+}
+
+// Rank a rack from "most willing to pass" to "least", for the Charleston.
+//
+//   affinity — what this rack's own candidate hands ask for (dominant term)
+//   pairing  — duplicates are the raw material of pungs and kongs, so breaking
+//              up a pair costs more than shedding a lone tile
+//   global   — the card-wide table, as a weak tiebreak between tiles no
+//              candidate hand wants
+//
+// Jokers sort last; callers filter them out anyway, since they may never be
+// passed.
+export function sortRackForCharlestonAsc(
+  rack: readonly Tile[],
+  hands: NMJLHand[],
+  use: Usefulness,
+): Tile[] {
+  const affinity = rackAffinity(rack, hands)
+
+  const counts = new Map<TileKey, number>()
+  for (const t of rack) {
+    if (t.kind === "joker") continue
+    const k = tileKey(t)
+    counts.set(k, (counts.get(k) ?? 0) + 1)
+  }
+
+  let maxUse = 0
+  for (const v of use.values()) if (v > maxUse) maxUse = v
+
+  const score = (t: Tile): number => {
+    if (t.kind === "joker") return Number.POSITIVE_INFINITY
+    const k = tileKey(t)
+    const own = affinity.get(k) ?? 0
+    const dup = Math.max(0, (counts.get(k) ?? 1) - 1)
+    const global = maxUse > 0 ? (use.get(k) ?? 0) / maxUse : 0
+    return own * 3 + dup * 1.5 + global * 0.25
+  }
+
+  return [...rack].sort((a, b) => {
+    const sa = score(a)
+    const sb = score(b)
+    if (sa !== sb) return sa - sb
+    return a.id.localeCompare(b.id)
+  })
 }
 
 // Which tile identities appear in any opponent's exposures—expert bots use

@@ -12,7 +12,7 @@ import {
   computeUsefulness,
   handCloseness,
   scoreTile,
-  sortRackByUsefulnessAsc,
+  sortRackForCharlestonAsc,
   tileKey,
   topHands,
 } from "./scoring"
@@ -21,8 +21,11 @@ import { tilesEqual } from "../tiles"
 
 export const intermediateBot: BotStrategy = {
   chooseCharlestonPass(ctx) {
+    // Ranked against *this* rack's own candidate hands, not the card-global
+    // table—otherwise every seat passes the same junk and a tile that ranked
+    // lowest for the sender ranks lowest for the receiver, so it just relays on.
     const use = computeUsefulness(ctx.hands)
-    const sorted = sortRackByUsefulnessAsc(ctx.rack, use).filter(
+    const sorted = sortRackForCharlestonAsc(ctx.rack, ctx.hands, use).filter(
       (t) => t.kind !== "joker",
     )
     const picks = sorted.slice(0, 3)
@@ -45,7 +48,7 @@ export const intermediateBot: BotStrategy = {
   },
   chooseCourtesyPass(ctx, maxCount) {
     const use = computeUsefulness(ctx.hands)
-    const sorted = sortRackByUsefulnessAsc(ctx.rack, use).filter(
+    const sorted = sortRackForCharlestonAsc(ctx.rack, ctx.hands, use).filter(
       (t) => t.kind !== "joker",
     )
     return sorted.slice(0, maxCount)

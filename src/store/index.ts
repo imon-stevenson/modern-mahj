@@ -236,8 +236,13 @@ function buildBotCtx(state: MahjState, seat: Seat, rngOffset = 0): BotCtx {
     allExposures,
     discardPile: state.discards,
     hands: state.loadHandsSafe(state.cardYear),
+    // Seat index, not seat.length—"south" and "north" are both 5 characters, so
+    // those two bots shared an identical random stream for the whole game.
     rng: createRng(
-      state.rngSeed + rngOffset + state.discards.length + seat.length,
+      state.rngSeed +
+        rngOffset +
+        state.discards.length +
+        SEATS.indexOf(seat) * 1_000_003,
     ),
   }
 }

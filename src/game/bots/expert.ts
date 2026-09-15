@@ -5,7 +5,7 @@ import {
   computeUsefulness,
   opponentExposureIdentities,
   scoreTile,
-  sortRackByUsefulnessAsc,
+  sortRackForCharlestonAsc,
   tileKey,
   tileMatchesKey,
 } from "./scoring"
@@ -45,7 +45,7 @@ export const expertBot: BotStrategy = {
 
   chooseCharlestonPass(ctx) {
     const use = computeUsefulness(ctx.hands)
-    const sorted = sortRackByUsefulnessAsc(ctx.rack, use).filter(
+    const sorted = sortRackForCharlestonAsc(ctx.rack, ctx.hands, use).filter(
       (t) => t.kind !== "joker",
     )
     // Same as intermediate but explicitly avoid the very lowest tile if it
