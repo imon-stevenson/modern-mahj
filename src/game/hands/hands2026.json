@@ -550,15 +550,15 @@
       "id": "13579-1b",
       "section": "13579",
       "line": 1,
-      "description": "11 333 55 777 9999 (Any 1 or 3 Suits)—variant 3 suits: 1s & 9s (X), 3s (Y), 5s & 7s (Z)",
+      "description": "11 333 55 777 9999 (Any 1 or 3 Suits)—variant 3 suits: 1s & 3s (X), 5s & 7s (Y), 9s (Z)",
       "closed": false,
       "value": 25,
       "groups": [
         { "kind": "pair", "tile": { "kind": "number", "rank": 1, "suitVar": "X" }, "jokersAllowed": false },
-        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "Y" }, "jokersAllowed": true },
-        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "Z" }, "jokersAllowed": false },
-        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "Z" }, "jokersAllowed": true },
-        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "X" }, "jokersAllowed": true }
+        { "kind": "pung", "tile": { "kind": "number", "rank": 3, "suitVar": "X" }, "jokersAllowed": true },
+        { "kind": "pair", "tile": { "kind": "number", "rank": 5, "suitVar": "Y" }, "jokersAllowed": false },
+        { "kind": "pung", "tile": { "kind": "number", "rank": 7, "suitVar": "Y" }, "jokersAllowed": true },
+        { "kind": "kong", "tile": { "kind": "number", "rank": 9, "suitVar": "Z" }, "jokersAllowed": true }
       ],
       "suitConstraints": [{ "rule": "allDifferent", "vars": ["X", "Y", "Z"] }]
     },
