@@ -32,6 +32,24 @@ Click **Start Game**, choose a difficulty, and take your seat at the Mahjong tab
 | `npm run build`   | Type-check (`tsc -b`) and produce a production build |
 | `npm run preview` | Serve the production build from `dist/` locally      |
 | `npm run lint`    | Run ESLint across the project                        |
+| `npm run generate:pwa-assets` | Re-raster the app icons from `public/app-icon.svg` |
+
+## Install it / play offline
+
+Modern Mahj is a Progressive Web App. Visit the deployed site and use your
+browser's **Install** action to add it to your dock or home screen; it then
+launches in its own window with no browser chrome.
+
+Everything needed to play ships with the app — rules, bot AI, and both NMJL
+cards are bundled, fonts are self-hosted, and your game lives in
+`localStorage` — so **it plays fully offline** once loaded. There is no account
+and no server.
+
+When a new version is deployed, a running install shows a small "A new version
+is available" prompt rather than reloading under you. Your game in progress
+survives the reload.
+
+The mat is designed for desktop and tablet in landscape.
 
 ## Testing
 

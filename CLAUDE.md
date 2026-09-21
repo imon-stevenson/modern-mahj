@@ -28,16 +28,19 @@ Layout:
 ```
 .
 ├── index.html                 # Vite entry HTML
-├── vite.config.ts             # Vite + @vitejs/plugin-react config
+├── vite.config.ts             # Vite + react + tailwind + VitePWA config
+├── pwa-assets.config.ts       # Icon raster preset (npm run generate:pwa-assets)
+├── vercel.json                # Deploy: SPA rewrite + sw.js cache headers
 ├── tsconfig.json              # Root TS config, references app + node
 ├── tsconfig.app.json          # TS config for src/
 ├── tsconfig.node.json         # TS config for Vite config files
 ├── eslint.config.js           # Flat ESLint config
-├── public/                    # Static assets served as-is
+├── public/                    # Static assets served as-is (incl. PWA icons)
 └── src/
     ├── main.tsx               # App bootstrap
     ├── App.tsx                # Root React component
-    ├── index.css              # Minimal reset
+    ├── index.css              # Minimal reset + @font-face declarations
+    ├── assets/fonts/          # Self-hosted woff2 (see LICENSE.md there)
     ├── game/                  # Pure game logic (no React)
     │   ├── types.ts
     │   ├── rng.ts             # seeded RNG
@@ -71,6 +74,27 @@ Notes:
 - Game logic under `src/game/` is pure and framework-free — do NOT import React there. All bot/game randomness goes through the seeded RNG in `src/game/rng.ts` so tests are deterministic.
 - TS uses project references — `tsc -b` builds both `tsconfig.app.json` and `tsconfig.node.json`.
 - React Compiler is **not** enabled.
+
+## PWA / offline (do not regress this)
+
+The app is an installable PWA that must run with **no network at all**. Game
+logic, both hand cards, and all fonts are bundled; `localStorage` holds state.
+
+- **Never add a `<link>` to Google Fonts (or any CDN) in `index.html`.** That is
+  precisely what made the app network-dependent before. Fonts are self-hosted in
+  `src/assets/fonts/` and declared as `@font-face` at the top of `src/index.css`.
+- `noto-sans-sc-tiles.woff2` is a **16-glyph subset** covering only the
+  characters printed on tile faces. If a tile ever renders a new CJK character,
+  regenerate the subset and update the `unicode-range` — otherwise that glyph
+  silently falls back to a system font. See `src/assets/fonts/LICENSE.md`.
+- Fonts live under `src/`, not `public/`, so Vite content-hashes them and the
+  service worker precaches them by hash. `woff2` must stay in the plugin's
+  `globPatterns`.
+- Icons are generated from `public/app-icon.svg` by `npm run generate:pwa-assets`
+  and committed. Re-run it if the mark changes.
+- Verify offline behaviour with `npm run build && npm run preview`, then
+  DevTools → Network → Offline and hard-reload. Confirm tile faces still render
+  東南西北發中 in Noto rather than a system fallback.
 
 ## Styling (Tailwind v4)
 

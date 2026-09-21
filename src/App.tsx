@@ -7,6 +7,7 @@ import { RotateNudge } from "./components/RotateNudge"
 import { EmojiRain } from "./components/EmojiRain"
 import { ShowHandOverlay } from "./components/ShowHandOverlay"
 import { PauseButton } from "./components/PauseButton"
+import { UpdatePrompt } from "./components/UpdatePrompt"
 import { useBotTurns } from "./hooks/useBotTurns"
 import { useAutoHideHeader } from "./hooks/useAutoHideHeader"
 import { useIsDesktop } from "./hooks/useIsDesktop"
@@ -56,6 +57,7 @@ export default function App(): React.ReactElement {
           celebration animates on top of the winning hand for a human win. */}
       <ShowHandOverlay />
       <EmojiRain />
+      <UpdatePrompt />
     </div>
   )
 }

@@ -6,6 +6,47 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 /* ============================================================
+   Self-hosted fonts. These used to come from the Google Fonts CDN, which made
+   a network round-trip a hard requirement for correct rendering—fatal for an
+   offline-installable app. Served from src/ (not public/) so Vite
+   content-hashes them and the service worker precaches them by hash.
+   See src/assets/fonts/LICENSE.md for provenance and licensing.
+   ============================================================ */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  src: url('./assets/fonts/manrope-variable-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./assets/fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/ibm-plex-mono-600-latin.woff2') format('woff2');
+}
+/* A 16-glyph subset covering only the characters printed on tile faces. The
+   unicode-range keeps the browser from ever consulting it for Latin text, and
+   must be kept in sync with the subset itself—see the LICENSE.md note. */
+@font-face {
+  font-family: 'Noto Sans SC';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/noto-sans-sc-tiles.woff2') format('woff2');
+  unicode-range: U+4e00, U+4e03, U+4e09, U+4e2d, U+4e5d, U+4e8c, U+4f0d,
+    U+516b, U+516d, U+5317, U+5357, U+56db, U+6771, U+767c, U+842c, U+897f;
+}
+
+/* ============================================================
    Design tokens—American Mahjong Design System.
    Declared as Tailwind theme vars so they generate utilities
    (bg-tile-navy, text-suit-red, font-ui, rounded-md, …) and are
