@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Board } from "./components/Board"
-import { NewGameButton } from "./components/NewGameMenu"
+import { NewGameButton } from "./components/NewGameButton"
 import { RulesPanel } from "./components/RulesPanel"
 import { CardDrawer } from "./components/CardDrawer"
 import { RotateNudge } from "./components/RotateNudge"
