@@ -1,6 +1,6 @@
 import { useMahjStore } from "../store"
 
-export function NewGameMenu(): React.ReactElement {
+export function NewGameButton(): React.ReactElement {
   const phase = useMahjStore((s) => s.phase)
   const requestNewGame = useMahjStore((s) => s.requestNewGame)
 

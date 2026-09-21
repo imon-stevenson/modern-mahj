@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Board } from "./components/Board"
-import { NewGameMenu } from "./components/NewGameMenu"
+import { NewGameButton } from "./components/NewGameMenu"
 import { RulesPanel } from "./components/RulesPanel"
 import { CardDrawer } from "./components/CardDrawer"
 import { RotateNudge } from "./components/RotateNudge"
@@ -33,7 +33,7 @@ export default function App(): React.ReactElement {
         </div>
         <div className="flex items-center gap-3">
           <PauseButton />
-          <NewGameMenu />
+          <NewGameButton />
         </div>
       </header>
 

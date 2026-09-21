@@ -14,6 +14,7 @@ import { useIsDesktop } from "../hooks/useIsDesktop"
 import { attemptJokerSwap, useJokerSwapUi } from "../store/jokerSwapUi"
 import { CARD_YEARS } from "../game/hands/loader"
 import type { Difficulty } from "../game/types"
+import { NewGameButton } from "./NewGameButton"
 
 export function Board(): React.ReactElement {
   useDiscardFlight()
@@ -102,9 +103,9 @@ export function Board(): React.ReactElement {
     return (
       <div className="bg-felt rounded-lg px-10 py-16 flex flex-col items-center gap-12">
         <div className="text-felt-ink-soft font-ui text-[16px] font-medium pt-6">
-          No game in progress. Start one from the top bar to take your seat at
-          the table.
+          No game in progress. Start one to take your seat at the table.
         </div>
+        <NewGameButton />
       </div>
     )
   }
@@ -166,7 +167,8 @@ export function Board(): React.ReactElement {
   const selectedIds = charleston.selections.east
   // Waiting on a button answer (second Charleston / courtesy negotiation)—the
   // rack is inert until the human decides.
-  const charlestonPrompt = isCharleston && isCharlestonDecisionPrompt(charleston)
+  const charlestonPrompt =
+    isCharleston && isCharlestonDecisionPrompt(charleston)
 
   const eastTotal =
     players.east.rack.length +
@@ -306,9 +308,7 @@ export function Board(): React.ReactElement {
                 ? (charleston.blindPool ?? [])
                 : []
             }
-            blindRevealed={
-              isCharleston ? (charleston.blindRevealed ?? []) : []
-            }
+            blindRevealed={isCharleston ? (charleston.blindRevealed ?? []) : []}
             // No joker check here—these tiles are face-down, and rejecting a
             // tap would reveal what one of them is. Bots never pass jokers, so
             // the pool can't contain one anyway. No prompt guard either: the
@@ -343,9 +343,7 @@ function WallIndicator({
           />
         ))}
       </div>
-      <div className="mono text-[12px] text-gold">
-        {remaining} remaining
-      </div>
+      <div className="mono text-[12px] text-gold">{remaining} remaining</div>
     </div>
   )
 }
@@ -407,7 +405,5 @@ function PlayActions({
       </div>
     )
   }
-  return (
-    <div className="felt-note">Click a tile to discard it.</div>
-  )
+  return <div className="felt-note">Click a tile to discard it.</div>
 }
